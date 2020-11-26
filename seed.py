@@ -68,6 +68,8 @@ db.session.add_all([p1, p2, p3])
 db.session.commit()
 
 le1 = LogEntry(project_id=1, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
+le2 = LogEntry(project_id=2, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
+le3 = LogEntry(project_id=3, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
 
-db.session.add(le1)
+db.session.add_all([le1, le2, le3])
 db.session.commit()
