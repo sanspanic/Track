@@ -6,8 +6,6 @@ from forex import convert, get_symbol
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 
-#TODO: make sure INTs are actually FLOAT data types wherever appropriate
-
 def connect_db(app):
     """Connect to database."""
 
@@ -37,7 +35,7 @@ class User(db.Model):
     last_name = db.Column(db.String, 
                         nullable = False)
     
-    password = db.Column(db.String(), 
+    password = db.Column(db.String, 
                         nullable = False)
 
     email = db.Column(db.String, 
@@ -74,6 +72,8 @@ class User(db.Model):
 
     projects = db.relationship('Project', backref='user', cascade="all, delete-orphan")
 
+    clients = db.relationship('Client', backref='user', cascade="all, delete-orphan")
+
 class Project(db.Model): 
     """project model"""
 
@@ -81,7 +81,7 @@ class Project(db.Model):
 
     def __repr__(self): 
         p = self
-        return f"<Project with project_id = {p.id}, project_name = {p.project_name}, subtotal = {p.subtotal}>"
+        return f"<Project with project_id = {p.id}, project_name = {p.project_name}, subtotal = {p.subtotal}, for client {p.client_id}>"
 
     id = db.Column(db.Integer, 
                     primary_key = True, 
@@ -90,46 +90,52 @@ class Project(db.Model):
     user_id = db.Column(db.Integer, 
                     db.ForeignKey('users.id'))
 
+    client_id = db.Column(db.Integer, 
+                    db.ForeignKey('clients.id'))
+
     project_name = db.Column(db.String(30),  
                     nullable = False)
 
     #this subtotal is shown in currency of hourly or flat rate. to be updated from app.py
-    subtotal = db.Column(db.Integer, 
+    subtotal = db.Column(db.Float, 
                         nullable = False, 
                         default = 0)
 
-    flat_rate = db.Column(db.Integer)
+    converted_subtotal = db.Column(db.Float)
 
-    hourly_rate = db.Column(db.Integer)
+    hourly_rate = db.Column(db.Float)
 
     curr_of_rate = db.Column(db.String, 
                         nullable = False)
 
     curr_of_inv = db.Column(db.String)
 
-    def update_subtotal(self, sum): 
+    log_entries = db.relationship('LogEntry', backref='project', cascade="all, delete-orphan")
+
+    #pass in le.project.increment_subtotal(le.value_in_curr_of_rate)
+    def increment_subtotal(self, sum): 
         """adds value of current log entry to subtotal"""
+
         self.subtotal += sum
+        return self.subtotal
 
-    def reset_subtotal(self): 
-        """resets subtotal to 0 at end of invoice cycle"""
-        self.subtotal = 0
+    #pass in le.project.update_converted_subtotal(le.value_in_curr_of_inv) 
+    def increment_converted_subtotal(self, sum): 
+        """adds value of current log entry to subtotal in conv currency"""
 
-    #TODO: change this so that you instead only increment to converted_subtotal. make converted_subtotal database column
-    @property
-    def converted_subtotal(self):
-        """returns converted subtotal in currency of invoice, if curr_of_invoice""" 
-        if self.curr_of_inv: 
-            return round(convert(self.curr_of_rate, self.curr_of_inv, self.subtotal), 2)
-        else: 
-            return None
+        if sum: 
+            if not self.converted_subtotal: 
+                self.converted_subtotal = 0
+            self.converted_subtotal += sum
+
+        return self.converted_subtotal
 
     def show_subtotal_values(self): 
-        """returns dict in format {subtotal_rate: x, subtotal_inv: y} where subtotal_inv will hold None values if not self.curr_of_inv """
+        """returns dict in format {subtotal_rate: x, subtotal_inv: y} wherele subtotal_inv will hold None values if not self.curr_of_inv """
         subtotal_symbol = get_symbol(self.curr_of_rate)
 
         #converted_subtotal_string will only exist if self.curr_of_inv, otherwise no conversion occurs
-        converted_subtotal_string = None
+        converted_subtotal_symbol = None
         if self.curr_of_inv: 
             converted_subtotal_symbol = get_symbol(self.curr_of_inv)
 
@@ -140,7 +146,20 @@ class Project(db.Model):
             {"sum": self.converted_subtotal, "symbol": converted_subtotal_symbol}
         }
 
-    log_entries = db.relationship('LogEntry', backref='project', cascade="all, delete-orphan")
+    def create_invoice(self): 
+        """creates instance of invoice populated with basic info"""
+
+        i = Invoice(project_id=self.id, 
+                amount_in_curr_of_rate=self.subtotal, 
+                amount_in_curr_of_inv=self.converted_subtotal, 
+                curr_of_rate=self.curr_of_rate, 
+                curr_of_inv=self.curr_of_inv, 
+                date=datetime.date.today())
+
+        db.session.add(i)
+        db.session.commit()
+
+        return i
 
 class LogEntry(db.Model): 
     """log entry model"""
@@ -166,10 +185,9 @@ class LogEntry(db.Model):
                         nullable = False, 
                         default = datetime.date.today())
     
-    #below will be updated from app by calling instance method calc_value
-    value_in_curr_of_pay = db.Column(db.String)
+    value_in_curr_of_rate = db.Column(db.Float)
 
-    value_in_curr_of_inv = db.Column(db.String)
+    value_in_curr_of_inv = db.Column(db.Float)
     
     @property
     def time_delta(self): 
@@ -181,7 +199,8 @@ class LogEntry(db.Model):
         return round(seconds/60, 2)
 
     def calc_value(self): 
-        """if hourly rate defined, calculates value of log entry in currency of rate and currency of invoice, returns dict value_rate: x, value_inv: y"""
+        """updates self.value_in_curr_of_rate and self.value_in_curr_of_inv.
+        if hourly rate defined, calculates value of log entry in currency of rate and currency of invoice, returns dict value_rate: x, value_inv: y"""
 
         project = Project.query.get(self.project_id)
 
@@ -190,11 +209,14 @@ class LogEntry(db.Model):
             value_rate_symbol = get_symbol(project.curr_of_rate)
     
             #following part of function only runs if invoice in foreign currency, i.e., if project.curr_of_inv, else value_inv is None
-            value_inv_str = None
+            value_inv_symbol = None
             value_inv = None
             if project.curr_of_inv: 
                 value_inv = round(convert(project.curr_of_rate, project.curr_of_inv, value_rate),2)
                 value_inv_symbol = get_symbol(project.curr_of_inv)
+
+        self.value_in_curr_of_rate = value_rate
+        self.value_in_curr_of_inv = value_inv
 
         return {
             "value_rate": 
@@ -203,7 +225,83 @@ class LogEntry(db.Model):
                 {"sum": value_inv, "symbol": value_inv_symbol}
             }
 
-        #when user clicks stop: first update datetime for time_stopped, then: le.project.update_subtotal(le.calc_value()["value_rate"]["sum"])
+        #when user clicks stop: first update datetime for time_stopped, then calc_value, then increment project subtotals
+ 
+
+class Client(db.Model): 
+    """client model"""
+
+    __tablename__ = 'clients'
+
+    def __repr__(self): 
+        return f"<Client with client_id = {self.id}, name = {self.name}. Client of user with user_id = {self.user_id}"
+
+    id = db.Column(db.Integer, 
+                    primary_key = True, 
+                    autoincrement = True)
+
+    user_id = db.Column(db.Integer, 
+                    db.ForeignKey('users.id'))
+
+    name = db.Column(db.String)
+
+    street = db.Column(db.String)
+
+    postcode = db.Column(db.String)
+
+    city = db.Column(db.String)
+    
+    country = db.Column(db.String)
+                        
+    projects = db.relationship('Project', backref='client')
+
+    @property
+    def full_address(self): 
+        """returns full address as string"""
+
+        print(f"{self.street} \n{self.postcode} {self.city} \n{self.country}")
+
+
+
+class Invoice(db.Model): 
+    """invoice model"""
+
+    __tablename__ = 'invoices'
+
+    def __repr__(self): 
+        return f"<Invoice with id = {self.id}, for project with id = {self.project_id}."
+
+    id = db.Column(db.Integer, 
+                    primary_key = True, 
+                    autoincrement = True)
+    
+    project_id = db.Column(db.Integer, 
+                    db.ForeignKey('projects.id'))
+
+    invoice_nr = db.Column(db.String)
+
+    billing_address = db.Column(db.String)
+
+
+    amount_in_curr_of_rate = db.Column(db.Float)
+
+    amount_in_curr_of_inv = db.Column(db.Float)
+
+    curr_of_rate = db.Column(db.String)
+
+    curr_of_inv = db.Column(db.String)
+
+    date = db.Column(db.String)
+    
+    due_date = db.Column(db.String)
+                        
+    project = db.relationship('Project', backref='invoice')
+
+
+
+
+
+
 
 
 

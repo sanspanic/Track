@@ -1,4 +1,4 @@
-from models import db, User, Project, LogEntry
+from models import db, User, Project, LogEntry, Client
 from app import app
 import datetime
 
@@ -50,6 +50,7 @@ db.create_all()
 User.query.delete() 
 Project.query.delete()
 LogEntry.query.delete()
+Client.query.delete()
 
 #add users
 s = User.register('sandy', 'password', 'sandy@spanik.com', 'Sandy', 'Spanik')
@@ -59,17 +60,30 @@ a = User.register('testuser', 'password2', 'dog@woof.com', 'King', 'Arthur')
 db.session.add_all([s, a])
 db.session.commit()
 
-#add projects
-p1 = Project(user_id=1, project_name='PuffleCorp Administration', hourly_rate=24, curr_of_rate='USD', curr_of_inv='EUR')
-p2 = Project(user_id=1, project_name='Website for TW', flat_rate=1000, curr_of_rate='USD', curr_of_inv='GBP')
-p3 = Project(user_id=2, project_name='Design of Sword', hourly_rate=40, curr_of_rate='GBP')
+#add clients
 
-db.session.add_all([p1, p2, p3])
+c1 = Client(user_id=1, name='Puffle Corp', street='Street 20', postcode='EH2 3XI', country='United Kingdom', city='Bratislava')
+c2 = Client(user_id=1, name='Tommy Wiseau', street='Boulevard Drive', postcode='EH2 3XI', country='US', city='Los Angeles')
+c3 = Client(user_id=2, name='Merlin', street='Beard Street 10', postcode='EH2 3XI', country='United Kingdom', city='Oxford')
+
+db.session.add_all([c1, c2, c3])
+db.session.commit()
+
+#add projects
+p1 = Project(user_id=1, project_name='PuffleCorp Administration', hourly_rate=24, curr_of_rate='USD', curr_of_inv='EUR', client_id=1)
+p2 = Project(user_id=1, project_name='Website for TW', hourly_rate=100, curr_of_rate='USD', curr_of_inv='GBP', client_id=2)
+p3 = Project(user_id=2, project_name='Design of Sword', hourly_rate=40, curr_of_rate='GBP', client_id=3)
+p4 = Project(user_id=1, project_name='Merch for TW', hourly_rate=60, curr_of_rate='USD', curr_of_inv='GBP', client_id=2)
+
+db.session.add_all([p1, p2, p3, p4])
 db.session.commit()
 
 le1 = LogEntry(project_id=1, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
 le2 = LogEntry(project_id=2, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
 le3 = LogEntry(project_id=3, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
+le4 = LogEntry(project_id=4, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
 
-db.session.add_all([le1, le2, le3])
+db.session.add_all([le1, le2, le3, le4])
 db.session.commit()
+
+
