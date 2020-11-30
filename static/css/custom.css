@@ -1,0 +1,20 @@
+body {
+    background-image: url("patterns/clock.svg")
+}
+
+h1 {
+    background: #DCD0F1;
+}
+
+h2 {
+    color: #f44336;
+}
+
+.signup {
+    background-color: #f44336;
+    border: 1px solid #f44336;
+}
+
+.home-anon {
+    background: #DCD0F1;
+}
