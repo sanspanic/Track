@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block body_class %}container user-clients{% endblock %}
+
+{% block navbar %}
+{% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+    <h1 class='display-3 text-center mb-4'>Clients for user {{user.username}}</h1>
+    <ol>
+        {% for client in user.clients %}
+        <div class="row">
+            <div class="col col-8">
+                <li> {{client.name}}
+                    <p>Address: <span> {{client.full_address}}</span> </p>
+                </li>
+            </div>
+            <div class="col col-4">
+                <a class='btn btn-success' href="/clients/{{client.id}}/edit">Edit Client Details</a>
+            </div>
+        </div>
+        {% endfor %}
+    </ol>
+    
+
+{% block script %}
+{% endblock %}
+
+{% endblock %}

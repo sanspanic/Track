@@ -259,7 +259,7 @@ class Client(db.Model):
     def full_address(self): 
         """returns full address as string"""
 
-        print(f"{self.street} \n{self.postcode} {self.city} \n{self.country}")
+        return (f"{self.street} \n{self.postcode} {self.city} \n{self.country}")
 
 
 

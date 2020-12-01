@@ -209,3 +209,20 @@ def delete_user(username):
         db.session.commit()
 
         return redirect('/signup')
+
+@app.route('/user/<username>/clients', methods=['GET'])
+def show_clients(username):
+    """shows all user's clients"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        return render_template('user/clients.html', user=g.user)
+
+        
