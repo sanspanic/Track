@@ -76,8 +76,8 @@ def signup():
                 username=form.username.data,
                 pwd=form.password.data,
                 email=form.email.data,
-                first_name=form.f_name.data,
-                last_name=form.l_name.data
+                first_name=form.firt_name.data,
+                last_name=form.last_name.data
             )
 
             db.session.add(user)
@@ -225,4 +225,3 @@ def show_clients(username):
     else: 
         return render_template('user/clients.html', user=g.user)
 
-        
