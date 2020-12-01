@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block body_class %}container user-edit{% endblock %}
+
+{% block navbar %}
+{% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+    <h1 class='display-3 text-center mb-4'>Edit User Details for {{user.username}}</h1>
+
+    <form method="POST" id="user_form">
+      {{ form.hidden_tag() }}
+
+      {% for field in form if field.widget.input_type != 'hidden' %}
+        {% for error in field.errors %}
+          <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+        {{ field.label }}
+        {{ field(placeholder=field.label.text, class="form-control mb-2 text-primary") }}
+      {% endfor %}
+
+      <button class="btn btn-lg btn-block bg-primary text-white"> Edit Details! </button>
+    </form>
+{% endblock %}
+
+{% block script %}
+
+<script src='/static/js/password-required.js'></script>
+
+{% endblock %}

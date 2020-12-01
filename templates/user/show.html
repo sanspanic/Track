@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block body_class %}container user-show{% endblock %}
+
+{% block navbar %}
+{% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+    <h1 class='display-3 text-center mb-4'>User Details for {{user.username}}</h1>
+
+    <div class="row text-center justify-content-center">
+        <div class="col col-5">
+            <div class='row bg-light py-4 text-center'>
+                <div class="col">
+                    <p>Username: <span id='username'>{{user.username}}</span></p> 
+                </div>
+                <div class="col">
+                    <p>Full Name: <span>{{user.full_name}}</span></p> 
+                </div>
+                <div class="col">
+                    <p>Email: <span>{{user.email}}</span></p> 
+                </div>
+            </div>
+            <div class='d-flex justify-content-between'>
+                <a href="/user/{{user.username}}/edit" class='btn btn-success'>Edit Details</a>
+                <button class='btn btn-danger' id='delete'>Delete User</button>
+            </div>
+        </div>      
+    </div>
+
+{% block script %}
+<script src='/static/js/delete_user.js'></script>
+{% endblock %}
+
+{% endblock %}

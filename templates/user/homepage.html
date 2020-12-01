@@ -14,11 +14,29 @@
 <h3>Currently logged in as: {{user.username}}</h3>
 
 <ul>
-    {% for project in user.projects %}
 
-        <li>{{project}}</li>
+    <table class="table table-sm bg-light table-hover table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Project Name</th>
+            <th scope="col">Client</th>
+            <th scope="col">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
 
-    {% endfor %}
+        {% for project in user.projects %}
+
+          <tr>
+            <th scope="row">{{project.project_name}}</th>
+            <td>{{project.client.name}}</td>
+            <td>{{project.show_subtotal_values()['subtotal_rate']['sum']}}  {{project.show_subtotal_values()['subtotal_rate']['symbol']}}</td>
+          </tr>
+
+        {% endfor %}
+
+        </tbody>
+      </table>
 </ul>
 
 {% endblock %}

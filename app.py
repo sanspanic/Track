@@ -1,10 +1,11 @@
 import os
+import requests
 from flask import Flask, render_template, redirect, session, flash, g
 from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, db, User, Project, LogEntry, Client, Invoice
 from secrets import secret_key
 import datetime
-from forms import UserAddForm, LoginForm
+from forms import UserForm, LoginForm
 from sqlalchemy.exc import IntegrityError
 #from werkzeug.exceptions import Unauthorized
 
@@ -12,7 +13,8 @@ CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = (os.environ.get('DATABASE_URL', "postgres:///work_logger")) 
+app.config["SQLALCHEMY_DATABASE_URI"] = (
+    os.environ.get('DATABASE_URL', "postgres:///work_logger"))
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', secret_key)
@@ -22,12 +24,14 @@ connect_db(app)
 
 toolbar = DebugToolbarExtension(app)
 
+
 @app.route('/')
-def home(): 
-    if g.user: 
+def home():
+    if g.user:
         return redirect(f'/user/{g.user.username}')
-    else: 
+    else:
         return render_template('home-anon.html')
+
 
 @app.before_request
 def add_user_to_g():
@@ -37,6 +41,7 @@ def add_user_to_g():
         g.user = User.query.get(session[CURR_USER_KEY])
     else:
         g.user = None
+
 
 def do_login(user):
     """Log in user."""
@@ -53,7 +58,8 @@ def do_logout():
 ##############################################################################
 # AUTHENTICATION ROUTES
 
-@app.route('/signup', methods=["GET", "POST"])
+
+@app.route('/signup', methods=["GET", "POST", "DELETE"])
 def signup():
     """Handle user signup.
     Create new user and add to DB. Redirect to home page.
@@ -62,7 +68,7 @@ def signup():
     and re-render form.
     """
 
-    form = UserAddForm()
+    form = UserForm()
 
     if form.validate_on_submit():
         try:
@@ -102,6 +108,7 @@ def login():
         if user:
             do_login(user)
             flash(f"Hello, {user.username}!", "success")
+
             return redirect(f"/user/{user.username}")
 
         flash("Invalid credentials.", 'danger')
@@ -116,19 +123,89 @@ def logout():
     do_logout()
 
     flash('Bye!', 'success')
-    return redirect('/')
+    return redirect('/login')
 
 ##############################################################################
 # USER ROUTES
 
+
 @app.route('/user/<username>')
-def homepage(username): 
+def homepage(username):
     """show homepage for logged in user"""
 
-    if g.user: 
+    if not g.user:
+
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+    elif username != g.user.username:
+
+        flash("Unauthorized. You can only view your own account details.", "danger")
+        return redirect(f'/user/{g.user.username}')
+    else:
+
         return render_template('user/homepage.html', user=g.user)
-    else: 
-        redirect('/')
 
 
+@app.route('/user/<username>/show')
+def show_user(username):
+    """show details for logged in user"""
 
+    if not g.user:
+
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+    elif username != g.user.username:
+
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+    else:
+        return render_template('user/show.html', user=g.user)
+
+
+@app.route('/user/<username>/edit', methods=['GET', 'POST'])
+def edit_user(username):
+    """edit details for logged in user"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else:
+        form = UserForm(obj=g.user)
+
+        if form.validate_on_submit():
+
+            user = User.query.get_or_404(g.user.id)
+
+            user.username = form.username.data
+            user.first_name = form.first_name.data
+            user.last_name = form.last_name.data
+            user.email = form.email.data
+
+            db.session.commit()
+
+            return redirect(f'/user/{user.username}/show')
+
+        return render_template('user/edit.html', user=g.user, form=form)
+
+@app.route('/user/<username>/delete', methods=['DELETE'])
+def delete_user(username):
+    """delete user"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else:
+        db.session.delete(g.user)
+        db.session.commit()
+
+        return redirect('/signup')
