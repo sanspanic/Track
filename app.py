@@ -76,7 +76,7 @@ def signup():
                 username=form.username.data,
                 pwd=form.password.data,
                 email=form.email.data,
-                first_name=form.firt_name.data,
+                first_name=form.first_name.data,
                 last_name=form.last_name.data
             )
 
