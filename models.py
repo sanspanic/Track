@@ -74,6 +74,8 @@ class User(db.Model):
 
     clients = db.relationship('Client', backref='user', cascade="all, delete-orphan")
 
+    invoices = db.relationship('Invoice', backref='user', cascade="all, delete-orphan")
+
 class Project(db.Model): 
     """project model"""
 
@@ -150,6 +152,7 @@ class Project(db.Model):
         """creates instance of invoice populated with basic info"""
 
         i = Invoice(project_id=self.id, 
+                user_id = self.user_id,
                 amount_in_curr_of_rate=self.subtotal, 
                 amount_in_curr_of_inv=self.converted_subtotal, 
                 curr_of_rate=self.curr_of_rate, 
@@ -269,7 +272,7 @@ class Invoice(db.Model):
     __tablename__ = 'invoices'
 
     def __repr__(self): 
-        return f"<Invoice with id = {self.id}, for project with id = {self.project_id}."
+        return f"<Invoice with id = {self.id}, for project with id = {self.project_id}>"
 
     id = db.Column(db.Integer, 
                     primary_key = True, 
@@ -277,6 +280,9 @@ class Invoice(db.Model):
     
     project_id = db.Column(db.Integer, 
                     db.ForeignKey('projects.id'))
+        
+    user_id = db.Column(db.Integer, 
+                    db.ForeignKey('users.id'))
 
     invoice_nr = db.Column(db.String)
 

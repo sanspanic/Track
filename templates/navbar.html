@@ -10,7 +10,10 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav" id='user-nav'>
           <li class="nav-item">
-            <a class="nav-link" href="#">Invoices</a>
+            <a class="nav-link" href="/user/{{user.username}}">Projects</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/user/{{user.username}}/invoices">Invoices</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/user/{{user.username}}/clients">Clients</a>
@@ -20,9 +23,7 @@
         <ul class="navbar-nav ml-auto">
           {% if user %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{user.username}}
-            </a>
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{user.username}}</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="/user/{{user.username}}/show">View User Details</a>
               <a class="dropdown-item" href="/user/{{user.username}}/edit">Edit User Details</a>

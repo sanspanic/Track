@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %} Invoices {% endblock %}
+
+{% block body_class %}container invoices{% endblock %}
+
+{% block navbar %}
+{% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+<h1 class='display-1'>Invoices</h1>
+<h3>Currently logged in as: {{user.username}}</h3>
+
+<div class="container" id='invoices-container'>
+
+    <table class="table table-sm bg-light table-hover table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Client</th>
+            <th scope="col">Project Name</th>
+            <th scope="col">Subtotal</th>
+            <th scope="col">Converted Subtotal</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        {% for invoice in user.invoices %}
+
+          <tr>
+            <th scope="row">{{invoice.date}}</th>
+
+            {% if invoice.project.client.name %}
+            <td>{{invoice.project.client.name}}</td>
+            {% else %}
+            <td>Client Details Unspecified 
+                <a href="/client/{{invoice.project.client.id}}/edit" class='btn btn-success'>Edit</a>
+            </td>
+            {% endif %}
+
+            <td>{{invoice.project.project_name}}</td>
+            <td>{{invoice.amount_in_curr_of_rate}} {{invoice.project.show_subtotal_values()['subtotal_rate']['symbol']}}</td>
+
+            {% if invoice.curr_of_inv %}
+            <td>{{invoice.amount_in_curr_of_inv}} {{invoice.project.show_subtotal_values()['subtotal_inv']['symbol']}}</td>
+            {% else %}
+            <td>No conversion specified</td>
+            {% endif %}
+
+            <td id="{{invoice.id}}">
+                <button class='btn btn-success'>Edit</button>
+                <button class='btn btn-danger delete'>Delete</button>
+                <a href='/invoice/{{invoice.id}}/edit' class='btn btn-primary'>Issue Invoice</a>
+            </td>
+          </tr>
+
+        {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+
+{% block script%}
+<script src='/static/js/user/invoices_list.js'></script>
+{% endblock %}
+
+{% endblock %}

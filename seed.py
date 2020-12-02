@@ -73,17 +73,36 @@ db.session.commit()
 p1 = Project(user_id=1, project_name='PuffleCorp Administration', hourly_rate=24, curr_of_rate='USD', curr_of_inv='EUR', client_id=1)
 p2 = Project(user_id=1, project_name='Website for TW', hourly_rate=100, curr_of_rate='USD', curr_of_inv='GBP', client_id=2)
 p3 = Project(user_id=2, project_name='Design of Sword', hourly_rate=40, curr_of_rate='GBP', client_id=3)
-p4 = Project(user_id=1, project_name='Merch for TW', hourly_rate=60, curr_of_rate='USD', curr_of_inv='GBP', client_id=2)
+p4 = Project(user_id=1, project_name='Merch for TW', hourly_rate=60, curr_of_rate='USD', client_id=2)
 
 db.session.add_all([p1, p2, p3, p4])
 db.session.commit()
 
+#add log entries
 le1 = LogEntry(project_id=1, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
-le2 = LogEntry(project_id=2, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
+le2 = LogEntry(project_id=2, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 19, 35, 37, 227731))
 le3 = LogEntry(project_id=3, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
 le4 = LogEntry(project_id=4, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
 
 db.session.add_all([le1, le2, le3, le4])
 db.session.commit()
+
+#make invoices
+le1.calc_value()
+le1.project.increment_subtotal(le1.value_in_curr_of_rate)
+le1.project.increment_converted_subtotal(le1.value_in_curr_of_inv)
+le1.project.create_invoice()
+
+le2.calc_value()
+le2.project.increment_subtotal(le2.value_in_curr_of_rate)
+le2.project.increment_converted_subtotal(le2.value_in_curr_of_inv)
+le2.project.create_invoice()
+
+le4.calc_value()
+le4.project.increment_subtotal(le4.value_in_curr_of_rate)
+le4.project.increment_converted_subtotal(le4.value_in_curr_of_inv)
+le4.project.create_invoice()
+
+
 
 

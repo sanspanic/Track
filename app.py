@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, render_template, redirect, session, flash, g
+from flask import Flask, render_template, redirect, session, flash, g, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, db, User, Project, LogEntry, Client, Invoice
 from secrets import secret_key
@@ -18,7 +18,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = (
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', secret_key)
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
 
 connect_db(app)
 
@@ -59,7 +59,7 @@ def do_logout():
 # AUTHENTICATION ROUTES
 
 
-@app.route('/signup', methods=["GET", "POST", "DELETE"])
+@app.route('/signup', methods=["GET", "POST"])
 def signup():
     """Handle user signup.
     Create new user and add to DB. Redirect to home page.
@@ -205,10 +205,20 @@ def delete_user(username):
         return redirect(f'/user/{g.user.username}')
 
     else:
+        username = g.user.username
         db.session.delete(g.user)
         db.session.commit()
 
-        return redirect('/signup')
+        do_logout()
+
+        return jsonify(message=f'Deleted user {username}')
+
+@app.route('/user/user-deleted', methods=['GET'])
+def show_deletion():
+    """show success of deletion and signup page"""
+
+    return render_template('user/user-deleted.html')
+
 
 @app.route('/user/<username>/clients', methods=['GET'])
 def show_clients(username):
@@ -225,3 +235,40 @@ def show_clients(username):
     else: 
         return render_template('user/clients.html', user=g.user)
 
+@app.route('/user/<username>/invoices', methods=['GET'])
+def show_invoices(username):
+    """shows all user's invoices"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        return render_template('user/invoices.html', user=g.user)
+
+##############################################################################
+# INVOICES ROUTES
+
+@app.route('/<username>/invoice/<int:id>/delete', methods=['DELETE'])
+def delete_invoice(username, id): 
+    """deletes individual invoice based on id"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        invoice = Invoice.query.get_or_404(id)
+        project_name = invoice.project.project_name
+        db.session.delete(invoice)
+        db.session.commit()
+
+        return jsonify(message=f'Deleted invoice for {project_name}')
