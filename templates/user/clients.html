@@ -9,23 +9,58 @@
 {% block content %}
 
     <h1 class='display-3 text-center mb-4'>Clients for user {{user.username}}</h1>
-    <ol>
-        {% for client in user.clients %}
-        <div class="row">
-            <div class="col col-8">
-                <li> {{client.name}}
-                    <p>Address: <span> {{client.full_address}}</span> </p>
-                </li>
-            </div>
-            <div class="col col-4">
-                <a class='btn btn-success' href="/clients/{{client.id}}/edit">Edit Client Details</a>
-            </div>
-        </div>
-        {% endfor %}
-    </ol>
+
+    <div id='clients-container' class="container">
+
+    <table class="table table-sm bg-light table-hover table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Client Name</th>
+            <th scope="col">Client Address</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+
+        {% if not user.clients %}
+        <tr>
+            <td colspan='3' class='text-center'>
+                No clients defined.
+            </td>
+        </tr>
+        {% endif %}
     
+        {% for client in user.clients %}
+    
+          <tr>
+            <th scope="row">{{client.name}}</th>
+    
+            {% if client.street %}
+            <td>{{client.full_address}}</td>
+            {% else %}
+            <td>Client Details Unspecified </td>
+            {% endif %}
+    
+            <td id="{{client.id}}">
+                <a href='/{{client.user.username}}/client/{{client.id}}/edit'class='btn btn-success'>Edit</a>
+                <button class='btn btn-danger delete'>Delete</button>
+                <button class='btn btn-primary delete'>Show Invoices</button>
+            </td>
+          </tr>
+    
+        {% endfor %}
+        <tr>
+            <td colspan='3'>
+                <a href='/{{user.username}}/client/new'class='btn btn-primary btn-block'>Add new client</a>
+            </td>
+        </tr>
+    
+        </tbody>
+      </table>
+    </div>
 
 {% block script %}
+<script src="/static/js/client/client-list.js"></script>
 {% endblock %}
 
 {% endblock %}

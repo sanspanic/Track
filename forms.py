@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField
+from wtforms import StringField, PasswordField, TextAreaField, IntegerField
 from wtforms.validators import DataRequired, Length
 
 class UserForm(FlaskForm):
@@ -19,3 +19,12 @@ class LoginForm(FlaskForm):
 
     password = PasswordField("Password", 
                             validators=[DataRequired()])
+
+class ClientForm(FlaskForm):
+    """form for adding client""" 
+
+    name = StringField("Name", validators=[DataRequired()])
+    street = StringField("Street")
+    postcode = StringField("Postcode")
+    city = StringField("City")
+    country = StringField("Country")

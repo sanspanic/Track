@@ -1,4 +1,4 @@
-const BASE = "http://127.0.0.1:5000";
+let BASE = "http://127.0.0.1:5000";
 
 const username = document.getElementById("username").innerText;
 

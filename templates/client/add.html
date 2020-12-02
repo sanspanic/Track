@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block body_class %}container client-add{% endblock %}
+
+{% block navbar %}
+{% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+    <h1 class='display-3 text-center mb-4'>Add New CLient of {{user.username}}</h1>
+
+    <form method="POST" id="user_form">
+      {{ form.hidden_tag() }}
+
+      {% for field in form if field.widget.input_type != 'hidden' %}
+        {% for error in field.errors %}
+          <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+        {{ field.label }}
+        {{ field(placeholder=field.label.text, class="form-control mb-2 text-primary") }}
+      {% endfor %}
+
+      <button class="btn btn-lg btn-block bg-primary text-white"> Add Client! </button>
+    </form>
+{% endblock %}

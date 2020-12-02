@@ -1,11 +1,11 @@
 import os
 import requests
-from flask import Flask, render_template, redirect, session, flash, g, jsonify
+from flask import Flask, render_template, redirect, session, flash, g, jsonify, request
 from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, db, User, Project, LogEntry, Client, Invoice
 from secrets import secret_key
 import datetime
-from forms import UserForm, LoginForm
+from forms import UserForm, LoginForm, ClientForm
 from sqlalchemy.exc import IntegrityError
 #from werkzeug.exceptions import Unauthorized
 
@@ -272,3 +272,94 @@ def delete_invoice(username, id):
         db.session.commit()
 
         return jsonify(message=f'Deleted invoice for {project_name}')
+
+##############################################################################
+# CLIENTS ROUTES
+
+@app.route('/<username>/client/<int:id>/delete', methods=['DELETE'])
+def delete_client(username, id): 
+    """deletes individual client based on id"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        client = Client.query.get_or_404(id)
+        client_name = client.name
+        db.session.delete(client)
+        db.session.commit()
+
+        return jsonify(message=f'Deleted client {client_name}')
+
+@app.route('/<username>/client/new', methods=['GET', 'POST'])
+def add_client(username):
+    """adds new client"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        form = ClientForm() 
+
+        if form.validate_on_submit():
+
+            client = Client(
+                user_id=g.user.id, 
+                name= form.name.data, 
+                street= form.street.data, 
+                postcode=form.postcode.data, 
+                country=form.country.data,
+                city=form.city.data
+            )
+
+            db.session.add(client)
+            db.session.commit()
+
+            flash(f'New client {client.name} was added', 'success')
+            return redirect(f'/user/{g.user.username}/clients')
+    
+        return render_template('client/add.html', user=g.user, form=form)
+
+@app.route('/<username>/client/<int:id>/edit', methods=['GET'])
+def edit_client_form(username, id): 
+    """show form to edit client of user based on id"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else:
+        form = ClientForm(obj=Client.query.get(id))
+        client = Client.query.get_or_404(id)
+        return render_template('client/edit.html', form=form, user=g.user, client=client)
+
+@app.route('/<username>/client/<int:id>/edit', methods=['PUT'])
+def edit_client(username, id): 
+    """edit client of user based on id"""
+
+    client = Client.query.get_or_404(id)
+    data = request.json
+
+    client.name = data.get('name', client.name)
+    client.street = data.get('street', client.street)
+    client.postcode = data.get('postcode', client.postcode)
+    client.city = data.get('city', client.city)
+    client.country = data.get('country', client.country)
+
+    db.session.commit()
+
+    return jsonify({"client": client.serialize()}, {"message":'Client was successfully updated'})

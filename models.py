@@ -264,7 +264,18 @@ class Client(db.Model):
 
         return (f"{self.street} \n{self.postcode} {self.city} \n{self.country}")
 
+    def serialize(self):
+        """Serialize a SQLAlchemy obj to dictionary."""
 
+        return {
+            "id": self.id,
+            "name": self.name,
+            "street": self.street,
+            "postcode": self.postcode, 
+            "city": self.city, 
+            "country": self.country, 
+            "full_address": self.full_address
+        }
 
 class Invoice(db.Model): 
     """invoice model"""
