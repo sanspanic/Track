@@ -18,7 +18,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = (
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', secret_key)
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 connect_db(app)
 
@@ -363,3 +363,70 @@ def edit_client(username, id):
     db.session.commit()
 
     return jsonify({"client": client.serialize()}, {"message":'Client was successfully updated'})
+
+ ##############################################################################
+#  PROJECTS ROUTES
+
+@app.route('/user/<username>/projects/edit', methods=['GET'])
+def send_client_names(username): 
+    """sends information about clients back to frontend to allow for editing"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        client_names = []
+        for c in g.user.clients: 
+            client_names.append(c.name)
+
+        return jsonify({"names": client_names})
+
+@app.route('/user/<username>/projects/edit', methods=['PUT'])
+def edit_project_info(username): 
+    """edits project information"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        data = request.json
+
+        client_name = data.get('clientName')
+        name = data.get('projectName')
+        project_id = data.get('id')
+
+        project = Project.query.get_or_404(project_id)
+
+        def find_client_id():
+            for client in g.user.clients: 
+                if client.name == client_name: 
+                    return client.id 
+
+        project.project_name = name
+        project.client_id = find_client_id()
+
+        db.session.commit()
+ 
+        return jsonify({"message": 'edited'})
+
+@app.route('/user/<username>/projects/<int:id>/delete', methods=['DELETE'])
+def delete_project(username, id): 
+    """deletes project"""
+
+    project = Project.query.get_or_404(id)
+    project_name = project.project_name
+    db.session.delete(project)
+    db.session.commit()
+
+    return jsonify({"message":f"Deleted project {project_name}"})
+
