@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, IntegerField
+from wtforms import StringField, PasswordField, TextAreaField, IntegerField, FloatField, SelectField
 from wtforms.validators import DataRequired, Length
+from forex import list_of_curr_codes
 
 class UserForm(FlaskForm):
     """Form for adding users."""
@@ -28,3 +29,19 @@ class ClientForm(FlaskForm):
     postcode = StringField("Postcode")
     city = StringField("City")
     country = StringField("Country")
+
+choices = []
+for code in list_of_curr_codes: 
+    choices.append((code,code))
+
+class ProjectForm(FlaskForm): 
+    """form for adding a new project"""
+
+    client_id = SelectField("Client name")
+    project_name = StringField("Project name, e.g. 'Administration'")
+    hourly_rate = FloatField("Hourly wage")
+    curr_of_rate = SelectField("Select currency of wage", choices=choices)
+    curr_of_inv = SelectField("Select currency you will invoice in", choices=choices)
+    
+
+

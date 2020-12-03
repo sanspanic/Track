@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, db, User, Project, LogEntry, Client, Invoice
 from secrets import secret_key
 import datetime
-from forms import UserForm, LoginForm, ClientForm
+from forms import UserForm, LoginForm, ClientForm, ProjectForm
 from sqlalchemy.exc import IntegrityError
 #from werkzeug.exceptions import Unauthorized
 
@@ -309,8 +309,9 @@ def add_client(username):
         return redirect(f'/user/{g.user.username}')
 
     else: 
-        form = ClientForm() 
 
+        form = ClientForm()
+        
         if form.validate_on_submit():
 
             client = Client(
@@ -327,7 +328,7 @@ def add_client(username):
 
             flash(f'New client {client.name} was added', 'success')
             return redirect(f'/user/{g.user.username}/clients')
-    
+
         return render_template('client/add.html', user=g.user, form=form)
 
 @app.route('/<username>/client/<int:id>/edit', methods=['GET'])
@@ -430,3 +431,39 @@ def delete_project(username, id):
 
     return jsonify({"message":f"Deleted project {project_name}"})
 
+@app.route('/<username>/project/new', methods=['GET', 'POST'])
+def add_project(username):
+    """adds new project to db"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        form = ProjectForm()
+
+        client_choices = [(client.id, client.name) for client in g.user.clients]
+        form.client_id.choices = client_choices
+
+        if form.validate_on_submit(): 
+
+            project = Project(
+                user_id=g.user.id, 
+                client_id= form.client_id.data, 
+                project_name= form.project_name.data, 
+                hourly_rate=form.hourly_rate.data, 
+                curr_of_rate=form.curr_of_rate.data,
+                curr_of_inv=form.curr_of_inv.data
+            )
+
+            db.session.add(project)
+            db.session.commit()
+
+            flash(f'New project {project.project_name} was added', 'success')
+            return redirect(f'/user/{username}')
+
+        return render_template('/project/new.html', user=g.user, form=form)

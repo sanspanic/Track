@@ -11,7 +11,7 @@
 {% block content %}
 
 <h1 class='display-1'>Projects</h1>
-<button id='add' class='btn btn-primary mb-3 btn-block'>Add new project</button>
+<a href='/{{user.username}}/project/new' id='add' class='btn btn-primary mb-3 btn-block'>Add new project</a>
 
 
     <table class="table table-sm bg-light table-hover table-bordered">
@@ -33,7 +33,7 @@
             <td>{{project.client.name}}</td>
             <td id='{{project.id}}'>{{project.show_subtotal_values()['subtotal_rate']['sum']}}  {{project.show_subtotal_values()['subtotal_rate']['symbol']}}</td>
             <td>
-              {% if project.curr_of_inv %}
+              {% if project.converted_subtotal %}
               {{project.show_subtotal_values()['subtotal_inv']['sum']}}  {{project.show_subtotal_values()['subtotal_inv']['symbol']}}
               {% endif %}
             </td>
