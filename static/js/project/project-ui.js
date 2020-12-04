@@ -69,7 +69,7 @@ table.addEventListener("click", function (evt) {
     (evt.target.tagName === "BUTTON") &
     evt.target.classList.contains("edit")
   ) {
-    let allBtns = document.querySelectorAll("button");
+    let allBtns = document.querySelectorAll(".btn");
     allBtns.forEach((btn) => btn.setAttribute("disabled", "disabled"));
     sendRequestForClientNames(evt);
     console.log(evt);
@@ -90,7 +90,6 @@ table.addEventListener("click", function (evt) {
 });
 
 table.addEventListener("click", function (evt) {
-  evt.preventDefault();
   if (
     (evt.target.tagName === "BUTTON") &
     evt.target.classList.contains("accept-changes")
@@ -119,7 +118,7 @@ table.addEventListener("click", function (evt) {
     evt.target.parentElement.insertBefore(editBtn, delBtn);
     evt.target.previousElementSibling.remove();
     evt.target.remove();
-    let allBtns = document.querySelectorAll("button");
+    let allBtns = document.querySelectorAll(".btn");
     allBtns.forEach((btn) => btn.removeAttribute("disabled"));
   }
 });

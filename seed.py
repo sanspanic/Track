@@ -72,8 +72,8 @@ db.session.commit()
 #add projects
 p1 = Project(user_id=1, project_name='PuffleCorp Administration', hourly_rate=24, curr_of_rate='USD', curr_of_inv='EUR', client_id=1)
 p2 = Project(user_id=1, project_name='Website for TW', hourly_rate=100, curr_of_rate='USD', curr_of_inv='GBP', client_id=2)
-p3 = Project(user_id=2, project_name='Design of Sword', hourly_rate=40, curr_of_rate='GBP', client_id=3)
-p4 = Project(user_id=1, project_name='Merch for TW', hourly_rate=60, curr_of_rate='USD', client_id=2)
+p3 = Project(user_id=2, project_name='Design of Sword', hourly_rate=40, curr_of_rate='GBP', curr_of_inv='GBP', client_id=3)
+p4 = Project(user_id=1, project_name='Merch for TW', hourly_rate=60, curr_of_rate='USD', curr_of_inv='USD', client_id=2)
 
 db.session.add_all([p1, p2, p3, p4])
 db.session.commit()

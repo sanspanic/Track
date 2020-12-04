@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, IntegerField, FloatField, SelectField
+from wtforms import StringField, PasswordField, TextAreaField, IntegerField, FloatField, SelectField, RadioField
 from wtforms.validators import DataRequired, Length
 from forex import list_of_curr_codes
 
@@ -34,6 +34,9 @@ choices = []
 for code in list_of_curr_codes: 
     choices.append((code,code))
 
+#choices_inv = choices.insert(0,("", "---"))
+
+
 class ProjectForm(FlaskForm): 
     """form for adding a new project"""
 
@@ -42,6 +45,7 @@ class ProjectForm(FlaskForm):
     hourly_rate = FloatField("Hourly wage")
     curr_of_rate = SelectField("Select currency of wage", choices=choices)
     curr_of_inv = SelectField("Select currency you will invoice in", choices=choices)
+
     
 
 

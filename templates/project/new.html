@@ -10,15 +10,18 @@
 
     <h1 class='display-3 text-center mb-4'>Add New Project of {{user.username}}</h1>
 
+    <p>New client? Add new client <a href="/{{user.username}}/client/new">here.</a></p>
+
     <form method="POST" id="user_form">
       {{ form.hidden_tag() }}
 
-      {% for field in form if field.widget.input_type != 'hidden' %}
+      {% for field in form if field.widget.input_type != 'hidden'%}
         {% for error in field.errors %}
           <span class="text-danger">{{ error }}</span>
         {% endfor %}
         {{ field.label }}
         {{ field(placeholder=field.label.text, class="form-control mb-2 text-primary") }}
+        
       {% endfor %}
 
       <button class="btn btn-lg btn-block bg-primary text-white"> Add Project! </button>

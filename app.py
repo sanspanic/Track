@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, render_template, redirect, session, flash, g, jsonify, request
+from flask import Flask, render_template, redirect, session, flash, g, jsonify, request, make_response
 from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, db, User, Project, LogEntry, Client, Invoice
 from secrets import secret_key
@@ -467,3 +467,75 @@ def add_project(username):
             return redirect(f'/user/{username}')
 
         return render_template('/project/new.html', user=g.user, form=form)
+
+@app.route('/<username>/project/<project_id>/track', methods=['GET'])
+def track_project(username, project_id): 
+    """interface to track time for project and add log entry"""
+    
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        project = Project.query.get_or_404(project_id)
+        return render_template('project/track.html', user=g.user, project=project)
+
+ ##############################################################################
+#  LOG_ENTRY ROUTES
+
+@app.route('/<username>/project/<project_id>/logentry/new', methods=['POST'])
+def add_log_entry(username, project_id): 
+    """adds new log entry with only start time which defaults to now via models"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        log_entry = LogEntry(
+            project_id=project_id, 
+            start_time=datetime.datetime.now()
+        )
+        db.session.add(log_entry)
+        db.session.commit()
+
+        response = log_entry.serialize()
+        response['message'] = 'New Log Entry was successfully created.'
+
+        return make_response(response, 201)
+
+@app.route('/<username>/project/<int:project_id>/logentry/<int:log_entry_id>/update', methods=['PATCH'])
+def update_log_entry(username, project_id, log_entry_id): 
+    """updates new log entry with only end time"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        log_entry = LogEntry.query.get_or_404(log_entry_id)
+        log_entry.stop_time = datetime.datetime.now()
+        log_entry.calc_value()
+
+        #also update project totals
+        log_entry.project.increment_subtotal(log_entry.value_in_curr_of_rate)
+        log_entry.project.increment_converted_subtotal(log_entry.value_in_curr_of_inv)
+
+        db.session.commit()
+
+        response = log_entry.serialize()
+        response['message'] = 'Log Entry was successfully updated.'
+
+        return make_response(response, 200)

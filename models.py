@@ -95,17 +95,17 @@ class Project(db.Model):
     client_id = db.Column(db.Integer, 
                     db.ForeignKey('clients.id'))
 
-    project_name = db.Column(db.String(30),  
+    project_name = db.Column(db.String(30), 
                     nullable = False)
 
     #this subtotal is shown in currency of hourly or flat rate. to be updated from app.py
-    subtotal = db.Column(db.Float, 
+    subtotal = db.Column(db.Float(precision=2), 
                         nullable = False, 
                         default = 0)
 
-    converted_subtotal = db.Column(db.Float)
+    converted_subtotal = db.Column(db.Float(precision=2))
 
-    hourly_rate = db.Column(db.Float)
+    hourly_rate = db.Column(db.Float(precision=2))
 
     curr_of_rate = db.Column(db.String, 
                         nullable = False)
@@ -119,7 +119,7 @@ class Project(db.Model):
         """adds value of current log entry to subtotal"""
 
         self.subtotal += sum
-        return self.subtotal
+        return round(self.subtotal, 2)
 
     #pass in le.project.update_converted_subtotal(le.value_in_curr_of_inv) 
     def increment_converted_subtotal(self, sum): 
@@ -130,7 +130,7 @@ class Project(db.Model):
                 self.converted_subtotal = 0
             self.converted_subtotal += sum
 
-        return self.converted_subtotal
+        return round(self.converted_subtotal, 2)
 
     def show_subtotal_values(self): 
         """returns dict in format {subtotal_rate: x, subtotal_inv: y} wherele subtotal_inv will hold None values if not self.curr_of_inv """
@@ -180,7 +180,9 @@ class LogEntry(db.Model):
                     db.ForeignKey('projects.id'))
 
     #accepts format datetime.datetime.now(). these will be updated after the log entry is first created
-    start_time = db.Column(db.DateTime)
+    start_time = db.Column(db.DateTime, 
+                            nullable=False,
+                            default=datetime.datetime.now())
 
     stop_time = db.Column(db.DateTime)
 
@@ -188,18 +190,19 @@ class LogEntry(db.Model):
                         nullable = False, 
                         default = datetime.date.today())
     
-    value_in_curr_of_rate = db.Column(db.Float)
+    value_in_curr_of_rate = db.Column(db.Float(precision=2))
 
-    value_in_curr_of_inv = db.Column(db.Float)
+    value_in_curr_of_inv = db.Column(db.Float(precision=2))
     
     @property
     def time_delta(self): 
         """returns time spent working for this particular log entry in minutes"""
 
-        delta = self.stop_time - self.start_time
-        seconds = delta.seconds
+        if self.stop_time: 
+            delta = self.stop_time - self.start_time
+            seconds = delta.seconds
 
-        return round(seconds/60, 2)
+            return round(seconds/60, 2)
 
     def calc_value(self): 
         """updates self.value_in_curr_of_rate and self.value_in_curr_of_inv.
@@ -229,7 +232,34 @@ class LogEntry(db.Model):
             }
 
         #when user clicks stop: first update datetime for time_stopped, then calc_value, then increment project subtotals
- 
+
+    @property
+    def pretty_start_time(self): 
+        """returns pretty time"""
+        return str(self.start_time.time()).split('.')[0]
+
+    @property
+    def pretty_stop_time(self): 
+        """returns pretty stop time"""
+        if self.stop_time:
+            return str(self.stop_time.time()).split('.')[0]
+
+    def serialize(self):
+        """Serialize a SQLAlchemy obj to dictionary."""
+
+        return {
+            "id": self.id,
+            "project_id": self.project_id,
+            "start_time": self.start_time,
+            "stop_time": self.stop_time, 
+            "date": self.date, 
+            "value_in_curr_of_rate": self.value_in_curr_of_rate, 
+            "value_in_curr_of_inv": self.value_in_curr_of_inv, 
+            "time_delta": self.time_delta, 
+            "pretty_start_time": self.pretty_start_time, 
+            "pretty_stop_time": self.pretty_stop_time, 
+        }
+
 
 class Client(db.Model): 
     """client model"""
@@ -300,9 +330,9 @@ class Invoice(db.Model):
     billing_address = db.Column(db.String)
 
 
-    amount_in_curr_of_rate = db.Column(db.Float)
+    amount_in_curr_of_rate = db.Column(db.Float(precision=2))
 
-    amount_in_curr_of_inv = db.Column(db.Float)
+    amount_in_curr_of_inv = db.Column(db.Float(precision=2))
 
     curr_of_rate = db.Column(db.String)
 
