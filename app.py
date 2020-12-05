@@ -1,4 +1,5 @@
 import os
+import pdb
 import requests
 from flask import Flask, render_template, redirect, session, flash, g, jsonify, request, make_response
 from flask_debugtoolbar import DebugToolbarExtension
@@ -494,7 +495,7 @@ def add_log_entry(username, project_id):
     if not g.user:
         flash("Authentication required. Please login first.", "danger")
         return redirect("/login")
-
+        
     elif username != g.user.username:
         flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
         return redirect(f'/user/{g.user.username}')
@@ -514,7 +515,7 @@ def add_log_entry(username, project_id):
 
 @app.route('/<username>/project/<int:project_id>/logentry/<int:log_entry_id>/update', methods=['PATCH'])
 def update_log_entry(username, project_id, log_entry_id): 
-    """updates new log entry with only end time"""
+    """updates new log entry with end time, and handles post-hoc edit of date & times"""
 
     if not g.user:
         flash("Authentication required. Please login first.", "danger")
@@ -525,17 +526,34 @@ def update_log_entry(username, project_id, log_entry_id):
         return redirect(f'/user/{g.user.username}')
 
     else: 
+
         log_entry = LogEntry.query.get_or_404(log_entry_id)
-        log_entry.stop_time = datetime.datetime.now()
-        log_entry.calc_value()
+        #if request is to update stop_time only
+        if not request.json:
 
-        #also update project totals
-        log_entry.project.increment_subtotal(log_entry.value_in_curr_of_rate)
-        log_entry.project.increment_converted_subtotal(log_entry.value_in_curr_of_inv)
+            log_entry.stop_time = datetime.datetime.now()
+            log_entry.calc_value()
 
-        db.session.commit()
+            #also update project totals
+            log_entry.project.increment_subtotal(log_entry.value_in_curr_of_rate)
+            log_entry.project.increment_converted_subtotal(log_entry.value_in_curr_of_inv)
 
-        response = log_entry.serialize()
-        response['message'] = 'Log Entry was successfully updated.'
+            db.session.commit()
 
-        return make_response(response, 200)
+            response = log_entry.serialize()
+            response['message'] = 'Stop time was successfully added.'
+
+            return make_response(response, 200)
+        #if request is to edit date & time post-hoc
+        else: 
+            data = request.json
+
+            log_entry.handle_edit(data)
+            db.session.commit()
+
+            response = log_entry.serialize()
+            response['message'] = 'Log entry details were successfully edited.'
+
+            return make_response(response, 201)
+
+

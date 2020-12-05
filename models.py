@@ -236,13 +236,51 @@ class LogEntry(db.Model):
     @property
     def pretty_start_time(self): 
         """returns pretty time"""
-        return str(self.start_time.time()).split('.')[0]
+        return ':'.join(str(self.start_time.time()).split('.')[0].split(':')[:-1])
 
     @property
     def pretty_stop_time(self): 
         """returns pretty stop time"""
         if self.stop_time:
-            return str(self.stop_time.time()).split('.')[0]
+            return ':'.join(str(self.stop_time.time()).split('.')[0].split(':')[:-1])
+
+    @property
+    def pretty_date(self): 
+        """return pretty date"""
+        return f"{self.date.year}-{self.date.month}-{self.date.day}"
+
+    def handle_edit(self, data): 
+
+        #previous value of log_entry must be subtracted from project subtotal values. then new value of log_entry must be calculated and added
+        self.project.subtotal -= self.value_in_curr_of_rate
+        if self.value_in_curr_of_inv:
+            self.project.converted_subtotal -= self.value_in_curr_of_inv
+
+        #convert data retrieved from json into dates and times db will accept
+
+        date = data.get('date').split(sep='-')
+        datetime_arr = []
+
+        for num in date: 
+            if num[0] == '0': 
+                num = num[-1]
+            datetime_arr.append(int(num))
+
+        start_time = data.get('start_time').split(':')
+        stop_time = data.get('stop_time').split(':')
+
+        #update db
+        self.date = datetime.date(*datetime_arr)
+        self.start_time = datetime.datetime(*datetime_arr, int(start_time[0]), int(start_time[1]))
+        self.stop_time = datetime.datetime(*datetime_arr, int(stop_time[0]), int(stop_time[1]))
+                
+        #new value of self calculated and added to subtotals
+        self.calc_value()
+        self.project.subtotal += self.value_in_curr_of_rate
+        if self.value_in_curr_of_inv:
+            self.project.converted_subtotal += self.value_in_curr_of_inv
+
+        return self
 
     def serialize(self):
         """Serialize a SQLAlchemy obj to dictionary."""
@@ -258,6 +296,7 @@ class LogEntry(db.Model):
             "time_delta": self.time_delta, 
             "pretty_start_time": self.pretty_start_time, 
             "pretty_stop_time": self.pretty_stop_time, 
+            "pretty_date": self.pretty_date
         }
 
 

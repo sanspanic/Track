@@ -8,7 +8,7 @@
 
 {% block content %}
 
-<h1 id='{{project.id}}' class='display-3 text-center mb-4'>{{project.project_name}}</h1>
+<h1 id='{{project.id}}' class='display-3 text-center mb-4 bg-white'>{{project.project_name}}</h1>
 
 <div class="row justify-content-around">
     <div class="col text-center">
@@ -40,6 +40,7 @@
         <th scope="col">Time Stopped</th>
         <th scope="col">Time Worked</th>
         <th scope="col">Value in {{project.curr_of_rate}}</th>
+        <th scope="col">Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -52,14 +53,18 @@
             {{log_entry.pretty_stop_time}}
             {% endif %}
         </td>
-        <td>
+        <td class='time-delta'>
             {% if log_entry.time_delta %}
             {{log_entry.time_delta}} min</td>
             {% endif %}
-        <td>
+        <td class='value'>
             {% if log_entry.value_in_curr_of_rate %}
             {{log_entry.value_in_curr_of_rate}}
             {% endif %}
+        </td>
+        <td>
+            <button id='edit' class='btn btn-success'>Edit</button>
+            <button id='delete' class='btn btn-danger'>Delete</button>
         </td>
     </tr>
     {% endfor %}
