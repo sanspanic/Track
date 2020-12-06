@@ -49,6 +49,14 @@ table.addEventListener("click", function (evt) {
   }
 });
 
+table.addEventListener('click', function (evt) {
+    if (evt.target.id === "delete") {
+        //debugger;
+        let log_entry_id = getLogEntryIdForDel(evt);
+        sendRequestToDeleteLogEntry(evt, log_entry_id)
+    }
+})
+
 async function sendCreateLogEntryRequest() {
   await axios
     .post(`${BASE}/${username}/project/${project_id}/logentry/new`)
@@ -160,6 +168,43 @@ async function sendRequestToEditTimeAndDate(
     });
 }
 
+async function sendRequestToDeleteLogEntry(
+    evt,
+    log_entry_id
+  ) {
+    await axios
+      .delete(
+        `${BASE}/${username}/project/${project_id}/logentry/${log_entry_id}/delete`
+      )
+      .then(function (response) {
+        // handle success
+        console.log(response)
+        deleteRow(evt)
+        makeAlert(response);
+        if (document.getElementById("alert")) {
+          setTimeout("hideAlert()", 5000);
+        }
+      })
+      .catch(function (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
+      });
+  }
+
 function makeDateInput(evt) {
   let input = document.createElement("input");
   input.setAttribute("type", "date");
@@ -249,6 +294,10 @@ function getLogEntryId() {
     .split("-")[1];
 }
 
+function getLogEntryIdForDel(evt) {
+    return evt.target.parentElement.parentElement.getAttribute('id').split('-')[1]
+}
+
 function addNewRow(response) {
   let tbody = document.querySelector("tbody");
   let tr = document.createElement("tr");
@@ -298,4 +347,9 @@ function updateSpans(response) {
 function emptySpans() {
   document.querySelector("#time-stopped").innerText = "";
   document.querySelector("#time-started").innerText = "";
+}
+
+function deleteRow(evt) {
+    console.log(evt)
+    evt.path[2].remove()
 }

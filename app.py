@@ -556,4 +556,25 @@ def update_log_entry(username, project_id, log_entry_id):
 
             return make_response(response, 201)
 
+@app.route('/<username>/project/<int:project_id>/logentry/<int:log_entry_id>/delete', methods=['DELETE'])
+def delete_log_entry(username, project_id, log_entry_id): 
+    """deletes log entry record"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        log_entry = LogEntry.query.get_or_404(log_entry_id)
+        db.session.delete(log_entry)
+        db.session.commit()
+
+        response = {"message":"Log entry was successfully deleted."}
+
+        return make_response(response, 200)
+        
 
