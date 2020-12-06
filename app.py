@@ -419,7 +419,7 @@ def edit_project_info(username):
 
         db.session.commit()
  
-        return jsonify({"message": 'edited'})
+        return make_response({"message": f'{project.project_name} was successfully edited'}, 200)
 
 @app.route('/user/<username>/projects/<int:id>/delete', methods=['DELETE'])
 def delete_project(username, id): 

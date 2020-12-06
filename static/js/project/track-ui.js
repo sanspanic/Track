@@ -29,7 +29,6 @@ table.addEventListener("click", function (evt) {
     //change cell to include accept changes button
     evt.target.parentElement.innerHTML =
       "<button id='accept-changes' class='btn btn-warning'>Accept Changes</button>";
-    debugger;
     makeDateInput(evt);
     makeTimeInputs(evt);
   }

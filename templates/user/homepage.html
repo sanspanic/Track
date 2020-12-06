@@ -10,11 +10,11 @@
 
 {% block content %}
 
-<h1 class='display-1'>Projects</h1>
+<h1 class='display-1 bg-white'>Projects</h1>
 <a href='/{{user.username}}/project/new' id='add' class='btn btn-primary mb-3 btn-block'>Add new project</a>
 
 
-    <table class="table table-sm bg-light table-hover table-bordered">
+    <table class="table table-sm table-hover table-bordered">
         <thead>
           <tr>
             <th scope="col">Project Name</th>
@@ -28,9 +28,9 @@
 
         {% for project in user.projects %}
 
-          <tr>
+          <tr id='project-id-{{project.id}}'>
             <th scope="row" class='project-name'>{{project.project_name}}</th>
-            <td>{{project.client.name}}</td>
+            <td class='client-name'>{{project.client.name}}</td>
             <td id='{{project.id}}'>{{project.subtotal}}  {{project.show_subtotal_values()['subtotal_rate']['symbol']}}</td>
             <td>
               {% if project.curr_of_rate != project.curr_of_inv %}
@@ -38,7 +38,7 @@
               {% endif %}
             </td>
             <td>
-              <a href='/{{user.username}}/project/{{project.id}}/track' class='btn btn-primary'>Track</a>
+              <a href='/{{user.username}}/project/{{project.id}}/track' class='btn btn-primary track'>Track</a>
               <button class='btn btn-success edit'>Edit</button>
               <button class='btn btn-danger delete'>Delete</button>
             </td>
