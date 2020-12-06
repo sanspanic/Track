@@ -528,7 +528,9 @@ def update_log_entry(username, project_id, log_entry_id):
     else: 
 
         log_entry = LogEntry.query.get_or_404(log_entry_id)
+
         #if request is to update stop_time only
+
         if not request.json:
 
             log_entry.stop_time = datetime.datetime.now()
@@ -537,14 +539,15 @@ def update_log_entry(username, project_id, log_entry_id):
             #also update project totals
             log_entry.project.increment_subtotal(log_entry.value_in_curr_of_rate)
             log_entry.project.increment_converted_subtotal(log_entry.value_in_curr_of_inv)
-
             db.session.commit()
 
             response = log_entry.serialize()
             response['message'] = 'Stop time was successfully added.'
 
             return make_response(response, 200)
+
         #if request is to edit date & time post-hoc
+
         else: 
             data = request.json
 
@@ -570,10 +573,18 @@ def delete_log_entry(username, project_id, log_entry_id):
 
     else: 
         log_entry = LogEntry.query.get_or_404(log_entry_id)
+
+        #update subtotals of project by subtracting value of log entry
+        log_entry.project.subtotal -= log_entry.value_in_curr_of_rate
+        if log_entry.project.converted_subtotal: 
+            log_entry.project.converted_subtotal -= log_entry.value_in_curr_of_inv
+
+        response = log_entry.serialize()
+
         db.session.delete(log_entry)
         db.session.commit()
 
-        response = {"message":"Log entry was successfully deleted."}
+        response['message'] = 'Log entry was successfully deleted.'
 
         return make_response(response, 200)
         

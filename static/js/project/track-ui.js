@@ -142,6 +142,7 @@ async function sendRequestToEditTimeAndDate(
       // handle success
       emptySpans();
       updateUI(evt, response);
+      updateSubtotals(response);
       makeAlert(response);
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
@@ -179,6 +180,7 @@ async function sendRequestToDeleteLogEntry(
         // handle success
         console.log(response)
         deleteRow(evt)
+        updateSubtotals(response)
         makeAlert(response);
         if (document.getElementById("alert")) {
           setTimeout("hideAlert()", 5000);
@@ -347,6 +349,14 @@ function updateSpans(response) {
   let startSpan = document.querySelector("#time-started");
   startSpan.innerText = response.data.pretty_start_time;
 }
+
+function updateSubtotals(response) {
+    console.log(response)
+    let subtotalSpan = document.querySelector('#subtotal-rate')
+    subtotalSpan.innerText = `${response.data.subtotal} ${response.data.curr_of_rate}`
+    let convSubtotalSpan = document.querySelector('#subtotal-inv')
+    convSubtotalSpan.innerText = `${response.data.converted_subtotal} ${response.data.curr_of_inv}`
+} 
 
 function emptySpans() {
   document.querySelector("#time-stopped").innerText = "";

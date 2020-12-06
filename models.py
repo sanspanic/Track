@@ -274,7 +274,7 @@ class LogEntry(db.Model):
         self.start_time = datetime.datetime(*datetime_arr, int(start_time[0]), int(start_time[1]))
         self.stop_time = datetime.datetime(*datetime_arr, int(stop_time[0]), int(stop_time[1]))
                 
-        #new value of self calculated and added to subtotals
+        #new value of log_entry calculated and added to subtotals
         self.calc_value()
         self.project.subtotal += self.value_in_curr_of_rate
         if self.value_in_curr_of_inv:
@@ -296,7 +296,12 @@ class LogEntry(db.Model):
             "time_delta": self.time_delta, 
             "pretty_start_time": self.pretty_start_time, 
             "pretty_stop_time": self.pretty_stop_time, 
-            "pretty_date": self.pretty_date
+            "pretty_date": self.pretty_date, 
+            #pass in project details as well so front-end can update subtotals
+            "subtotal": self.project.subtotal, 
+            "converted_subtotal": self.project.converted_subtotal, 
+            "curr_of_rate": self.project.show_subtotal_values()['subtotal_rate']['symbol'],
+            "curr_of_inv": self.project.show_subtotal_values()['subtotal_inv']['symbol']
         }
 
 

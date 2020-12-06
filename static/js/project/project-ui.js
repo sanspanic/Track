@@ -1,4 +1,3 @@
-let editBtn = document.querySelector(".edit");
 let BASE = "http://127.0.0.1:5000";
 let username = document.querySelector("#navbarDropdown").innerText;
 let table = document.querySelector("table");
