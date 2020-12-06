@@ -29,6 +29,7 @@ table.addEventListener("click", function (evt) {
     //change cell to include accept changes button
     evt.target.parentElement.innerHTML =
       "<button id='accept-changes' class='btn btn-warning'>Accept Changes</button>";
+    debugger;
     makeDateInput(evt);
     makeTimeInputs(evt);
   }
@@ -51,7 +52,6 @@ table.addEventListener("click", function (evt) {
 
 table.addEventListener('click', function (evt) {
     if (evt.target.id === "delete") {
-        //debugger;
         let log_entry_id = getLogEntryIdForDel(evt);
         sendRequestToDeleteLogEntry(evt, log_entry_id)
     }
@@ -209,7 +209,12 @@ function makeDateInput(evt) {
   let input = document.createElement("input");
   input.setAttribute("type", "date");
   input.setAttribute("name", "date");
-  inputValue = evt.path[2].firstElementChild.innerText;
+  let inputValue = evt.path[2].firstElementChild.innerText;
+  //handle case where day is single number - must have 0 in front in order to display correctly in input
+  if (inputValue.split('-')[2].length < 2) {
+      let inputValueArr = inputValue.split('-')
+      inputValue = `${inputValueArr[0]}-${inputValueArr[1]}-0${inputValueArr[2]}`
+  }
   input.setAttribute("value", inputValue);
   evt.path[2].firstElementChild.innerText = "";
   evt.path[2].firstElementChild.append(input);
