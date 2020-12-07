@@ -79,29 +79,32 @@ db.session.add_all([p1, p2, p3, p4])
 db.session.commit()
 
 #add log entries
-le1 = LogEntry(project_id=1, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
 le2 = LogEntry(project_id=2, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 19, 35, 37, 227731))
 le3 = LogEntry(project_id=3, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
 le4 = LogEntry(project_id=4, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
+#populate p1 with multiple log_entries
+le1 = LogEntry(project_id=1, start_time=datetime.datetime(2020, 11, 26, 16, 39, 37, 227731), stop_time=datetime.datetime(2020, 11, 26, 17, 51, 37, 227731))
+le5 = LogEntry(project_id=1, start_time=datetime.datetime(2020, 11, 27, 12, 50, 37, 227731), stop_time=datetime.datetime(2020, 11, 27, 14, 50, 37, 227731))
+le6 = LogEntry(project_id=1, start_time=datetime.datetime(2020, 11, 28, 14, 12, 37, 227731), stop_time=datetime.datetime(2020, 11, 28, 17, 51, 37, 227731))
+le7 = LogEntry(project_id=1, start_time=datetime.datetime(2020, 11, 29, 15, 24, 37, 227731), stop_time=datetime.datetime(2020, 11, 29, 17, 51, 37, 227731))
+le8 = LogEntry(project_id=1, start_time=datetime.datetime(2020, 11, 30, 16, 33, 37, 227731), stop_time=datetime.datetime(2020, 11, 30, 19, 20, 37, 227731))
+le9 = LogEntry(project_id=1, start_time=datetime.datetime(2020, 12, 1, 10, 11, 37, 227731), stop_time=datetime.datetime(2020, 12, 1, 17, 51, 37, 227731))
 
-db.session.add_all([le1, le2, le3, le4])
+db.session.add_all([le1, le2, le3, le4, le5, le6, le7, le8, le9])
 db.session.commit()
 
 #make invoices
-le1.calc_value()
-le1.project.increment_subtotal(le1.value_in_curr_of_rate)
-le1.project.increment_converted_subtotal(le1.value_in_curr_of_inv)
-le1.project.create_invoice()
+all_les = [le1, le2, le3, le4, le5, le6, le7, le8, le9]
 
-le2.calc_value()
-le2.project.increment_subtotal(le2.value_in_curr_of_rate)
-le2.project.increment_converted_subtotal(le2.value_in_curr_of_inv)
+for le in all_les: 
+    le.calc_value()
+    le.project.increment_subtotal(le.value_in_curr_of_rate)
+    le.project.increment_converted_subtotal(le.value_in_curr_of_inv)
+
 le2.project.create_invoice()
-
-le4.calc_value()
-le4.project.increment_subtotal(le4.value_in_curr_of_rate)
-le4.project.increment_converted_subtotal(le4.value_in_curr_of_inv)
-le4.project.create_invoice()
+le3.project.create_invoice()
+le4.project.create_invoice() 
+le1.project.create_invoice()
 
 
 

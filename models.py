@@ -336,7 +336,7 @@ class Client(db.Model):
     def full_address(self): 
         """returns full address as string"""
 
-        return (f"{self.street} \n{self.postcode} {self.city} \n{self.country}")
+        return (f"{self.street}, {self.postcode}, {self.city}, {self.country}")
 
     def serialize(self):
         """Serialize a SQLAlchemy obj to dictionary."""

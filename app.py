@@ -274,6 +274,24 @@ def delete_invoice(username, id):
 
         return jsonify(message=f'Deleted invoice for {project_name}')
 
+@app.route('/<username>/invoice/<int:invoice_id>', methods=['GET'])
+def show_invoice(username, invoice_id): 
+    """shows details of individual invoice"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        invoice = Invoice.query.get_or_404(invoice_id)
+        print("**********************", invoice)
+        return render_template('/invoice/show.html', invoice=invoice, user=g.user)
+
+
 ##############################################################################
 # CLIENTS ROUTES
 

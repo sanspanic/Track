@@ -1,21 +1,22 @@
-console.log("connected");
-
 let BASE = "http://127.0.0.1:5000";
 let username = document.querySelector("#navbarDropdown").innerText;
 let table = document.querySelector("table");
 
-async function sendRequest(id) {
+table.addEventListener("click", function (evt) {
+  if (evt.target.classList.contains("delete")) {
+    let id = evt.target.parentElement.id;
+    sendRequest(evt, id);
+  }
+});
+
+async function sendRequest(evt, id) {
   await axios
     .delete(`${BASE}/${username}/invoice/${id}/delete`)
     .then(function (response) {
       // handle success
-      let alert = document.createElement("div");
-      let container = document.querySelector("#invoices-container");
-      alert.classList.add("alert", "alert-danger");
-      alert.innerText = response.data.message;
-      alert.setAttribute("id", "alert");
-      container.insertBefore(alert, table);
-
+      //debugger;
+      removeRow(evt)
+      makeAlert(response)
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -40,17 +41,21 @@ async function sendRequest(id) {
     });
 }
 
-table.addEventListener("click", function (evt) {
-  if (
-    (evt.target.tagName === "BUTTON") &
-    evt.target.classList.contains("delete")
-  ) {
-    let id = evt.target.parentElement.id;
-    sendRequest(id);
-    evt.target.parentElement.parentElement.remove();
-  }
-});
+function makeAlert(response) {
+  let alert = document.createElement("div");
+  let container = document.querySelector("#invoices-container");
+  alert.classList.add("alert", "alert-danger");
+  alert.innerText = response.data.message;
+  alert.setAttribute("id", "alert");
+  container.insertBefore(alert, table);
+}
 
 function hideAlert() {
   document.getElementById("alert").remove();
 }
+
+function removeRow(evt) {
+  evt.target.parentElement.parentElement.remove();
+}
+
+

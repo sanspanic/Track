@@ -10,12 +10,12 @@
 
 {% block content %}
 
-<h1 class='display-1'>Invoices</h1>
+<h1 class='display-1 bg-white'>Invoices</h1>
 <h3>Currently logged in as: {{user.username}}</h3>
 
 <div class="container" id='invoices-container'>
 
-    <table class="table table-sm bg-light table-hover table-bordered">
+    <table class="table table-sm table-hover table-bordered">
         <thead>
           <tr>
             <th scope="col">Date</th>
@@ -51,9 +51,8 @@
             {% endif %}
 
             <td id="{{invoice.id}}">
-                <button class='btn btn-success'>Edit</button>
                 <button class='btn btn-danger delete'>Delete</button>
-                <a href='/invoice/{{invoice.id}}/edit' class='btn btn-primary'>Issue Invoice</a>
+                <a href='/{{user.username}}/invoice/{{invoice.id}}' class='btn btn-primary'>Issue Invoice</a>
             </td>
           </tr>
 

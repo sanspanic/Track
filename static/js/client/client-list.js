@@ -43,7 +43,6 @@ async function sendRequest(id) {
 
 table.addEventListener("click", function (evt) {
   if (
-    (evt.target.tagName === "BUTTON") &
     evt.target.classList.contains("delete")
   ) {
     let id = evt.target.parentElement.id;
