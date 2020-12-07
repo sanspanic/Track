@@ -25,6 +25,7 @@
 
 <div class="row justify-content-between">
     <h3>Previous Log Entries</h3>
+    <h3>Hourly rate: {{project.show_subtotal_values()['subtotal_rate']['symbol']}}{{project.hourly_rate}}</h3>
     <h3>Subtotal: <span id='subtotal-rate'>{{project.subtotal}} {{project.show_subtotal_values()['subtotal_rate']['symbol']}}</span>
         {% if project.curr_of_rate != project.curr_of_inv %}
         / <span id='subtotal-inv'>{{project.converted_subtotal}} {{project.show_subtotal_values()['subtotal_inv']['symbol']}}</span>
@@ -38,6 +39,7 @@
         <th scope="col">Date</th>
         <th scope="col">Time Started</th>
         <th scope="col">Time Stopped</th>
+        <th scope="col">Description</th>
         <th scope="col">Time Worked</th>
         <th scope="col">Value in {{project.curr_of_rate}}</th>
         <th scope="col">Actions</th>
@@ -53,6 +55,7 @@
             {{log_entry.pretty_stop_time}}
             {% endif %}
         </td>
+        <td>{{log_entry.description}}</td>
         <td class='time-delta'>
             {% if log_entry.time_delta %}
             {{log_entry.time_delta}} min</td>

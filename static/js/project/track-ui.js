@@ -31,6 +31,7 @@ table.addEventListener("click", function (evt) {
       "<button id='accept-changes' class='btn btn-warning'>Accept Changes</button>";
     makeDateInput(evt);
     makeTimeInputs(evt);
+    makeDescriptionInput(evt);
   }
 });
 
@@ -45,16 +46,24 @@ table.addEventListener("click", function (evt) {
     let date = document.querySelector("input[type='date']").value;
     let startTime = document.querySelector("input[name='start_time']").value;
     let stopTime = document.querySelector("input[name='stop_time']").value;
-    sendRequestToEditTimeAndDate(evt, log_entry_id, date, startTime, stopTime);
+    let description = document.querySelector("input[name='description']").value;
+    sendRequestToEditTimeAndDate(
+      evt,
+      log_entry_id,
+      date,
+      startTime,
+      stopTime,
+      description
+    );
   }
 });
 
-table.addEventListener('click', function (evt) {
-    if (evt.target.id === "delete") {
-        let log_entry_id = getLogEntryIdForDel(evt);
-        sendRequestToDeleteLogEntry(evt, log_entry_id)
-    }
-})
+table.addEventListener("click", function (evt) {
+  if (evt.target.id === "delete") {
+    let log_entry_id = getLogEntryIdForDel(evt);
+    sendRequestToDeleteLogEntry(evt, log_entry_id);
+  }
+});
 
 async function sendCreateLogEntryRequest() {
   await axios
@@ -127,7 +136,8 @@ async function sendRequestToEditTimeAndDate(
   log_entry_id,
   date,
   start_time,
-  stop_time
+  stop_time,
+  description
 ) {
   await axios
     .patch(
@@ -136,6 +146,7 @@ async function sendRequestToEditTimeAndDate(
         date,
         start_time,
         stop_time,
+        description,
       }
     )
     .then(function (response) {
@@ -168,43 +179,40 @@ async function sendRequestToEditTimeAndDate(
     });
 }
 
-async function sendRequestToDeleteLogEntry(
-    evt,
-    log_entry_id
-  ) {
-    await axios
-      .delete(
-        `${BASE}/${username}/project/${project_id}/logentry/${log_entry_id}/delete`
-      )
-      .then(function (response) {
-        // handle success
-        console.log(response)
-        deleteRow(evt)
-        updateSubtotals(response)
-        makeAlert(response);
-        if (document.getElementById("alert")) {
-          setTimeout("hideAlert()", 5000);
-        }
-      })
-      .catch(function (error) {
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-        } else if (error.request) {
-          // The request was made but no response was received
-          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-          // http.ClientRequest in node.js
-          console.log(error.request);
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          console.log("Error", error.message);
-        }
-        console.log(error.config);
-      });
-  }
+async function sendRequestToDeleteLogEntry(evt, log_entry_id) {
+  await axios
+    .delete(
+      `${BASE}/${username}/project/${project_id}/logentry/${log_entry_id}/delete`
+    )
+    .then(function (response) {
+      // handle success
+      console.log(response);
+      deleteRow(evt);
+      updateSubtotals(response);
+      makeAlert(response);
+      if (document.getElementById("alert")) {
+        setTimeout("hideAlert()", 5000);
+      }
+    })
+    .catch(function (error) {
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log("Error", error.message);
+      }
+      console.log(error.config);
+    });
+}
 
 function makeDateInput(evt) {
   let input = document.createElement("input");
@@ -212,9 +220,9 @@ function makeDateInput(evt) {
   input.setAttribute("name", "date");
   let inputValue = evt.path[2].firstElementChild.innerText;
   //handle case where day is single number - must have 0 in front in order to display correctly in input
-  if (inputValue.split('-')[2].length < 2) {
-      let inputValueArr = inputValue.split('-')
-      inputValue = `${inputValueArr[0]}-${inputValueArr[1]}-0${inputValueArr[2]}`
+  if (inputValue.split("-")[2].length < 2) {
+    let inputValueArr = inputValue.split("-");
+    inputValue = `${inputValueArr[0]}-${inputValueArr[1]}-0${inputValueArr[2]}`;
   }
   input.setAttribute("value", inputValue);
   evt.path[2].firstElementChild.innerText = "";
@@ -243,6 +251,14 @@ function makeTimeInputs(evt) {
   );
 }
 
+function makeDescriptionInput(evt) {
+  let currentDescriptionCell =
+    evt.path[2].firstElementChild.nextElementSibling.nextElementSibling
+      .nextElementSibling;
+  let currentDescription = currentDescriptionCell.innerText;
+  currentDescriptionCell.innerHTML = `<input type='text' name='description' value='${currentDescription}'></input>`;
+}
+
 function updateUI(evt, response) {
   let startTimeInputCell = document.querySelector("input[name='start_time']")
     .parentElement;
@@ -250,10 +266,12 @@ function updateUI(evt, response) {
     .parentElement;
   let dateInputCell = document.querySelector("input[name='date']")
     .parentElement;
+  let descriptionInputCell = document.querySelector("input[name='description']")
+    .parentElement;
   startTimeInputCell.innerText = response.data.pretty_start_time;
   stopTimeInputCell.innerText = response.data.pretty_stop_time;
   dateInputCell.innerText = response.data.pretty_date;
-  console.log(evt);
+  descriptionInputCell.innerText = response.data.description;
   let valueCell = evt.path[1].previousElementSibling;
   console.log(valueCell);
   let timeDeltaCell = evt.path[1].previousElementSibling.previousElementSibling;
@@ -301,7 +319,9 @@ function getLogEntryId() {
 }
 
 function getLogEntryIdForDel(evt) {
-    return evt.target.parentElement.parentElement.getAttribute('id').split('-')[1]
+  return evt.target.parentElement.parentElement
+    .getAttribute("id")
+    .split("-")[1];
 }
 
 function addNewRow(response) {
@@ -351,12 +371,12 @@ function updateSpans(response) {
 }
 
 function updateSubtotals(response) {
-    console.log(response)
-    let subtotalSpan = document.querySelector('#subtotal-rate')
-    subtotalSpan.innerText = `${response.data.subtotal} ${response.data.curr_of_rate}`
-    let convSubtotalSpan = document.querySelector('#subtotal-inv')
-    convSubtotalSpan.innerText = `${response.data.converted_subtotal} ${response.data.curr_of_inv}`
-} 
+  console.log(response);
+  let subtotalSpan = document.querySelector("#subtotal-rate");
+  subtotalSpan.innerText = `${response.data.subtotal} ${response.data.curr_of_rate}`;
+  let convSubtotalSpan = document.querySelector("#subtotal-inv");
+  convSubtotalSpan.innerText = `${response.data.converted_subtotal} ${response.data.curr_of_inv}`;
+}
 
 function emptySpans() {
   document.querySelector("#time-stopped").innerText = "";
@@ -364,6 +384,6 @@ function emptySpans() {
 }
 
 function deleteRow(evt) {
-    console.log(evt)
-    evt.path[2].remove()
+  console.log(evt);
+  evt.path[2].remove();
 }

@@ -79,7 +79,7 @@
                             <tbody>
                                 <tr>
                                     <td class="left"><strong>Subtotal</strong></td>
-                                    <td class="right">{{invoice.amount_in_curr_of_inv}}</td>
+                                    <td class="right">{{invoice.project.show_subtotal_values()['subtotal_inv']['symbol']}}{{invoice.amount_in_curr_of_inv}}</td>
                                 </tr>
                                 <tr>
                                     <td class="left"><strong>Extra Charge <span id='extra-charge-description'></span></strong></td>
@@ -105,7 +105,7 @@
 
                                 <tr>
                                     <td class="left"><strong>Total</strong></td>
-                                    <td class="right"><strong>$7.477,36</strong></td>
+                                    <td class="right"><strong>{{invoice.project.show_subtotal_values()['subtotal_inv']['symbol']}}<span id='final-amount'>{{invoice.amount_in_curr_of_inv}}</span></strong></td>
                                 </tr>
                             </tbody>
                     </table>

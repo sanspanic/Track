@@ -193,6 +193,8 @@ class LogEntry(db.Model):
     value_in_curr_of_rate = db.Column(db.Float(precision=2))
 
     value_in_curr_of_inv = db.Column(db.Float(precision=2))
+
+    description = db.Column(db.String)
     
     @property
     def time_delta(self): 
@@ -251,6 +253,9 @@ class LogEntry(db.Model):
 
     def handle_edit(self, data): 
 
+        #update description
+        self.description = data.get('description')
+
         #previous value of log_entry must be subtracted from project subtotal values. then new value of log_entry must be calculated and added
         self.project.subtotal -= self.value_in_curr_of_rate
         if self.value_in_curr_of_inv:
@@ -293,6 +298,7 @@ class LogEntry(db.Model):
             "date": self.date, 
             "value_in_curr_of_rate": self.value_in_curr_of_rate, 
             "value_in_curr_of_inv": self.value_in_curr_of_inv, 
+            "description": self.description,
             "time_delta": self.time_delta, 
             "pretty_start_time": self.pretty_start_time, 
             "pretty_stop_time": self.pretty_stop_time, 
