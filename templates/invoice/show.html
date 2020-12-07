@@ -34,10 +34,10 @@
                     </form>
                     {% else %}
                     <div><strong>{{user.full_name}}</strong></div>
-                    <div>{{invoice.billing_address}}</div>
-                    <div>71-101 Szczecin, Poland</div>
-                    <div>Email: info@webz.com.pl</div>
-                    <div>Phone: +48 444 666 3333</div>
+                    <div>{{invoice.billing_details.street}}, {{invoice.billing_details.postcode}}</div>
+                    <div>{{invoice.billing_details.city}}, {{invoice.billing_details.country}}</div>
+                    <div>{{invoice.billing_details.email}}</div>
+                    <div>{{invoice.billing_details.phone}}</div>
                     {% endif %}
                 </div>
                 <div class="col-sm-6">

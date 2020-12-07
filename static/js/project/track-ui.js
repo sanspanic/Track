@@ -330,6 +330,7 @@ function addNewRow(response) {
   let td_date = document.createElement("td");
   let td_start = document.createElement("td");
   let td_stop = document.createElement("td");
+  let td_description = document.createElement("td")
   let td_delta = document.createElement("td");
   let td_value = document.createElement("td");
   let td_actions = document.createElement("td");
@@ -337,6 +338,7 @@ function addNewRow(response) {
   tr.setAttribute("id", `logentryid-${response.data.id}`);
   tr.appendChild(td_start).innerText = response.data.pretty_start_time;
   tr.appendChild(td_stop).innerHTML = "<i>tracking...</i>";
+  tr.appendChild(td_description).classList.add('description')
   tr.appendChild(td_delta).classList.add("time-delta");
   tr.appendChild(td_value).classList.add("value");
   tr.appendChild(td_actions);
@@ -351,7 +353,7 @@ function addStopInfoToRow(response) {
   let valueNodes = document.querySelectorAll(".value");
   let valueCell = valueNodes[valueNodes.length - 1];
   valueCell.innerText = response.data.value_in_curr_of_rate;
-  let stopCell = timeDeltaCell.previousElementSibling;
+  let stopCell = timeDeltaCell.previousElementSibling.previousElementSibling;
   stopCell.innerText = response.data.pretty_stop_time;
   let actionsCell = valueCell.nextElementSibling;
   //add back edit and delete buttons
