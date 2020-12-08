@@ -1,4 +1,4 @@
-from models import db, User, Project, LogEntry, Client
+from models import db, User, Project, LogEntry, Client, BillingInfo
 from app import app
 import datetime
 
@@ -61,7 +61,6 @@ db.session.add_all([s, a])
 db.session.commit()
 
 #add clients
-
 c1 = Client(user_id=1, name='Puffle Corp', street='Street 20', postcode='EH2 3XI', country='United Kingdom', city='Bratislava')
 c2 = Client(user_id=1, name='Tommy Wiseau', street='Boulevard Drive', postcode='EH2 3XI', country='US', city='Los Angeles')
 c3 = Client(user_id=2, name='Merlin', street='Beard Street 10', postcode='EH2 3XI', country='United Kingdom', city='Oxford')
@@ -106,6 +105,11 @@ le3.project.create_invoice()
 le4.project.create_invoice() 
 le1.project.create_invoice()
 
+bi = BillingInfo(user_id=1, name='SansPanic Corp', street='Senicka 30', postcode='81104', city='Bratislava', country='Slovakia', email='sans@gmail.com', phone='0908870250')
+bi2 = BillingInfo(user_id=1, name='Sandra Spanikova', street='23/3 Viewcraig Street', postcode='EH89UJ', city='Edinburgh', country='Scotland', email='ssandra@gmaiil.com', phone='07526737364')
+db.session.add(bi)
+db.session.add(bi2)
+db.session.commit()
 
 
 

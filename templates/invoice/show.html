@@ -14,31 +14,64 @@
 <div id='invoice'>
     <div class="container mt-3">
         <div class="card">
-            <div class="card-header">
+            <div id="invoice-info-id-{{invoice.id}}"class="card-header">
                 Invoice Number <strong>{{invoice.invoice_number}}</strong> 
                 <span class="float-right"> For: <strong>{{invoice.project.project_name}}</strong></span>
             </div>
             <div class="card-body">
             <div class="row mb-4">
-                <div class="col-sm-6">
+                <div id='from' class="col-sm-6">
                     <h6 class="mb-3">From:</h6>
-                    {% if not invoice.billing_info %}
-                    <form action="">
-                        <div>Name: <input type="text"></div>
-                        <div>Street: <input type="text"></div>
-                        <div>City: <input type="text"></div>
-                        <div>Country: <input type="text"></div>
-                        <div>Email: <input type="text"></div>
-                        <div>Phone: <input type="text"></div>
-                        <button class='btn btn-success'>Add Billing Info</button>
+                    {% if not user.billing_info %}
+                    <form id='billing-info'  method='POST' action="/{{user.username}}/invoice/{{invoice.id}}/billing-info/add">
+                        <div class="form-row">
+                            <div class="col">
+                                <div>* Name: <input name='name' required type="text" class='form-control' placeholder='Name'></div>
+                            </div>
+                        </div>
+                        <div class='form-row'>
+                            <div class="col">
+                                <div>Street: <input name='street' type="text"class='form-control' placeholder='Street'></div>
+                            </div>
+                            <div class="col">
+                                <div>City: <input name='city' type="text"class='form-control' placeholder='City'></div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <div>Postcode: <input name='postcode' type="text" class='form-control' placeholder='Postcode'></div>
+                            </div>
+                            <div class="col">
+                                <div>Country: <input name='country' type="text" class='form-control' placeholder='Country'></div>
+                            </div>
+                        </div>
+                        <div class='form-row'>
+                            <div class="col">
+                                <div>Phone: <input name='phone' type="text"class='form-control' placeholder='Phone'></div>
+                            </div>
+                            <div class="col">
+                                <div>* Email: <input required name='email' type="text"class='form-control' placeholder='Email'></div>
+                            </div>
+                        </div>
+                        <div>* Required details. </div>
+                        <button class='btn btn-success mt-3 add-info-btn'>Add Billing Info</button>
                     </form>
                     {% else %}
-                    <div><strong>{{user.full_name}}</strong></div>
-                    <div>{{invoice.billing_details.street}}, {{invoice.billing_details.postcode}}</div>
-                    <div>{{invoice.billing_details.city}}, {{invoice.billing_details.country}}</div>
-                    <div>{{invoice.billing_details.email}}</div>
-                    <div>{{invoice.billing_details.phone}}</div>
-                    {% endif %}
+                    <div id='billing-details-div' class=""></div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Billing Details</button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    {% for bi in user.billing_info %}
+                                  <a id='billing-info-id-{{bi.id}}' class="dropdown-item billing-info-dropdown" href="#">{{bi.name}}</a>
+                                  {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div id='accept-div' class="col"></div>
+                    </div>
                 </div>
                 <div class="col-sm-6">
                     <h6 class="mb-3">To:</h6>
@@ -48,7 +81,33 @@
                     <div>{{invoice.project.client.country}}</div>
                 </div>
             </div>
-            <div class="table-responsive-sm">
+            <div id='dates' class="row">
+                <div class="col">
+                    {% if not invoice.due_date %}
+                    <form class='form-group' action="">
+                        <div class="row align-items-end">
+                            <div class="col-3">
+                                <label for="date-of-issue">Date of Issue</label>
+                                <input required name='date-of-issue' class='form-control' type="date">
+                            </div>
+                            <div class="col-3">
+                                <label for="due-date">Due Date</label>
+                                <input required name='due-date' class='form-control' type="date">
+                            </div>
+                            <div class="col-6">
+                                <button id='invoice-info-id-{{invoice.id}}'class='btn btn-success add-dates' type='submit'>Accept</button>
+                                <button class='btn btn-danger delete-dates'>X</button>
+                            </div>
+                        </div>
+                    </form>
+                    {% else %}
+                    <div>Date of Issue: {{invoice.date}}</div>
+                    <div>Due Date: <strong>{{invoice.due_date}}</strong></div>
+                    {% endif %}
+                </div>
+
+            </div>
+            <div class="mt-3 table-responsive-sm">
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -73,9 +132,9 @@
                 </table>
             </div>
             <div class="row">
-                <div class="col-lg-4 col-sm-5"></div>
-                <div class="col-lg-4 col-sm-5 ml-auto">
-                    <table class="table table-clear">
+                <div class="col-lg-5 col-sm-5"></div>
+                <div class="col-lg-5 col-sm-5 ml-auto">
+                    <table id='extras' class="table table-clear">
                             <tbody>
                                 <tr>
                                     <td class="left"><strong>Subtotal</strong></td>
@@ -83,22 +142,22 @@
                                 </tr>
                                 <tr>
                                     <td class="left"><strong>Extra Charge <span id='extra-charge-description'></span></strong></td>
-                                    <td class="right">
-                                        <button id='add-extra-charge' class='btn btn-success'>Add</button>
+                                    <td class="right extra">
+                                        <button id='extra' class='add btn btn-success'>Add</button>
                                         <button id='delete-extra-charge' class='btn btn-danger'>X</button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="left"><strong>Discount <span id='discount-percent'>(XX%)</span></strong></td>
-                                    <td class="right">
-                                        <button id='add-discount' class='btn btn-success'>Add</button>
+                                    <td class="right discount">
+                                        <button id='discount' class='add btn btn-success'>Add</button>
                                         <button id='delete-discount' class='btn btn-danger'>X</button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="left"><strong>VAT <span>(XX%)</span></strong></td>
-                                    <td class="right">
-                                        <button id='add-VAT' class='btn btn-success'>Add</button>
+                                    <td class="right VAT">
+                                        <button id='VAT' class='add btn btn-success'>Add</button>
                                         <button id='delete-VAT' class='btn btn-danger'>X</button>
                                     </td>
                                 </tr>
@@ -106,6 +165,10 @@
                                 <tr>
                                     <td class="left"><strong>Total</strong></td>
                                     <td class="right"><strong>{{invoice.project.show_subtotal_values()['subtotal_inv']['symbol']}}<span id='final-amount'>{{invoice.amount_in_curr_of_inv}}</span></strong></td>
+                                </tr>
+                                <tr>
+                                    <td class="left"><strong></strong></td>
+                                    <td id='accept-changes-td' class="right"></td>
                                 </tr>
                             </tbody>
                     </table>

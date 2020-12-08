@@ -75,7 +75,7 @@ class User(db.Model):
     clients = db.relationship('Client', backref='user', cascade="all, delete-orphan")
 
     invoices = db.relationship('Invoice', backref='user', cascade="all, delete-orphan")
-
+    
 class Project(db.Model): 
     """project model"""
 
@@ -163,6 +163,7 @@ class Project(db.Model):
         db.session.commit()
 
         return i
+
 
 class LogEntry(db.Model): 
     """log entry model"""
@@ -357,6 +358,7 @@ class Client(db.Model):
             "full_address": self.full_address
         }
 
+
 class Invoice(db.Model): 
     """invoice model"""
 
@@ -379,7 +381,6 @@ class Invoice(db.Model):
 
     billing_address = db.Column(db.String)
 
-
     amount_in_curr_of_rate = db.Column(db.Float(precision=2))
 
     amount_in_curr_of_inv = db.Column(db.Float(precision=2))
@@ -388,14 +389,118 @@ class Invoice(db.Model):
 
     curr_of_inv = db.Column(db.String)
 
-    date = db.Column(db.String)
-    
-    due_date = db.Column(db.String)
+    date = db.Column(db.Date)
+
+    due_date = db.Column(db.Date)
+
+    extra = db.Column(db.Float(precision=2))
+
+    VAT = db.Column(db.Float(precision=2))
+
+    discount = db.Column(db.Float(precision=2))
                         
     project = db.relationship('Project', backref='invoice')
 
+    def serialize(self):
+        """Serialize a SQLAlchemy obj to dictionary."""
 
+        return {
+            "id": self.id,
+            "project_id": self.project_id,
+            "user_id": self.user_id,
+            "invoice_nr": self.invoice_nr, 
+            "billing_address": self.billing_address, 
+            "amount_in_curr_of_rate": self.amount_in_curr_of_rate, 
+            "amount_in_curr_of_inv": self.amount_in_curr_of_inv, 
+            "curr_of_rate": self.curr_of_rate, 
+            "curr_of_inv": self.curr_of_inv, 
+            "date": self.date, 
+            "due_date": self.due_date, 
+            "extra": self.extra, 
+            "VAT": self.VAT, 
+            "discount": self.discount
+        }
 
+    def convert_date(self, date): 
+        """convert data retrieved from json into dates db will accept"""
+               
+        date_arr = date.split('-')
+        datetime_arr = []
+        for num in date_arr: 
+            if num[0] == '0': 
+                num = num[-1]
+            datetime_arr.append(int(num))
+
+        return datetime.date(*datetime_arr)
+
+    def handle_extras(self, extra, discount, VAT): 
+        """converts user input into values db will accept, updates self"""
+        if extra: 
+            extra = float(extra)
+            self.extra = extra
+
+        if discount:
+            discount = float(discount)
+            self.discount = discount
+
+        if VAT: 
+            VAT= float(VAT)
+            self.VAT = VAT
+
+        return [extra, discount, VAT]
+
+class BillingInfo(db.Model): 
+    """model for billing info. user will have many billing infos and many invoices"""
+
+    __tablename__ = 'billing_infos'
+
+    def __repr__(self): 
+        return f"<Billing info id={self.id} for user with id = {self.user_id}, billing as {self.name}>"
+
+    id = db.Column(db.Integer, 
+                    primary_key = True, 
+                    autoincrement = True)
+    
+    user_id = db.Column(db.Integer, 
+                db.ForeignKey('users.id'))
+
+    name = db.Column(db.String)
+
+    street = db.Column(db.String)
+
+    postcode = db.Column(db.String)
+
+    city = db.Column(db.String)
+
+    country = db.Column(db.String)
+
+    email = db.Column(db.String)
+
+    phone = db.Column(db.String)
+
+    date_of_issue = db.Column(db.Date)
+    
+    due_date = db.Column(db.Date)
+
+    user = db.relationship('User', backref='billing_info')
+
+    def serialize(self):
+        """Serialize a SQLAlchemy obj to dictionary."""
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "street": self.street,
+            "postcode": self.postcode, 
+            "city": self.city, 
+            "country": self.country, 
+            "email": self.email, 
+            "phone": self.phone, 
+            "date_of_issue": self.date_of_issue, 
+            "due_date": self.due_date, 
+        }
+
+                    
 
 
 

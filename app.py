@@ -3,7 +3,7 @@ import pdb
 import requests
 from flask import Flask, render_template, redirect, session, flash, g, jsonify, request, make_response
 from flask_debugtoolbar import DebugToolbarExtension
-from models import connect_db, db, User, Project, LogEntry, Client, Invoice
+from models import connect_db, db, User, Project, LogEntry, Client, Invoice, BillingInfo
 from secrets import secret_key
 import datetime
 from forms import UserForm, LoginForm, ClientForm, ProjectForm
@@ -288,8 +288,50 @@ def show_invoice(username, invoice_id):
 
     else: 
         invoice = Invoice.query.get_or_404(invoice_id)
-        print("**********************", invoice)
         return render_template('/invoice/show.html', invoice=invoice, user=g.user)
+
+@app.route('/<username>/invoice/<int:invoice_id>/edit', methods=['PATCH'])
+def edit_dates(username, invoice_id): 
+    """updates date of issue and due date of invoice"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        invoice = Invoice.query.get_or_404(invoice_id)
+
+        #handle edit of dates
+        if request.json.get('dateOfIssue'): 
+
+            date = request.json.get('dateOfIssue') #2020-12-08
+            due_date = request.json.get('dueDate') #2020-12-15
+
+            invoice.date = invoice.convert_date(date) 
+            invoice.due_date = invoice.convert_date(due_date)
+
+            db.session.commit()
+
+            return make_response(invoice.serialize(), 200)
+        #handle edit of extras
+        else: 
+            print(request.json.get('extra'))
+            print(request.json.get('VAT'))
+            print(request.json.get('discount'))
+
+            extra = request.json.get('extra')
+            discount = request.json.get('discount')
+            VAT = request.json.get('VAT')
+
+            invoice.handle_extras(extra, discount, VAT)
+
+            db.session.commit()
+
+            return make_response(invoice.serialize(), 200)
 
 
 ##############################################################################
@@ -606,4 +648,53 @@ def delete_log_entry(username, project_id, log_entry_id):
 
         return make_response(response, 200)
         
+#BILLING INFO ROUTES 
 
+@app.route('/<username>/invoice/<int:invoice_id>/billing-info/add', methods=['POST'])
+def add_billing_details(username, invoice_id): 
+    """adds billing details for invoice"""
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        invoice = Invoice.query.get_or_404(invoice_id)
+
+        bi = BillingInfo(
+            invoice_id=invoice.id,
+            name=request.form.get('name'), 
+            street=request.form.get('street'), 
+            city=request.form.get('city'), 
+            postcode=request.form.get('postcode'), 
+            country=request.form.get('country'), 
+            phone=request.form.get('phone'), 
+            email=request.form.get('email')
+        )
+        db.session.add(bi)
+        db.session.commit()
+
+        return render_template('invoice/show.html', invoice=invoice, user=g.user)
+
+@app.route('/<username>/billing_info/<int:billing_info_id>', methods=['GET'])
+def get_billing_details(username, billing_info_id): 
+    """retrieves details about billing info based on id to populate form with"""    
+    
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else:  
+        billing_info = BillingInfo.query.get_or_404(billing_info_id)
+
+        response = billing_info.serialize()
+
+        return make_response(response, 200)
