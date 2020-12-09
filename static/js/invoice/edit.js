@@ -292,5 +292,5 @@ function updateUIWithExtras(response) {
 } 
 
 function updateUIWithInvoiceNr(evt, response) {
-    evt.target.parentElement.parentElement.innerText = response.data.invoice_nr
+    evt.target.parentElement.parentElement.innerHTML = response.data.invoice_nr
 }
