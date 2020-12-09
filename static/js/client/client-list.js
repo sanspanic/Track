@@ -1,8 +1,4 @@
-console.log("connected");
-
-let BASE = "http://127.0.0.1:5000";
-let username = document.querySelector("#navbarDropdown").innerText;
-let table = document.querySelector("table");
+const table = document.querySelector("table");
 
 async function sendRequest(id) {
   await axios

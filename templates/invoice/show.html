@@ -15,7 +15,15 @@
     <div class="container mt-3">
         <div class="card">
             <div id="invoice-info-id-{{invoice.id}}"class="card-header">
-                Invoice Number <strong>{{invoice.invoice_number}}</strong> 
+                <span>Invoice Number</span>
+                {% if invoice.invoice_nr %}
+                <strong>{{invoice.invoice_nr}}</strong>
+                {% else %}
+                <span>
+                    <button class='btn btn-success'>Add</button>
+                    <button class='btn btn-danger invoice-nr'>X</button>
+                </span>
+                {% endif %}
                 <span class="float-right"> For: <strong>{{invoice.project.project_name}}</strong></span>
             </div>
             <div class="card-body">
@@ -143,28 +151,42 @@
                                 <tr>
                                     <td class="left"><strong>Extra Charge <span id='extra-charge-description'></span></strong></td>
                                     <td class="right extra">
+                                        {% if invoice.extra %}
+                                        {{invoice.extra}}
+                                        {% else %}
                                         <button id='extra' class='add btn btn-success'>Add</button>
                                         <button id='delete-extra-charge' class='btn btn-danger'>X</button>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="left"><strong>Discount <span id='discount-percent'>(XX%)</span></strong></td>
+                                    <td class="left"><strong>Discount <span id='discount-percent'>(%)</span></strong></td>
                                     <td class="right discount">
+                                        {% if invoice.discount %}
+                                        {{invoice.discount}}
+                                        {% else %}
                                         <button id='discount' class='add btn btn-success'>Add</button>
                                         <button id='delete-discount' class='btn btn-danger'>X</button>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="left"><strong>VAT <span>(XX%)</span></strong></td>
+                                    <td class="left"><strong>VAT <span>(%)</span></strong></td>
                                     <td class="right VAT">
+                                        {% if invoice.VAT %}
+                                        {{invoice.VAT}}
+                                        {% else %}
                                         <button id='VAT' class='add btn btn-success'>Add</button>
                                         <button id='delete-VAT' class='btn btn-danger'>X</button>
+                                        {% endif %}
                                     </td>
                                 </tr>
-
                                 <tr>
                                     <td class="left"><strong>Total</strong></td>
-                                    <td class="right"><strong>{{invoice.project.show_subtotal_values()['subtotal_inv']['symbol']}}<span id='final-amount'>{{invoice.amount_in_curr_of_inv}}</span></strong></td>
+                                    <td id='final-amount' class="right">{% if invoice.amount_after_extras_in_curr_of_inv %}
+                                       <strong><span>{{invoice.amount_after_extras_in_curr_of_inv}} {{invoice.curr_of_inv}}</span></strong>
+                                       {% endif %}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class="left"><strong></strong></td>

@@ -1,9 +1,7 @@
-let startBtn = document.querySelector("#start");
-let stopBtn = document.querySelector("#stop");
-let BASE = "http://127.0.0.1:5000";
-let username = document.querySelector("#navbarDropdown").innerText;
-let table = document.querySelector("table");
-let project_id = document.querySelector("h1").getAttribute("id");
+const startBtn = document.querySelector("#start");
+const stopBtn = document.querySelector("#stop");
+const table = document.querySelector("table");
+const project_id = document.querySelector("h1").getAttribute("id");
 
 stopBtn.setAttribute("disabled", "disabled");
 
@@ -273,9 +271,7 @@ function updateUI(evt, response) {
   dateInputCell.innerText = response.data.pretty_date;
   descriptionInputCell.innerText = response.data.description;
   let valueCell = evt.path[1].previousElementSibling;
-  console.log(valueCell);
   let timeDeltaCell = evt.path[1].previousElementSibling.previousElementSibling;
-  console.log(timeDeltaCell);
   valueCell.innerText = response.data.value_in_curr_of_rate;
   timeDeltaCell.innerText = `${response.data.time_delta} min`;
 }
@@ -373,7 +369,6 @@ function updateSpans(response) {
 }
 
 function updateSubtotals(response) {
-  console.log(response);
   let subtotalSpan = document.querySelector("#subtotal-rate");
   subtotalSpan.innerText = `${response.data.subtotal} ${response.data.curr_of_rate}`;
   let convSubtotalSpan = document.querySelector("#subtotal-inv");
@@ -386,6 +381,5 @@ function emptySpans() {
 }
 
 function deleteRow(evt) {
-  console.log(evt);
   evt.path[2].remove();
 }

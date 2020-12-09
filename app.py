@@ -318,10 +318,7 @@ def edit_dates(username, invoice_id):
 
             return make_response(invoice.serialize(), 200)
         #handle edit of extras
-        else: 
-            print(request.json.get('extra'))
-            print(request.json.get('VAT'))
-            print(request.json.get('discount'))
+        elif not request.json.get('invoiceNr'): 
 
             extra = request.json.get('extra')
             discount = request.json.get('discount')
@@ -329,6 +326,12 @@ def edit_dates(username, invoice_id):
 
             invoice.handle_extras(extra, discount, VAT)
 
+            db.session.commit()
+
+            return make_response(invoice.serialize(), 200)
+        #handle edit of invoice number
+        else: 
+            invoice.invoice_nr = request.json.get('invoiceNr')
             db.session.commit()
 
             return make_response(invoice.serialize(), 200)
@@ -529,7 +532,7 @@ def add_project(username):
 
         return render_template('/project/new.html', user=g.user, form=form)
 
-@app.route('/<username>/project/<project_id>/track', methods=['GET'])
+@app.route('/<username>/project/<int:project_id>/track', methods=['GET'])
 def track_project(username, project_id): 
     """interface to track time for project and add log entry"""
     
@@ -544,6 +547,25 @@ def track_project(username, project_id):
     else: 
         project = Project.query.get_or_404(project_id)
         return render_template('project/track.html', user=g.user, project=project)
+
+@app.route('/<username>/project/<int:project_id>/create-invoice', methods=['POST'])
+def create_invoice(username, project_id): 
+
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
+    else: 
+        project = Project.query.get_or_404(project_id)
+        invoice = project.create_invoice()
+
+        response = invoice.serialize()
+        response['message'] = 'New invoice was successfully created.'
+        return make_response(response, 200)
 
  ##############################################################################
 #  LOG_ENTRY ROUTES
@@ -696,5 +718,6 @@ def get_billing_details(username, billing_info_id):
         billing_info = BillingInfo.query.get_or_404(billing_info_id)
 
         response = billing_info.serialize()
+        print('*************************', response)
 
         return make_response(response, 200)

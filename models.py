@@ -398,6 +398,8 @@ class Invoice(db.Model):
     VAT = db.Column(db.Float(precision=2))
 
     discount = db.Column(db.Float(precision=2))
+
+    amount_after_extras_in_curr_of_inv = db.Column(db.Float(precision=2))
                         
     project = db.relationship('Project', backref='invoice')
 
@@ -418,7 +420,8 @@ class Invoice(db.Model):
             "due_date": self.due_date, 
             "extra": self.extra, 
             "VAT": self.VAT, 
-            "discount": self.discount
+            "discount": self.discount, 
+            "amount_after_extras_in_curr_of_inv": self.amount_after_extras_in_curr_of_inv
         }
 
     def convert_date(self, date): 
@@ -434,18 +437,21 @@ class Invoice(db.Model):
         return datetime.date(*datetime_arr)
 
     def handle_extras(self, extra, discount, VAT): 
-        """converts user input into values db will accept, updates self"""
+        """converts user input into values db will accept, updates self and final totals (amount_after_extras...)"""
         if extra: 
             extra = float(extra)
             self.extra = extra
+            self.amount_after_extras_in_curr_of_inv = self.amount_in_curr_of_inv + self.extra
 
         if discount:
             discount = float(discount)
             self.discount = discount
+            self.amount_after_extras_in_curr_of_inv = self.amount_after_extras_in_curr_of_inv - (self.amount_after_extras_in_curr_of_inv/100 * discount)
 
         if VAT: 
             VAT= float(VAT)
             self.VAT = VAT
+            self.amount_after_extras_in_curr_of_inv = self.amount_after_extras_in_curr_of_inv + (self.amount_after_extras_in_curr_of_inv/100 * VAT)
 
         return [extra, discount, VAT]
 

@@ -1,7 +1,5 @@
-let BASE = "http://127.0.0.1:5000";
-let username = document.querySelector("#navbarDropdown").innerText;
-let form = document.querySelector("form");
-let client_id = document.querySelector(".client-name").getAttribute("id");
+const form = document.querySelector("form");
+const client_id = document.querySelector(".client-name").getAttribute("id");
 
 async function sendRequest(id) {
   await axios
