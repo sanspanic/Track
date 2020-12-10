@@ -13,12 +13,12 @@ createInvBtn.addEventListener('click', function(evt) {
 invTable.addEventListener("click", function (evt) {
   if (evt.target.classList.contains("delete")) {
     let id = evt.target.parentElement.id;
-    sendRequest(evt, id);
+    sendDeleteInvRequest(evt, id);
   }
 });
 
 //request to delete invoice from db. handles ui post-request
-async function sendRequest(evt, id) {
+async function sendDeleteInvRequest(evt, id) {
   await axios
     .delete(`${BASE}/${username}/invoice/${id}/delete`)
     .then(function (response) {
@@ -57,7 +57,7 @@ async function createInv(evt, projectID) {
     .then(function (response) {
       // handle success
       debugger;
-      addNewInvoiceRow(response)
+      addNewInvoiceRow(evt, response)
       makeAlert(response, "success")
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
@@ -83,9 +83,20 @@ async function createInv(evt, projectID) {
     });
 }
 
-function addNewInvoiceRow(response) {
-  console.log(invTable.lastElementChild) 
+function addNewInvoiceRow(evt, response) {
+  const newRow = document.createElement('tr')
+  newRow.innerHTML = `<th scope="row">${response.data.pretty_date}</th>
+  <td>${response.data.client_name}</td>
+  <td>${evt.target.innerText}</td>
+  <td>${response.data.amount_in_curr_of_rate}</td>
+  <td>${response.data.amount_in_curr_of_inv}</td>
+  <td id="${response.data.id}">
+  <button class='btn btn-danger delete'>Delete</button>
+  <a href='/${username}/invoice/${response.data.id}' class='btn btn-primary'>Issue Invoice</a>
+  </td>`
+  invTable.lastElementChild.append(newRow)
   console.log(response)
+
 }
 
 

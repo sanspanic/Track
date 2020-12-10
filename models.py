@@ -403,6 +403,11 @@ class Invoice(db.Model):
                         
     project = db.relationship('Project', backref='invoice')
 
+    @property
+    def pretty_date(self): 
+        """return pretty date"""
+        return f"{self.date.year}-{self.date.month}-{self.date.day}"
+
     def serialize(self):
         """Serialize a SQLAlchemy obj to dictionary."""
 
@@ -421,7 +426,8 @@ class Invoice(db.Model):
             "extra": self.extra, 
             "VAT": self.VAT, 
             "discount": self.discount, 
-            "amount_after_extras_in_curr_of_inv": self.amount_after_extras_in_curr_of_inv
+            "amount_after_extras_in_curr_of_inv": self.amount_after_extras_in_curr_of_inv, 
+            "pretty_date": self.pretty_date
         }
 
     def convert_date(self, date): 

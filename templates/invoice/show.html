@@ -122,7 +122,7 @@
                             <th class="center">Date</th>
                             <th>Time</th>
                             <th>Description</th>
-                            <th class="right">Value in {{invoice.project.curr_of_rate}}</th>
+                            <th class="right">{% if invoice.curr_of_rate == invoice.curr_of_inv%} {% else %}Value in {{invoice.project.curr_of_rate}} {% endif %}</th>
                             <th class="center">Value in {{invoice.project.curr_of_inv}}</th>
                         </tr>
                     </thead>
@@ -132,7 +132,11 @@
                             <td class="center">{{log_entry.date}}</td>
                             <td class="left strong">{{log_entry.time_delta}} min</td>
                             <td class="left">{{log_entry.description}}</td>
-                            <td class="right">{{log_entry.value_in_curr_of_rate}}</td>
+                            <td class="right">{% if log_entry.project.curr_of_rate == log_entry.project.curr_of_inv %}
+                                            {% else %}
+                                            {{log_entry.value_in_curr_of_rate}}
+                                            {% endif %}
+                            </td>
                             <td class="center">{{log_entry.value_in_curr_of_inv}}</td>
                         </tr>
                         {% endfor %}

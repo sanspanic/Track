@@ -483,7 +483,12 @@ def create_invoice(username, project_id):
         invoice = project.create_invoice()
 
         response = invoice.serialize()
+        #get client name for rendering new row on front-end
+        project = Project.query.get_or_404(invoice.project_id)
+        client = Client.query.get_or_404(project.client_id)
+
         response['message'] = 'New invoice was successfully created.'
+        response['client_name'] = f'{client.name}'
         return make_response(response, 200)
 
  ##############################################################################
@@ -606,6 +611,4 @@ def get_billing_details(username, billing_info_id):
         billing_info = BillingInfo.query.get_or_404(billing_info_id)
 
         response = billing_info.serialize()
-        print('*************************', response)
-
         return make_response(response, 200)
