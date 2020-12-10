@@ -14,10 +14,10 @@
     <link rel="stylesheet" href="/static/css/custom.css">
   </head>
   <body>
-    {% block navbar %}
-    {% endblock %}
+    {% block navbar %}{% endblock %}
+    <div class="page-container">
 
-      <div class="{% block body_class %}{% endblock %}">
+      <div class="content-wrap {% block body_class %}{% endblock %}">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, msg in messages %}
@@ -26,23 +26,47 @@
             {% endif %}
         {% endwith %}
 
-
-        <div class="container">
-
         {% block content %}{% endblock %}
 
       </div>
+      <div class="container">
+      <footer class="pt-4 my-md-5 pt-md-5 border-top footer">
+        <div class="row">
+          <div class="col-12 col-md">
+            <img class="mb-2" src="/static/css/imgs/TimeIsMoney/time-is-money-2.png" alt="" width="50">
+            <small class="d-block mb-3 text-muted">&copy; 2020 made by sansPanic</small>
+          </div>
+          <div class="col-6 col-md">
+            <h5>Features</h5>
+            <ul class="list-unstyled text-small">
+              <li><a class="text-muted" href="#">Time Tracking</a></li>
+              <li><a class="text-muted" href="#">Currency Conversion</a></li>
+              <li><a class="text-muted" href="#">Invoice Generation</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md">
+            <h5>Exchange Rates</h5>
+            <ul class="list-unstyled text-small">
+              <li><a class="text-muted" href="#">Exchange Rates Source</a></li>
+              <li><a class="text-muted" href="#">Supported Currencies</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-md">
+            <h5>About</h5>
+            <ul class="list-unstyled text-small">
+              <li><a class="text-muted" href="#">Why Track?</a></li>
+            </ul>
+          </div>
+        </div>
+      </footer>
     </div>
-
-
-
+    </div>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="/static/js/global_vars.js"></script>
     <script src='/static/js/fade-out.js'></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    {% block script %}
-    {% endblock %}
+    {% block script %}{% endblock %}
 </body>
 </html>

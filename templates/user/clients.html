@@ -8,10 +8,10 @@
 
 {% block content %}
 
-    <h1 class='display-3 text-center mb-4 bg-white'>All Clients</h1>
+    <h1 class='display-2 text-center mb-4 bg-white'>All Clients</h1>
 
     <div id='clients-container' class="container">
-
+    <a href='/{{user.username}}/client/new' class='btn btn-primary btn-block mb-3'><i class="ph-user-circle-plus ph-lg"></i> Add New Client</a>
     <table class="table table-sm bg-white table-hover table-bordered">
         <thead>
           <tr>
@@ -48,11 +48,6 @@
           </tr>
     
         {% endfor %}
-        <tr>
-            <td colspan='3'>
-                <a href='/{{user.username}}/client/new'class='btn btn-primary btn-block'>Add new client</a>
-            </td>
-        </tr>
         </tbody>
       </table>
     </div>

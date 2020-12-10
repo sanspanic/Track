@@ -8,10 +8,16 @@
 
 {% block content %}
 
-    <h2 class="join-message display-4 text-center mb-4">Start tracking.</h2>
-
-  <div class="row justify-content-md-center">
+  <div class="row justify-content-center">
   <div class="col-md-7 col-lg-5">
+    <div class="row align-items-center">
+      <div class="col">
+        <h2>Start Tracking.</h2>
+      </div>
+      <div class="col">
+        <img src="/static/css/imgs/TimeIsMoney/time-is-money-3.png" alt="" width='200'>
+      </div>
+    </div>
 
     <form method="POST" id="user_form">
       {{ form.hidden_tag() }}
