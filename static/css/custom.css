@@ -30,11 +30,38 @@ body {
 td > i:hover {
     cursor: pointer;
 }
+
+span > i:hover {
+    cursor: pointer;
+}
+
+.ph-check-circle:hover {
+    cursor: pointer;
+}
+
+i.add:hover {
+    cursor: pointer;
+}
 .ph-pencil-simple {
     color: green;
 }
 
+.ph-plus {
+    color: green;
+}
+.ph-plus:hover {
+    cursor: pointer;
+}
 .ph-trash-simple {
     color: red;
 }
+
+i:hover {
+    cursor: pointer;
+}
+
+.ph-check-circle {
+    color: green;
+}
+
 

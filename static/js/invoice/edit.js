@@ -11,6 +11,7 @@ saveBtn.addEventListener('click', function(){
     html2pdf(invoice);  
 })
 
+//cardHeader event listener for invoice nr manipulation
 cardHeader.addEventListener('click', function(evt){
     //handles add user input
     if (evt.target.classList.contains('add')) {
@@ -18,15 +19,16 @@ cardHeader.addEventListener('click', function(evt){
         sendRequestToAddInvoiceNr(evt, invoiceNr)
     }
     //handles render input form
-    else if (evt.target.classList.contains('btn-success')){
+    else if (evt.target.classList.contains('make-input')){
         makeInputForInvoiceNr(evt)
     }
     //handles delete
-    else if (evt.target.classList.contains('btn-danger')){
+    else if (evt.target.classList.contains('delete')){
         removeRow(evt)
     }
 })
 
+//fromSection event listener for billing address change
 fromSection.addEventListener('click', function(evt) {
     if (evt.target.classList.contains('billing-info-dropdown')) {
         const billingInfoID = getID(evt.target.id)
@@ -36,6 +38,7 @@ fromSection.addEventListener('click', function(evt) {
     }
 })
 
+//date section for adding date and due dates
 datesSection.addEventListener('click', function(evt){
     if (evt.target.classList.contains('delete-dates')) {
         removeRow(evt)
@@ -50,9 +53,10 @@ datesSection.addEventListener('click', function(evt){
     }
 })
 
+//handling adding extras after total (extra charge, discount, VAT)
 extrasTable.addEventListener('click', function(evt){
     //handle remove
-    if (evt.target.classList.contains('btn-danger')) {
+    if (evt.target.classList.contains('delete')) {
         removeRow(evt)
     //handle creating inputs
     } else if (evt.target.classList.contains('add')) {
@@ -189,7 +193,8 @@ async function sendRequestToAddInvoiceNr(evt, invoiceNr) {
   }
 
 function makeInputForInvoiceNr(evt) {
-    evt.target.parentElement.innerHTML = `<div class='row'><div class='col-3'><input id='invoice-nr'class='form-control' type='text'></input></div><button class='btn btn-success add'>Add</button></div>`
+    evt.target.parentElement.parentElement.firstElementChild.remove()
+    evt.target.parentElement.innerHTML = `<div class='row align-items-center'> <div class='col'><input id='invoice-nr'class='form-control' type='text'></input></div> <div class='col'><i class="ph-check-circle ph-xl add float-left"></i></div></div>`
 }
 
 function getID(id) {
@@ -204,16 +209,15 @@ function populateDetails(response) {
     <div>${response.data.postcode} ${response.data.city}</div>
     <div>${response.data.country}</div>
     <div>${response.data.email}</div>
-    <div>${response.data.phone}</div>`
+    <div class='mb-2'>${response.data.phone}</div>`
     document.querySelector('#billing-details-div').append(formDiv)
 }
 
 function makeAcceptBillingDetailsBtn(evt) {
     document.querySelector('#accept-div').innerText=''
-    const acceptBtn = document.createElement('button')
-    acceptBtn.classList.add('btn', 'btn-success', 'accept-bi', 'd-inline')
-    acceptBtn.innerText='Accept'
-    document.querySelector('#accept-div').append(acceptBtn)
+    const acceptIcon = document.createElement('i')
+    acceptIcon.classList.add('ph-check-circle', 'accept-bi', 'ph-xl')
+    document.querySelector('#accept-div').append(acceptIcon)
 }
 
 function renderDates(evt, response) {
@@ -243,14 +247,22 @@ function removeRow(evt) {
 function makeExtraInput(evt, extraType) {
     makeAcceptChangesBtn()
     if (extraType === 'VAT' || extraType === 'discount') {
-        evt.target.parentElement.innerHTML = `<div class='row'><div class='col-10'><input id=${extraType} type="text" class="form-control" placeholder='enter %, e.g. 10' id="formControlRange"></div><div class='col-2'><button class='btn btn-danger extra-input' >X</button></div></div>`
+        evt.target.parentElement.innerHTML = `<div class='row align-items-center'><div class='col-10'><input id=${extraType} type="text" class="form-control" placeholder='enter %, e.g. 10' id="formControlRange"></div><div class='col-2'><i class="ph-trash-simple ph-lg delete extra-input"></i></div></div>`
     } else if (extraType === 'extra') {
-        evt.target.parentElement.innerHTML = `<div class='row'> <div class='col-10'><input id='${extraType}' type="text" class='form-control' placeholder='enter number, e.g. 120.50'></div><div class='col-2'><button class='btn btn-danger extra-input' >X</button></div></div>` 
+        evt.target.parentElement.innerHTML = `<div class='row align-items-center'> <div class='col-10'><input id='${extraType}' type="text" class='form-control' placeholder='enter number, e.g. 120.50'></div><div class='col-2'><i class="ph-trash-simple ph-lg delete extra-input"></i></div></div>` 
     }
 }
 
 function makeAcceptChangesBtn() {
-    document.querySelector('#accept-changes-td').innerText = ''
+    if (document.querySelector('#accept-changes-td')) {
+        document.querySelector('#accept-changes-td').innerText = ''
+    } //for when accept button has previously been used and row was removed after update
+    else {
+        const newRow = document.createElement('tr')
+        document.querySelector('#extras').appendChild(newRow)
+        newRow.innerHTML = `<td class='left'></td>
+                            <td id='accept-changes-td' class='right'></td>`
+    }
     const acceptBtn = document.createElement('button')
     acceptBtn.classList.add('btn', 'btn-success', 'accept-changes')
     acceptBtn.innerText='Accept Changes'
@@ -288,9 +300,9 @@ function updateUIWithExtras(response) {
     if (response.data.VAT) {
         document.querySelector('.VAT').innerText= `${response.data.VAT} %`
     }
-    document.querySelector('#final-amount').innerText = `<strong>${response.data.amount_after_extras_in_curr_of_inv} ${response.data.curr_of_inv}</strong>`
+    document.querySelector('#final-amount').innerHTML = `<strong>${response.data.amount_after_extras_in_curr_of_inv} ${response.data.curr_of_inv}</strong>`
 } 
 
 function updateUIWithInvoiceNr(evt, response) {
-    evt.target.parentElement.parentElement.innerHTML = response.data.invoice_nr
+    evt.target.parentElement.parentElement.innerHTML = `<div class='ml-3'>Invoice Number</div><strong class='ml-3'>${response.data.invoice_nr}</strong>`
 }

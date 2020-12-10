@@ -64,8 +64,8 @@
             {% endif %}
 
             <td id="{{invoice.id}}">
-                <button class='btn btn-danger delete'>Delete</button>
-                <a href='/{{user.username}}/invoice/{{invoice.id}}' class='btn btn-primary'>Issue Invoice</a>
+                <a href='/{{user.username}}/invoice/{{invoice.id}}'><i class="ph-printer"></i></a>
+                <i class="ph-trash-simple delete"></i>
             </td>
           </tr>
 

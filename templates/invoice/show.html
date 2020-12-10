@@ -15,16 +15,24 @@
     <div class="container mt-3">
         <div class="card">
             <div id="invoice-info-id-{{invoice.id}}"class="card-header">
-                <span>Invoice Number</span>
-                {% if invoice.invoice_nr %}
-                <strong>{{invoice.invoice_nr}}</strong>
-                {% else %}
-                <span>
-                    <button class='btn btn-success'>Add</button>
-                    <button class='btn btn-danger invoice-nr'>X</button>
-                </span>
-                {% endif %}
-                <span class="float-right"> For: <strong>{{invoice.project.project_name}}</strong></span>
+                <div class="row">
+                    <div class="col">
+                        <div class="row">
+                            <span>Invoice Number </span>
+                            {% if invoice.invoice_nr %}
+                            <strong class='ml-3'> {{invoice.invoice_nr}}</strong>
+                            {% else %}
+                            <span class='align-text-bottom'>
+                                <i class="ph-plus make-input ml-2"></i>
+                                <i class="ph-trash-simple delete"></i>
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <span class="float-right"> For: <strong>{{invoice.project.project_name}}</strong></span>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
             <div class="row mb-4">
@@ -66,7 +74,7 @@
                     </form>
                     {% else %}
                     <div id='billing-details-div' class=""></div>
-                    <div class="row">
+                    <div class="row align-items-center">
                         <div class="col">
                             <div class="dropdown">
                                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Billing Details</button>
@@ -103,8 +111,8 @@
                                 <input required name='due-date' class='form-control' type="date">
                             </div>
                             <div class="col-6">
-                                <button id='invoice-info-id-{{invoice.id}}'class='btn btn-success add-dates' type='submit'>Accept</button>
-                                <button class='btn btn-danger delete-dates'>X</button>
+                                <i class="ph-check-circle ph-xl add-dates"></i>
+                                <i class="ph-trash-simple ph-xl delete-dates"></i>
                             </div>
                         </div>
                     </form>
@@ -158,8 +166,8 @@
                                         {% if invoice.extra %}
                                         {{invoice.extra}}
                                         {% else %}
-                                        <button id='extra' class='add btn btn-success'>Add</button>
-                                        <button id='delete-extra-charge' class='btn btn-danger'>X</button>
+                                        <i id='extra' class="ph-plus ph-lg add extra-input"></i>
+                                        <i id='delete-extra-charge' class="ph-trash-simple ph-lg delete"></i>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -169,8 +177,8 @@
                                         {% if invoice.discount %}
                                         {{invoice.discount}}
                                         {% else %}
-                                        <button id='discount' class='add btn btn-success'>Add</button>
-                                        <button id='delete-discount' class='btn btn-danger'>X</button>
+                                        <i id='discount' class="ph-plus ph-lg add extra-input"></i>
+                                        <i id='delete-discount' class="ph-trash-simple ph-lg delete"></i>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -180,8 +188,8 @@
                                         {% if invoice.VAT %}
                                         {{invoice.VAT}}
                                         {% else %}
-                                        <button id='VAT' class='add btn btn-success'>Add</button>
-                                        <button id='delete-VAT' class='btn btn-danger'>X</button>
+                                        <i id='VAT' class="ph-plus ph-lg add extra-input"></i>
+                                        <i id='delete-VAT' class="ph-trash-simple ph-lg delete"></i>
                                         {% endif %}
                                     </td>
                                 </tr>

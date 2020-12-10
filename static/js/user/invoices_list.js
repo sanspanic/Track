@@ -23,7 +23,6 @@ async function sendDeleteInvRequest(evt, id) {
     .delete(`${BASE}/${username}/invoice/${id}/delete`)
     .then(function (response) {
       // handle success
-      //debugger;
       removeRow(evt)
       makeAlert(response, "danger")
       if (document.getElementById("alert")) {
@@ -56,7 +55,6 @@ async function createInv(evt, projectID) {
     .post(`${BASE}/${username}/project/${projectID}/create-invoice`)
     .then(function (response) {
       // handle success
-      debugger;
       addNewInvoiceRow(evt, response)
       makeAlert(response, "success")
       if (document.getElementById("alert")) {
@@ -91,8 +89,8 @@ function addNewInvoiceRow(evt, response) {
   <td>${response.data.amount_in_curr_of_rate}</td>
   <td>${response.data.amount_in_curr_of_inv}</td>
   <td id="${response.data.id}">
-  <button class='btn btn-danger delete'>Delete</button>
-  <a href='/${username}/invoice/${response.data.id}' class='btn btn-primary'>Issue Invoice</a>
+  <a href='/${username}/invoice/${response.data.id}'><i class="ph-printer"></i></a>
+  <i class="ph-trash-simple delete"></i>
   </td>`
   invTable.lastElementChild.append(newRow)
   console.log(response)

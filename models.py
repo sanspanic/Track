@@ -444,13 +444,15 @@ class Invoice(db.Model):
 
     def handle_extras(self, extra, discount, VAT): 
         """converts user input into values db will accept, updates self and final totals (amount_after_extras...)"""
+
         if extra: 
             extra = float(extra)
             self.extra = extra
             self.amount_after_extras_in_curr_of_inv = self.amount_in_curr_of_inv + self.extra
         else: 
             #must initialize amount after extras otherwise if dicount or VAT, error
-            self.amount_after_extras_in_curr_of_inv = self.amount_in_curr_of_inv
+            if not self.amount_after_extras_in_curr_of_inv:
+                self.amount_after_extras_in_curr_of_inv = self.amount_in_curr_of_inv
 
         if discount:
             discount = float(discount)
