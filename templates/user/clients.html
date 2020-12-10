@@ -17,7 +17,7 @@
           <tr>
             <th scope="col">Client Name</th>
             <th scope="col">Client Address</th>
-            <th scope="col">Actions</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -42,8 +42,8 @@
             {% endif %}
     
             <td id="{{client.id}}">
-                <a href='/{{user.username}}/client/{{client.id}}/edit'><i class="ph-pencil-simple"></i></a>
-                <i class="ph-trash-simple delete"></i>
+                <a href='/{{user.username}}/client/{{client.id}}/edit'><i class="ph-pencil-simple ph-lg"></i></a>
+                <i class="ph-trash-simple delete ph-lg"></i>
             </td>
           </tr>
     
@@ -53,7 +53,6 @@
                 <a href='/{{user.username}}/client/new'class='btn btn-primary btn-block'>Add new client</a>
             </td>
         </tr>
-    
         </tbody>
       </table>
     </div>

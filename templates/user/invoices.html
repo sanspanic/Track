@@ -36,7 +36,7 @@
             <th scope="col">Project Name</th>
             <th scope="col">Subtotal</th>
             <th scope="col">Converted Subtotal</th>
-            <th scope="col">Actions</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -64,8 +64,8 @@
             {% endif %}
 
             <td id="{{invoice.id}}">
-                <a href='/{{user.username}}/invoice/{{invoice.id}}'><i class="ph-printer"></i></a>
-                <i class="ph-trash-simple delete"></i>
+                <a href='/{{user.username}}/invoice/{{invoice.id}}'><i class="ph-printer ph-lg"></i></a>
+                <i class="ph-trash-simple delete ph-lg"></i>
             </td>
           </tr>
 

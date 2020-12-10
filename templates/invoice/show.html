@@ -8,8 +8,14 @@
 
 {% block content %}
 
-<h1 id='' class='display-3 text-center mb-4 bg-white'>Invoice for {{invoice.project.project_name}}</h1>
-<button id='save' class='btn btn-primary btn-block mb-4'>Save Invoice</button>
+<h1 id='' class='display-4 text-center mb-4 bg-white'>Invoice for {{invoice.project.project_name}}</h1>
+<div class="container">
+    <p>
+        Please configure your invoice settings below prior to saving.
+    </p>
+    <button id='save' class='btn btn-primary btn-block mb-4'><i class="ph-download-simple"></i> Save Invoice as PDF</button>
+</div>
+
 
 <div id='invoice'>
     <div class="container mt-3">
@@ -23,8 +29,8 @@
                             <strong class='ml-3'> {{invoice.invoice_nr}}</strong>
                             {% else %}
                             <span class='align-text-bottom'>
-                                <i class="ph-plus make-input ml-2"></i>
-                                <i class="ph-trash-simple delete"></i>
+                                <i class="ph-plus make-input ml-2 ph-lg"></i>
+                                <i class="ph-trash-simple delete ph-lg"></i>
                             </span>
                             {% endif %}
                         </div>

@@ -11,7 +11,7 @@
 {% block content %}
 
 <h1 class='display-1 bg-white text-center'>Projects</h1>
-<a href='/{{user.username}}/project/new' id='add' class='btn btn-primary mb-3 btn-block'>Add new project</a>
+<a href='/{{user.username}}/project/new' id='add' class='btn btn-primary mb-3 btn-block'><i class="ph-plus-circle ph-lg"></i> Add new project</a>
 
 
     <table class="table table-sm table-hover table-bordered">
@@ -21,7 +21,7 @@
             <th scope="col">Client</th>
             <th scope="col">Subtotal</th>
             <th scope="col">Converted Subtotal</th>
-            <th>Actions</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -37,10 +37,10 @@
               {{project.converted_subtotal}}  {{project.show_subtotal_values()['subtotal_inv']['symbol']}}
               {% endif %}
             </td>
-            <td>
-              <a href='/{{user.username}}/project/{{project.id}}/track' class='btn btn-primary track'>Track</a>
-              <button class='btn btn-success edit'>Edit</button>
-              <button class='btn btn-danger delete'>Delete</button>
+            <td class='align-middle text-center'>
+              <a href='/{{user.username}}/project/{{project.id}}/track' class='btn btn-primary track'><i class="ph-timer"></i> Track</a>
+              <i class="ph-pencil-simple ph-lg edit"></i>
+              <i class="ph-trash-simple delete ph-lg"></i>
             </td>
           </tr>
           <tr >

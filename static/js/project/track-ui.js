@@ -5,12 +5,15 @@ const project_id = document.querySelector("h1").getAttribute("id");
 
 stopBtn.setAttribute("disabled", "disabled");
 
+//start tracking time
 startBtn.addEventListener("click", function (evt) {
   disableAllBtns();
+  deenhanceSpans();
   stopBtn.removeAttribute("disabled");
   sendCreateLogEntryRequest();
 });
 
+//stop tracking time
 stopBtn.addEventListener("click", function (evt) {
   enableTableBtns();
   //log_entry_id is needed to identify which le is being updated
@@ -18,6 +21,7 @@ stopBtn.addEventListener("click", function (evt) {
   sendRequestToAddStopTime(log_entry_id);
   stopBtn.setAttribute("disabled", "disabled");
   startBtn.removeAttribute("disabled");
+  enhanceSpans()
 });
 
 table.addEventListener("click", function (evt) {
@@ -26,7 +30,7 @@ table.addEventListener("click", function (evt) {
     emptySpans();
     //change cell to include accept changes button
     evt.target.parentElement.innerHTML =
-      "<button id='accept-changes' class='btn btn-warning'>Accept Changes</button>";
+      "<i id='accept-changes' class='ph-check-circle ph-lg'></i>";
     makeDateInput(evt);
     makeTimeInputs(evt);
     makeDescriptionInput(evt);
@@ -358,7 +362,8 @@ function addStopInfoToRow(response) {
 
 function makeEditAndDeleteBtns(target) {
   target.innerHTML =
-    "<button id='edit' class='btn btn-success'>Edit</button> <button id='delete' class='btn btn-danger'>Delete</button>";
+    `<i id='edit' class="ph-pencil-simple ph-lg"></i> 
+    <i id='delete' class="ph-trash-simple ph-lg"></i> `;
 }
 
 function updateSpans(response) {
@@ -382,4 +387,18 @@ function emptySpans() {
 
 function deleteRow(evt) {
   evt.path[2].remove();
+}
+
+//make spans stand out
+function enhanceSpans() {
+  const spans = document.querySelectorAll('.time-span')
+  spans.forEach((span) => span.parentElement.classList.add("enhanced"));
+}
+
+//remove spans emphasis
+function deenhanceSpans() {
+  const spans = document.querySelectorAll('.time-span')
+  if (spans[0].parentElement.classList.contains('enhanced')) {
+    spans.forEach((span) => span.parentElement.classList.remove("enhanced"));
+  }
 }
