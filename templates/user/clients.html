@@ -8,11 +8,11 @@
 
 {% block content %}
 
-    <h1 class='display-3 text-center mb-4'>Clients for user {{user.username}}</h1>
+    <h1 class='display-3 text-center mb-4 bg-white'>All Clients</h1>
 
     <div id='clients-container' class="container">
 
-    <table class="table table-sm bg-light table-hover table-bordered">
+    <table class="table table-sm bg-white table-hover table-bordered">
         <thead>
           <tr>
             <th scope="col">Client Name</th>
@@ -42,8 +42,8 @@
             {% endif %}
     
             <td id="{{client.id}}">
-                <a href='/{{user.username}}/client/{{client.id}}/edit'class='btn btn-success'>Edit</a>
-                <button class='btn btn-danger delete'>Delete</button>
+                <a href='/{{user.username}}/client/{{client.id}}/edit'><i class="ph-pencil-simple"></i></a>
+                <i class="ph-trash-simple delete"></i>
             </td>
           </tr>
     

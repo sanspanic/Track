@@ -41,6 +41,7 @@ table.addEventListener("click", function (evt) {
   if (
     evt.target.classList.contains("delete")
   ) {
+    debugger;
     let id = evt.target.parentElement.id;
     sendRequest(id);
     evt.target.parentElement.parentElement.remove();
