@@ -56,6 +56,23 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
+def fail_auth_check(username):
+    """function to run before most requests to perform security checks"""
+
+    #not logged in or unauthorized: 
+    if not g.user or username != g.user.username:
+        return True
+
+def perform_auth_measures(username): 
+    #not logged in
+    if not g.user:
+        flash("Authentication required. Please login first.", "danger")
+        return redirect("/login")
+    #unauthorized
+    elif username != g.user.username:
+        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
+        return redirect(f'/user/{g.user.username}')
+
 ##############################################################################
 # AUTHENTICATION ROUTES
 
@@ -134,31 +151,17 @@ def logout():
 def homepage(username):
     """show homepage for logged in user"""
 
-    if not g.user:
-
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-    elif username != g.user.username:
-
-        flash("Unauthorized. You can only view your own account details.", "danger")
-        return redirect(f'/user/{g.user.username}')
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
     else:
-
         return render_template('user/homepage.html', user=g.user)
-
-
+    
 @app.route('/user/<username>/show')
 def show_user(username):
     """show details for logged in user"""
 
-    if not g.user:
-
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-    elif username != g.user.username:
-
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
     else:
         return render_template('user/show.html', user=g.user)
 
@@ -167,14 +170,8 @@ def show_user(username):
 def edit_user(username):
     """edit details for logged in user"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
     else:
         form = UserForm(obj=g.user)
 
@@ -197,14 +194,8 @@ def edit_user(username):
 def delete_user(username):
     """delete user"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
     else:
         username = g.user.username
         db.session.delete(g.user)
@@ -225,30 +216,18 @@ def show_deletion():
 def show_clients(username):
     """shows all user's clients"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         return render_template('user/clients.html', user=g.user)
 
 @app.route('/user/<username>/invoices', methods=['GET'])
 def show_invoices(username):
     """shows all user's invoices"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         return render_template('user/invoices.html', user=g.user)
 
 ##############################################################################
@@ -258,15 +237,9 @@ def show_invoices(username):
 def delete_invoice(username, id): 
     """deletes individual invoice based on id"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         invoice = Invoice.query.get_or_404(id)
         project_name = invoice.project.project_name
         db.session.delete(invoice)
@@ -278,15 +251,9 @@ def delete_invoice(username, id):
 def show_invoice(username, invoice_id): 
     """shows details of individual invoice"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         invoice = Invoice.query.get_or_404(invoice_id)
         return render_template('/invoice/show.html', invoice=invoice, user=g.user)
 
@@ -294,15 +261,9 @@ def show_invoice(username, invoice_id):
 def edit_dates(username, invoice_id): 
     """updates date of issue and due date of invoice"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         invoice = Invoice.query.get_or_404(invoice_id)
 
         #handle edit of dates
@@ -344,15 +305,9 @@ def edit_dates(username, invoice_id):
 def delete_client(username, id): 
     """deletes individual client based on id"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         client = Client.query.get_or_404(id)
         client_name = client.name
         db.session.delete(client)
@@ -364,15 +319,9 @@ def delete_client(username, id):
 def add_client(username):
     """adds new client"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
 
         form = ClientForm()
         
@@ -399,14 +348,8 @@ def add_client(username):
 def edit_client_form(username, id): 
     """show form to edit client of user based on id"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
     else:
         form = ClientForm(obj=Client.query.get(id))
         client = Client.query.get_or_404(id)
@@ -416,18 +359,21 @@ def edit_client_form(username, id):
 def edit_client(username, id): 
     """edit client of user based on id"""
 
-    client = Client.query.get_or_404(id)
-    data = request.json
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
+        client = Client.query.get_or_404(id)
+        data = request.json
 
-    client.name = data.get('name', client.name)
-    client.street = data.get('street', client.street)
-    client.postcode = data.get('postcode', client.postcode)
-    client.city = data.get('city', client.city)
-    client.country = data.get('country', client.country)
+        client.name = data.get('name', client.name)
+        client.street = data.get('street', client.street)
+        client.postcode = data.get('postcode', client.postcode)
+        client.city = data.get('city', client.city)
+        client.country = data.get('country', client.country)
 
-    db.session.commit()
+        db.session.commit()
 
-    return jsonify({"client": client.serialize()}, {"message":'Client was successfully updated'})
+        return jsonify({"client": client.serialize()}, {"message":'Client was successfully updated'})
 
  ##############################################################################
 #  PROJECTS ROUTES
@@ -436,15 +382,9 @@ def edit_client(username, id):
 def send_client_names(username): 
     """sends information about clients back to frontend to allow for editing"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         client_names = []
         for c in g.user.clients: 
             client_names.append(c.name)
@@ -455,15 +395,9 @@ def send_client_names(username):
 def edit_project_info(username): 
     """edits project information"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         data = request.json
 
         client_name = data.get('clientName')
@@ -488,26 +422,23 @@ def edit_project_info(username):
 def delete_project(username, id): 
     """deletes project"""
 
-    project = Project.query.get_or_404(id)
-    project_name = project.project_name
-    db.session.delete(project)
-    db.session.commit()
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
+        project = Project.query.get_or_404(id)
+        project_name = project.project_name
+        db.session.delete(project)
+        db.session.commit()
 
-    return jsonify({"message":f"Deleted project {project_name}"})
+        return jsonify({"message":f"Deleted project {project_name}"})
 
 @app.route('/<username>/project/new', methods=['GET', 'POST'])
 def add_project(username):
     """adds new project to db"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         form = ProjectForm()
 
         client_choices = [(client.id, client.name) for client in g.user.clients]
@@ -536,30 +467,18 @@ def add_project(username):
 def track_project(username, project_id): 
     """interface to track time for project and add log entry"""
     
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         project = Project.query.get_or_404(project_id)
         return render_template('project/track.html', user=g.user, project=project)
 
 @app.route('/<username>/project/<int:project_id>/create-invoice', methods=['POST'])
 def create_invoice(username, project_id): 
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         project = Project.query.get_or_404(project_id)
         invoice = project.create_invoice()
 
@@ -574,15 +493,9 @@ def create_invoice(username, project_id):
 def add_log_entry(username, project_id): 
     """adds new log entry with only start time which defaults to now via models"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-        
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         log_entry = LogEntry(
             project_id=project_id, 
             start_time=datetime.datetime.now()
@@ -599,16 +512,9 @@ def add_log_entry(username, project_id):
 def update_log_entry(username, project_id, log_entry_id): 
     """updates new log entry with end time, and handles post-hoc edit of date & times"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
-
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         log_entry = LogEntry.query.get_or_404(log_entry_id)
 
         #if request is to update stop_time only
@@ -645,15 +551,9 @@ def update_log_entry(username, project_id, log_entry_id):
 def delete_log_entry(username, project_id, log_entry_id): 
     """deletes log entry record"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         log_entry = LogEntry.query.get_or_404(log_entry_id)
 
         #update subtotals of project by subtracting value of log entry
@@ -676,15 +576,9 @@ def delete_log_entry(username, project_id, log_entry_id):
 def add_billing_details(username, invoice_id): 
     """adds billing details for invoice"""
 
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else: 
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         invoice = Invoice.query.get_or_404(invoice_id)
 
         bi = BillingInfo(
@@ -706,15 +600,9 @@ def add_billing_details(username, invoice_id):
 def get_billing_details(username, billing_info_id): 
     """retrieves details about billing info based on id to populate form with"""    
     
-    if not g.user:
-        flash("Authentication required. Please login first.", "danger")
-        return redirect("/login")
-
-    elif username != g.user.username:
-        flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
-
-    else:  
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
         billing_info = BillingInfo.query.get_or_404(billing_info_id)
 
         response = billing_info.serialize()

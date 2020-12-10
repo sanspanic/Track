@@ -5,11 +5,11 @@ const extrasTable = document.querySelector('#extras')
 const invoiceID = getID(document.querySelector('.card-header').id)
 const cardHeader = document.querySelector('.card-header')
 
+//saves pdf of invoice on click
 saveBtn.addEventListener('click', function(){
     const invoice = document.getElementById('invoice');
     html2pdf(invoice);  
 })
-
 
 cardHeader.addEventListener('click', function(evt){
     //handles add user input
