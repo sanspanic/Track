@@ -402,7 +402,7 @@ def edit_project_info(username):
 
         client_name = data.get('clientName')
         name = data.get('projectName')
-        project_id = data.get('id')
+        project_id = data.get('projectId')
 
         project = Project.query.get_or_404(project_id)
 

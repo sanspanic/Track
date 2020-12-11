@@ -12,8 +12,7 @@
 
 <h1 class='display-2 bg-white text-center mb-4'>Projects</h1>
 <a href='/{{user.username}}/project/new' id='add' class='btn btn-primary mt-2 mb-3 btn-block'><i class="ph-plus-circle ph-lg"></i> Add new project</a>
-
-
+  <div class="alert-container">
     <table class="table table-sm table-hover table-bordered">
         <thead>
           <tr>
@@ -28,7 +27,7 @@
 
         {% for project in user.projects %}
 
-          <tr id='project-id-{{project.id}}'>
+          <tr data-project-id='{{project.id}}'>
             <th scope="row" class='project-name'>{{project.project_name}}</th>
             <td class='client-name'>{{project.client.name}}</td>
             <td id='{{project.id}}'>{{project.subtotal}}  {{project.show_subtotal_values()['subtotal_rate']['symbol']}}</td>
@@ -38,19 +37,17 @@
               {% endif %}
             </td>
             <td class='align-middle text-center'>
-              <a href='/{{user.username}}/project/{{project.id}}/track' class='btn btn-primary track'><i class="ph-timer"></i> Track</a>
-              <i class="ph-pencil-simple ph-lg edit"></i>
-              <i class="ph-trash-simple delete ph-lg"></i>
+              <a href='/{{user.username}}/project/{{project.id}}/track' class='btn btn-primary track'><i class="ph-timer ph-lg"></i> Track</a>
+              <button class='btn edit icon'><i class="ph-pencil-simple ph-lg edit"></i></button>
+              <button class='btn delete icon'><i class="ph-trash-simple delete ph-lg"></i></button>
             </td>
           </tr>
           <tr >
           </tr>
-      
-
         {% endfor %}
-
         </tbody>
       </table>
+    </div>
 {% endblock %}
 {% block script %}
 <script src='/static/js/project/project-ui.js'></script>
