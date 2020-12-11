@@ -28,19 +28,19 @@ body {
 }
 
 td > i:hover {
-    cursor: pointer;
+    
 }
 
 span > i:hover {
-    cursor: pointer;
+    
 }
 
 .ph-check-circle:hover {
-    cursor: pointer;
+    
 }
 
 i.add:hover {
-    cursor: pointer;
+    
 }
 .ph-pencil-simple {
     color: green;
@@ -50,14 +50,14 @@ i.add:hover {
     color: green;
 }
 .ph-plus:hover {
-    cursor: pointer;
+    
 }
 .ph-trash-simple {
     color: red;
 }
 
 i:hover {
-    cursor: pointer;
+    
 }
 
 .ph-check-circle {
@@ -73,7 +73,9 @@ i:hover {
     box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
 
-.footer {
-
+button.icon {
+    background: none;
+    border: none;
+    outline: none;
 }
 

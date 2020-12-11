@@ -14,41 +14,53 @@ startBtn.addEventListener("click", function (evt) {
 });
 
 //stop tracking time
-stopBtn.addEventListener("click", function (evt) {
+stopBtn.addEventListener("click", function () {
   enableTableBtns();
   //log_entry_id is needed to identify which le is being updated. in this case will be last row by default
   const log_entry_id = getLogEntryIdLastRow();
   sendRequestToAddStopTime(log_entry_id);
   stopBtn.setAttribute("disabled", "disabled");
   startBtn.removeAttribute("disabled");
-  enhanceSpans()
+  enhanceSpans();
 });
 
+//adds 3 event listeners to table, enablind: edit, accepting-changes & delete
 table.addEventListener("click", function (evt) {
   //handle requesting to edit existing log entry
-  if (evt.target.id === "edit") {
+  if (evt.target.classList.contains("edit")) {
     disableAllBtns();
     emptySpans();
-    //capture data needed to make inputs
-    const targetRow = evt.target.parentElement.parentElement
-    //change cell to include accept changes button
-    evt.target.parentElement.innerHTML =
-      "<i id='accept-changes' class='ph-check-circle ph-lg'></i>";
+    //capture data needed to make inputs, change cell to include accept changes button, differentiate between button and icon click
+    let targetRow;
+    if (evt.target.tagName === "BUTTON") {
+      targetRow = evt.target.parentElement.parentElement;
+      evt.target.parentElement.innerHTML =
+        "<button class='accept-changes icon'><i class='ph-check-circle ph-lg accept-changes'></i></button>";
+    } else {
+      targetRow = evt.target.parentElement.parentElement.parentElement;
+      evt.target.parentElement.parentElement.innerHTML =
+        "<button class='accept-changes icon'><i class='ph-check-circle ph-lg accept-changes'></i></button>";
+    }
     makeDateInput(targetRow);
     makeTimeInputs(targetRow);
     makeDescriptionInput(targetRow);
   } //handle accepting edited changes
-  else if (evt.target.id ==='accept-changes') {
+  else if (evt.target.classList.contains("accept-changes")) {
     enableTableBtns();
     startBtn.removeAttribute("disabled");
-    const logEntryId = getLogEntryId(evt)
+    const logEntryId = getLogEntryId(evt);
     //add back edit and delete buttons
-    makeEditAndDeleteBtns(evt.target.parentElement);
+    if (evt.target.tagName === "BUTTON") {
+      makeEditAndDeleteBtns(evt.target.parentElement);
+    } else {
+      makeEditAndDeleteBtns(evt.target.parentElement.parentElement);
+    }
     //grab user input intended to be sent to backend for updating
     const date = document.querySelector("input[type='date']").value;
     const startTime = document.querySelector("input[name='start_time']").value;
     const stopTime = document.querySelector("input[name='stop_time']").value;
-    const description = document.querySelector("input[name='description']").value;
+    const description = document.querySelector("input[name='description']")
+      .value;
     sendRequestToEditTimeAndDate(
       logEntryId,
       date,
@@ -56,11 +68,11 @@ table.addEventListener("click", function (evt) {
       stopTime,
       description
     );
-  } // handle deleting log entry 
-    else if (evt.target.id === "delete") {
-      const logEntryId = getLogEntryId(evt)
-      sendRequestToDeleteLogEntry(evt, logEntryId);
-    }
+  } // handle deleting log entry
+  else if (evt.target.classList.contains("delete")) {
+    const logEntryId = getLogEntryId(evt);
+    sendRequestToDeleteLogEntry(evt, logEntryId);
+  }
 });
 
 async function sendCreateLogEntryRequest() {
@@ -70,7 +82,7 @@ async function sendCreateLogEntryRequest() {
       // handle success
       addNewRow(response);
       updateSpans(response);
-      makeAlert(response, 'success');
+      makeAlert(response, "success");
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -105,7 +117,7 @@ async function sendRequestToAddStopTime(log_entry_id) {
       addStopInfoToRow(response);
       updateSpans(response);
       updateSubtotals(response);
-      makeAlert(response, 'success');
+      makeAlert(response, "success");
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -152,7 +164,7 @@ async function sendRequestToEditTimeAndDate(
       emptySpans();
       updateUI(response);
       updateSubtotals(response);
-      makeAlert(response, 'success');
+      makeAlert(response, "success");
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -186,7 +198,7 @@ async function sendRequestToDeleteLogEntry(evt, log_entry_id) {
       // handle success
       deleteRow(evt);
       updateSubtotals(response);
-      makeAlert(response, 'danger');
+      makeAlert(response, "danger");
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -229,7 +241,8 @@ function makeDateInput(targetRow) {
 
 function makeTimeInputs(targetRow) {
   const startTime = targetRow.firstElementChild.nextElementSibling.innerText;
-  const stopTime = targetRow.firstElementChild.nextElementSibling.nextElementSibling.innerText
+  const stopTime =
+    targetRow.firstElementChild.nextElementSibling.nextElementSibling.innerText;
   targetRow.firstElementChild.nextElementSibling.innerText = "";
   targetRow.firstElementChild.nextElementSibling.nextElementSibling.innerText =
     "";
@@ -268,7 +281,8 @@ function updateUI(response) {
   stopTimeInputCell.innerText = response.data.pretty_stop_time;
   dateInputCell.innerText = response.data.pretty_date;
   descriptionInputCell.innerText = response.data.description;
-  let valueCell = stopTimeInputCell.nextElementSibling.nextElementSibling.nextElementSibling;
+  let valueCell =
+    stopTimeInputCell.nextElementSibling.nextElementSibling.nextElementSibling;
   let timeDeltaCell = stopTimeInputCell.nextElementSibling.nextElementSibling;
   valueCell.innerText = response.data.value_in_curr_of_rate;
   timeDeltaCell.innerText = `${response.data.time_delta} min`;
@@ -276,7 +290,7 @@ function updateUI(response) {
 
 function makeAlert(response, category) {
   let alert = document.createElement("div");
-  let alertCont = document.querySelector(".alert-container")
+  let alertCont = document.querySelector(".alert-container");
   alert.classList.add("alert", `alert-${category}`);
   alert.innerText = response.data.message;
   alert.setAttribute("id", "alert");
@@ -295,8 +309,8 @@ function disableAllBtns() {
 }
 
 function enableTableBtns() {
-  let allEditBtns = document.querySelectorAll("#edit");
-  let allDeleteBtns = document.querySelectorAll("#delete");
+  let allEditBtns = document.querySelectorAll(".edit");
+  let allDeleteBtns = document.querySelectorAll(".delete");
   for (i = 0; i < allEditBtns.length; i++) {
     allEditBtns[i].removeAttribute("disabled");
   }
@@ -305,14 +319,18 @@ function enableTableBtns() {
   }
 }
 
-//grabs log entry if target is button in row
+//grabs log entry if target is button or icon in row
 function getLogEntryId(evt) {
-  return evt.target.parentElement.parentElement.dataset.logEntryId
+  const targetRow =
+    evt.target.tagName === "BUTTON"
+      ? evt.target.parentElement.parentElement
+      : evt.target.parentElement.parentElement.parentElement;
+  return targetRow.dataset.logEntryId;
 }
 
 //grabs log entry ID of last row, which is by default the one being updated when stop time added
 function getLogEntryIdLastRow() {
-  return table.lastElementChild.lastElementChild.dataset.logEntryId
+  return table.lastElementChild.lastElementChild.dataset.logEntryId;
 }
 
 function addNewRow(response) {
@@ -321,7 +339,7 @@ function addNewRow(response) {
   let td_date = document.createElement("td");
   let td_start = document.createElement("td");
   let td_stop = document.createElement("td");
-  let td_description = document.createElement("td")
+  let td_description = document.createElement("td");
   let td_delta = document.createElement("td");
   let td_value = document.createElement("td");
   let td_actions = document.createElement("td");
@@ -329,7 +347,7 @@ function addNewRow(response) {
   tr.setAttribute("data-log-entry-id", response.data.id);
   tr.appendChild(td_start).innerText = response.data.pretty_start_time;
   tr.appendChild(td_stop).innerHTML = "<i>tracking...</i>";
-  tr.appendChild(td_description).classList.add('description')
+  tr.appendChild(td_description).classList.add("description");
   tr.appendChild(td_delta).classList.add("time-delta");
   tr.appendChild(td_value).classList.add("value");
   tr.appendChild(td_actions);
@@ -352,9 +370,8 @@ function addStopInfoToRow(response) {
 }
 
 function makeEditAndDeleteBtns(target) {
-  target.innerHTML =
-    `<i id='edit' class="ph-pencil-simple ph-lg"></i> 
-    <i id='delete' class="ph-trash-simple ph-lg"></i> `;
+  target.innerHTML = `<button class='icon edit'><i class="ph-pencil-simple ph-lg edit"></i></button>
+    <button class='icon delete'><i class="ph-trash-simple ph-lg delete"></i></button> `;
 }
 
 function updateSpans(response) {
@@ -366,10 +383,12 @@ function updateSpans(response) {
 
 function updateSubtotals(response) {
   const subtotalSpan = document.querySelector("#subtotal-rate");
-  const subtotal = Number.parseFloat(response.data.subtotal).toFixed(2)
+  const subtotal = Number.parseFloat(response.data.subtotal).toFixed(2);
   subtotalSpan.innerText = `${subtotal} ${response.data.curr_of_rate}`;
   const convSubtotalSpan = document.querySelector("#subtotal-inv");
-  const convSubtotal = Number.parseFloat(response.data.converted_subtotal).toFixed(2)
+  const convSubtotal = Number.parseFloat(
+    response.data.converted_subtotal
+  ).toFixed(2);
   convSubtotalSpan.innerText = `${convSubtotal} ${response.data.curr_of_inv}`;
 }
 
@@ -384,14 +403,14 @@ function deleteRow(evt) {
 
 //make spans stand out
 function enhanceSpans() {
-  const spans = document.querySelectorAll('.time-span')
+  const spans = document.querySelectorAll(".time-span");
   spans.forEach((span) => span.parentElement.classList.add("enhanced"));
 }
 
 //remove spans emphasis
 function deenhanceSpans() {
-  const spans = document.querySelectorAll('.time-span')
-  if (spans[0].parentElement.classList.contains('enhanced')) {
+  const spans = document.querySelectorAll(".time-span");
+  if (spans[0].parentElement.classList.contains("enhanced")) {
     spans.forEach((span) => span.parentElement.classList.remove("enhanced"));
   }
 }
