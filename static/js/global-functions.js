@@ -16,7 +16,7 @@ function makeAlert(response, category) {
 //determines targeted row based on evt.tagname (icon vs button)
 function getTargetRow(evt) {
     const row =
-      evt.target.tagName === "BUTTON"
+      (evt.target.tagName === "BUTTON")
         ? evt.target.parentElement.parentElement
         : evt.target.parentElement.parentElement.parentElement;
     return row;

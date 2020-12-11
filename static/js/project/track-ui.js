@@ -196,7 +196,8 @@ async function sendRequestToDeleteLogEntry(evt, log_entry_id) {
     )
     .then(function (response) {
       // handle success
-      deleteRow(evt);
+      const targetRow = getTargetRow(evt);
+      targetRow.remove();
       updateSubtotals(response);
       makeAlert(response, "danger");
       if (document.getElementById("alert")) {
@@ -308,10 +309,7 @@ function enableTableBtns() {
 
 //grabs log entry if target is button or icon in row
 function getLogEntryId(evt) {
-  const targetRow =
-    evt.target.tagName === "BUTTON"
-      ? evt.target.parentElement.parentElement
-      : evt.target.parentElement.parentElement.parentElement;
+  const targetRow = getTargetRow(evt);
   return targetRow.dataset.logEntryId;
 }
 
@@ -382,10 +380,6 @@ function updateSubtotals(response) {
 function emptySpans() {
   document.querySelector("#time-stopped").innerText = "";
   document.querySelector("#time-started").innerText = "";
-}
-
-function deleteRow(evt) {
-  evt.target.parentElement.parentElement.remove();
 }
 
 //make spans stand out
