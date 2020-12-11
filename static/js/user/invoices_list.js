@@ -85,14 +85,15 @@ async function createInv(evt, projectID) {
 //makes new row and populates it with response data
 function addNewInvoiceRow(evt, response) {
   const newRow = document.createElement("tr");
+  newRow.setAttribute('data-invoice-id', response.data.id)
   newRow.innerHTML = `<th scope="row">${response.data.pretty_date}</th>
   <td>${response.data.client_name}</td>
   <td>${evt.target.innerText}</td>
   <td>${response.data.amount_in_curr_of_rate}</td>
   <td>${response.data.amount_in_curr_of_inv}</td>
-  <td id="${response.data.id}">
+  <td>
   <a href='/${username}/invoice/${response.data.id}'><i class="ph-printer ph-lg"></i></a>
-  <i class="ph-trash-simple delete ph-lg"></i>
+  <button class='delete icon'><i class="ph-trash-simple delete ph-lg"></i></button>
   </td>`;
   invTable.lastElementChild.append(newRow);
   console.log(response);

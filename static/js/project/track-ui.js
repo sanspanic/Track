@@ -288,19 +288,6 @@ function updateUI(response) {
   timeDeltaCell.innerText = `${response.data.time_delta} min`;
 }
 
-function makeAlert(response, category) {
-  let alert = document.createElement("div");
-  let alertCont = document.querySelector(".alert-container");
-  alert.classList.add("alert", `alert-${category}`);
-  alert.innerText = response.data.message;
-  alert.setAttribute("id", "alert");
-  alertCont.insertBefore(alert, table);
-}
-
-function hideAlert() {
-  document.getElementById("alert").remove();
-}
-
 function disableAllBtns() {
   let allBtns = document.querySelectorAll("button");
   for (i = 0; i < allBtns.length; i++) {

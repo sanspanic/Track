@@ -1,18 +1,23 @@
-const table = document.querySelector("table");
+const clientTable = document.querySelector("table");
 
-async function sendRequest(id) {
+//event listener to handle deleting client
+clientTable.addEventListener("click", function (evt) {
+  if (
+    evt.target.classList.contains("delete")
+  ) { 
+    const targetRow = getTargetRow(evt)
+    const clientId = targetRow.dataset.clientId
+    sendRequestToDeleteClient(clientId, targetRow);
+  }
+});
+
+async function sendRequestToDeleteClient(clientId, targetRow) {
   await axios
-    .delete(`${BASE}/${username}/client/${id}/delete`)
+    .delete(`${BASE}/${username}/client/${clientId}/delete`)
     .then(function (response) {
       // handle success
-      let alert = document.createElement("div");
-      let container = document.querySelector("#clients-container");
-      alert.classList.add("alert", "alert-danger");
-      alert.innerText = response.data.message;
-      alert.setAttribute("id", "alert");
-      console.log(table)
-      container.insertBefore(alert, table);
-
+      makeAlert(response, 'danger')
+      targetRow.remove()
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -36,17 +41,6 @@ async function sendRequest(id) {
       console.log(error.config);
     });
 }
-
-table.addEventListener("click", function (evt) {
-  if (
-    evt.target.classList.contains("delete")
-  ) {
-    debugger;
-    let id = evt.target.parentElement.id;
-    sendRequest(id);
-    evt.target.parentElement.parentElement.remove();
-  }
-});
 
 function hideAlert() {
   document.getElementById("alert").remove();

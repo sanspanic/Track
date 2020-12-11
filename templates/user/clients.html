@@ -12,6 +12,10 @@
 
     <div id='clients-container' class="container">
     <a href='/{{user.username}}/client/new' class='btn btn-primary btn-block mb-3'><i class="ph-user-circle-plus ph-lg"></i> Add New Client</a>
+
+      <div class="alert-container">
+
+
     <table class="table table-sm bg-white table-hover table-bordered">
         <thead>
           <tr>
@@ -32,7 +36,7 @@
     
         {% for client in user.clients %}
     
-          <tr>
+          <tr data-client-id='{{client.id}}'>
             <th scope="row">{{client.name}}</th>
     
             {% if client.street %}
@@ -41,9 +45,9 @@
             <td>Client Details Unspecified </td>
             {% endif %}
     
-            <td id="{{client.id}}">
+            <td>
                 <a href='/{{user.username}}/client/{{client.id}}/edit'><i class="ph-pencil-simple ph-lg"></i></a>
-                <i class="ph-trash-simple delete ph-lg"></i>
+                <button class='delete icon'><i class="ph-trash-simple delete ph-lg"></i></button>
             </td>
           </tr>
     
@@ -51,8 +55,10 @@
         </tbody>
       </table>
     </div>
+    </div>
 
 {% block script %}
+<script src="/static/js/global-functions.js"></script>
 <script src="/static/js/client/client-list.js"></script>
 {% endblock %}
 
