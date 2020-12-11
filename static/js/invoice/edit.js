@@ -16,15 +16,17 @@ cardHeader.addEventListener('click', function(evt){
     //handles add user input
     if (evt.target.classList.contains('add')) {
         const invoiceNr = grabInvoiceNr()
-        sendRequestToAddInvoiceNr(evt, invoiceNr)
+        sendRequestToAddInvoiceNr(invoiceNr)
     }
     //handles render input form
     else if (evt.target.classList.contains('make-input')){
-        makeInputForInvoiceNr(evt)
+        const targetSpan = getTargetSpan(evt)
+        makeInputForInvoiceNr(targetSpan)
     }
     //handles delete
     else if (evt.target.classList.contains('delete')){
-        removeRow(evt)
+        const invNrRow = document.querySelector('.invoice-nr')
+        invNrRow.remove()
     }
 })
 
@@ -34,14 +36,17 @@ fromSection.addEventListener('click', function(evt) {
         const billingInfoID = getID(evt.target.id)
         sendRequestToRetrieveBillingInfo(evt, billingInfoID)
     } else if (evt.target.classList.contains('accept-bi')) {
-        removeRow(evt)
+        // removes superfluous row of btns
+        const btnsRow = document.querySelector('.billing-details-btns')
+        btnsRow.remove()
     }
 })
 
 //date section for adding date and due dates
 datesSection.addEventListener('click', function(evt){
     if (evt.target.classList.contains('delete-dates')) {
-        removeRow(evt)
+        const targetRow = getTargetRow(evt)
+        targetRow.remove()
     } else if (evt.target.classList.contains('add-dates')) {
         evt.preventDefault()
         const dateOfIssue = document.querySelector("input[name='date-of-issue']").value
@@ -57,17 +62,21 @@ datesSection.addEventListener('click', function(evt){
 extrasTable.addEventListener('click', function(evt){
     //handle remove
     if (evt.target.classList.contains('delete')) {
-        removeRow(evt)
+        const targetRow = getTargetRow(evt)
+        targetRow.remove()
     //handle creating inputs
     } else if (evt.target.classList.contains('add')) {
-        const extraType = evt.target.id
-        makeExtraInput(evt, extraType)
+        const extraType = evt.target.dataset.extraType
+        makeExtraInput(extraType)
     }
     //handle accepting changes
     else if (evt.target.classList.contains('accept-changes')) {
         const userInput = retrieveUserInput()
         console.log(userInput)
         sendRequestToUpdateExtras(evt, ...userInput)
+    } // handle remove inputs 
+    else if (evt.target.classList.contains('delete-input')) {
+      removeExtrasInput(evt)
     }
 })
 
@@ -163,14 +172,14 @@ async function sendRequestToUpdateExtras(evt, extra, discount, VAT) {
       });
   }
 
-async function sendRequestToAddInvoiceNr(evt, invoiceNr) {
+async function sendRequestToAddInvoiceNr(invoiceNr) {
     await axios
       .patch(`${BASE}/${username}/invoice/${invoiceID}/edit`, {
         invoiceNr
       })
       .then(function (response) {
         // handle success
-        updateUIWithInvoiceNr(evt, response)
+        updateUIWithInvoiceNr(response)
       })
       .catch(function (error) {
         if (error.response) {
@@ -192,9 +201,8 @@ async function sendRequestToAddInvoiceNr(evt, invoiceNr) {
       });
   }
 
-function makeInputForInvoiceNr(evt) {
-    evt.target.parentElement.parentElement.firstElementChild.remove()
-    evt.target.parentElement.innerHTML = `<div class='row align-items-center'> <div class='col'><input id='invoice-nr'class='form-control' type='text'></input></div> <div class='col'><i class="ph-check-circle ph-xl add float-left"></i></div></div>`
+function makeInputForInvoiceNr(targetSpan) {
+    targetSpan.innerHTML = `<div class='ml-1 row align-items-center'> <div class='col'><input id='invoice-nr'class='form-control' type='text'></input></div> <div class='col'><button class='add icon'><i class="ph-check-circle ph-xl add float-left"></i></button><button class='delete icon'><i class="ph-trash-simple ph-xl delete float-left"></i></button></div></div>`
 }
 
 function getID(id) {
@@ -214,11 +222,8 @@ function populateDetails(response) {
 }
 
 function makeAcceptBillingDetailsBtn(evt) {
-    document.querySelector('#accept-div').innerText=''
-    const acceptIcon = document.createElement('i')
-    acceptIcon.classList.add('ph-check-circle', 'accept-bi', 'ph-xl')
-    document.querySelector('#accept-div').append(acceptIcon)
-}
+    document.querySelector('#accept-div').innerHTML = `<button class='icon accept-bi'><i class='ph-check-circle ph-xl accept-bi'></i></button>`
+  }
 
 function renderDates(evt, response) {
     //prettify dates
@@ -244,12 +249,14 @@ function removeRow(evt) {
 
 }
 
-function makeExtraInput(evt, extraType) {
+function makeExtraInput(extraType) {
     makeAcceptChangesBtn()
     if (extraType === 'VAT' || extraType === 'discount') {
-        evt.target.parentElement.innerHTML = `<div class='row align-items-center'><div class='col-10'><input id=${extraType} type="text" class="form-control" placeholder='enter %, e.g. 10' id="formControlRange"></div><div class='col-2'><i class="ph-trash-simple ph-lg delete extra-input"></i></div></div>`
+        const targetRow = document.querySelector(`.${extraType}`);
+        targetRow.innerHTML = `<div class='row align-items-center'><div class='col-10'><input id=${extraType} type="text" class="form-control" placeholder='enter %, e.g. 10' id="formControlRange"></div><div class='col-2'><button class='icon delete-input'><i class="ph-trash-simple ph-lg delete-input extra-input"></i></button></div></div>`
     } else if (extraType === 'extra') {
-        evt.target.parentElement.innerHTML = `<div class='row align-items-center'> <div class='col-10'><input id='${extraType}' type="text" class='form-control' placeholder='enter number, e.g. 120.50'></div><div class='col-2'><i class="ph-trash-simple ph-lg delete extra-input"></i></div></div>` 
+        const targetRow = document.querySelector('.extra')
+        targetRow.innerHTML = `<div class='row align-items-center'> <div class='col-10'><input id='${extraType}' type="text" class='form-control' placeholder='enter number, e.g. 120.50'></div><div class='col-2'><button class='icon delete-input'><i class="ph-trash-simple ph-lg delete-input extra-input"></i></button></div></div>` 
     }
 }
 
@@ -303,6 +310,25 @@ function updateUIWithExtras(response) {
     document.querySelector('#final-amount').innerHTML = `<strong>${response.data.amount_after_extras_in_curr_of_inv} ${response.data.curr_of_inv}</strong>`
 } 
 
-function updateUIWithInvoiceNr(evt, response) {
-    evt.target.parentElement.parentElement.innerHTML = `<div class='ml-3'>Invoice Number</div><strong class='ml-3'>${response.data.invoice_nr}</strong>`
+function updateUIWithInvoiceNr(response) {
+    const invNrRow = document.querySelector('.invoice-nr')
+    invNrRow.innerHTML = `<div class='ml-3'>Invoice Number</div><strong class='ml-3'>${response.data.invoice_nr}</strong>`
+}
+
+function getTargetSpan(evt) {
+  const span =
+  evt.target.tagName === "BUTTON"
+    ? evt.target.parentElement
+    : evt.target.parentElement.parentElement;
+
+  return span
+}
+
+//distinguish between clicking on button and icon for delete-input
+function removeExtrasInput(evt) {
+  if (evt.target.tagName === 'BUTTON') {
+    evt.target.parentElement.parentElement.parentElement.parentElement.remove()
+  } else {
+    evt.target.parentElement.parentElement.parentElement.parentElement.parentElement.remove()
+  }
 }

@@ -13,7 +13,6 @@
     <p>
         Please configure your invoice settings below prior to saving.
     </p>
-    <button id='save' class='btn btn-primary btn-block mb-4'><i class="ph-download-simple"></i> Save Invoice as PDF</button>
 </div>
 
 
@@ -23,14 +22,14 @@
             <div id="invoice-info-id-{{invoice.id}}"class="card-header">
                 <div class="row">
                     <div class="col">
-                        <div class="row">
+                        <div class="row invoice-nr">
                             <span>Invoice Number </span>
                             {% if invoice.invoice_nr %}
                             <strong class='ml-3'> {{invoice.invoice_nr}}</strong>
                             {% else %}
                             <span class='align-text-bottom'>
-                                <i class="ph-plus make-input ml-2 ph-lg"></i>
-                                <i class="ph-trash-simple delete ph-lg"></i>
+                                <button class='icon make-input'><i class="ph-plus make-input ml-2 ph-lg"></i></button>
+                                <button class='icon delete'><i class="ph-trash-simple delete ph-lg"></i></button>
                             </span>
                             {% endif %}
                         </div>
@@ -80,7 +79,7 @@
                     </form>
                     {% else %}
                     <div id='billing-details-div' class=""></div>
-                    <div class="row align-items-center">
+                    <div class="row align-items-center billing-details-btns">
                         <div class="col">
                             <div class="dropdown">
                                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Billing Details</button>
@@ -117,8 +116,8 @@
                                 <input required name='due-date' class='form-control' type="date">
                             </div>
                             <div class="col-6">
-                                <i class="ph-check-circle ph-xl add-dates"></i>
-                                <i class="ph-trash-simple ph-xl delete-dates"></i>
+                                <button class='add-dates icon'><i class="ph-check-circle ph-xl add-dates"></i></button>
+                                <button class='delete-dates icon'><i class="ph-trash-simple ph-xl delete-dates"></i></button>
                             </div>
                         </div>
                     </form>
@@ -166,43 +165,48 @@
                                     <td class="left"><strong>Subtotal</strong></td>
                                     <td class="right">{{invoice.project.show_subtotal_values()['subtotal_inv']['symbol']}}{{invoice.amount_in_curr_of_inv}}</td>
                                 </tr>
-                                <tr>
+                                <tr class='extra-row'>
                                     <td class="left"><strong>Extra Charge <span id='extra-charge-description'></span></strong></td>
                                     <td class="right extra">
                                         {% if invoice.extra %}
                                         {{invoice.extra}}
                                         {% else %}
-                                        <i id='extra' class="ph-plus ph-lg add extra-input"></i>
-                                        <i id='delete-extra-charge' class="ph-trash-simple ph-lg delete"></i>
+                                        <button data-extra-type='extra' class='icon add extra-input'><i data-extra-type='extra' class="ph-plus ph-lg add extra-input"></i></button>
+                                        <button class='delete icon'><i id='delete-extra-charge' class="ph-trash-simple ph-lg delete"></i></button>
                                         {% endif %}
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr class='discount-row'>
                                     <td class="left"><strong>Discount <span id='discount-percent'>(%)</span></strong></td>
                                     <td class="right discount">
                                         {% if invoice.discount %}
                                         {{invoice.discount}}
                                         {% else %}
-                                        <i id='discount' class="ph-plus ph-lg add extra-input"></i>
-                                        <i id='delete-discount' class="ph-trash-simple ph-lg delete"></i>
+                                        <button data-extra-type='discount' class='icon add extra-input'><i data-extra-type='discount' class="ph-plus ph-lg add extra-input"></i></button>
+                                        <button class='icon delete'><i id='delete-discount' class="ph-trash-simple ph-lg delete"></i></button>
                                         {% endif %}
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr class='VAT-row'>
                                     <td class="left"><strong>VAT <span>(%)</span></strong></td>
                                     <td class="right VAT">
                                         {% if invoice.VAT %}
                                         {{invoice.VAT}}
                                         {% else %}
-                                        <i id='VAT' class="ph-plus ph-lg add extra-input"></i>
-                                        <i id='delete-VAT' class="ph-trash-simple ph-lg delete"></i>
+                                       <button data-extra-type='VAT' class='icon add extra-input'> <i data-extra-type='VAT' id='VAT' class="ph-plus ph-lg add extra-input"></i></button>
+                                        <button class='icon delete'><i id='delete-VAT' class="ph-trash-simple ph-lg delete"></i></button>
                                         {% endif %}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="left"><strong>Total</strong></td>
-                                    <td id='final-amount' class="right">{% if invoice.amount_after_extras_in_curr_of_inv %}
-                                       <strong><span>{{invoice.amount_after_extras_in_curr_of_inv}} {{invoice.curr_of_inv}}</span></strong>
+                                    <td id='final-amount' class="right">
+                                       <strong><span>
+                                        {% if invoice.amount_after_extras_in_curr_of_inv %}
+                                        {{invoice.amount_after_extras_in_curr_of_inv}} {{invoice.curr_of_inv}}
+                                        {% else %}
+                                        {{invoice.amount_in_curr_of_inv}} {{invoice.curr_of_inv}}
+                                        </span></strong>
                                        {% endif %}
                                     </td>
                                 </tr>
@@ -218,11 +222,14 @@
         </div>
     </div>
 </div>
+<div class="container">
+    <button id='save' class='btn btn-primary btn-block mb-4 mt-4'><i class="ph-download-simple"></i> Save Invoice as PDF</button>
+</div>
 
 {% endblock %}
 
 {% block script %}
-
+<script src='/static/js/global-functions.js'></script>
 <script src="/static/js/html2pdf.bundle.min.js"></script>
 <script src='/static/js/invoice/edit.js'></script>
 
