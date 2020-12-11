@@ -10,7 +10,7 @@
 
 <h1 id='{{project.id}}' class='display-3 text-center mb-4 bg-white'>{{project.project_name}}</h1>
 
-<div class="row justify-content-around">
+<div id='stop-start-dashboard' class="row justify-content-around">
     <div class="col text-center">
         <button id='start' class='btn btn-success btn-lg mb-3'>Start Tracking Your Time</button>
         <p><i class="ph-timer ph-xl"></i> Time Started: <span class='time-span' id='time-started'></span></p> 
@@ -22,18 +22,18 @@
 
 </div>
 
-<div class="row justify-content-around mt-4 ml-1">
-<div class="col">
-    <h6>Hourly rate: {{project.show_subtotal_values()['subtotal_rate']['symbol']}}{{project.hourly_rate}}</h6>
-    <h6>Subtotal: <span id='subtotal-rate'>{{project.subtotal}} {{project.show_subtotal_values()['subtotal_rate']['symbol']}}</span>
-        {% if project.curr_of_rate != project.curr_of_inv %}
-        / <span id='subtotal-inv'>{{project.converted_subtotal}} {{project.show_subtotal_values()['subtotal_inv']['symbol']}}</span>
-        {% endif %}
-    </h6>
+<div id='subtotals' class="row justify-content-around mt-4 ml-1">
+    <div class="col">
+        <h6>Hourly rate: {{project.show_subtotal_values()['subtotal_rate']['symbol']}}{{project.hourly_rate}}</h6>
+        <h6>Subtotal: <span id='subtotal-rate'>{{project.subtotal}} {{project.show_subtotal_values()['subtotal_rate']['symbol']}}</span>
+            {% if project.curr_of_rate != project.curr_of_inv %}
+            / <span id='subtotal-inv'>{{project.converted_subtotal}} {{project.show_subtotal_values()['subtotal_inv']['symbol']}}</span>
+            {% endif %}
+        </h6>
 
+    </div>
 </div>
-</div>
-
+<div class="alert-container">
 <table class="table">
     <thead>
       <tr>
@@ -48,7 +48,7 @@
     </thead>
     <tbody>
     {% for log_entry in project.log_entries %}
-    <tr id='logentryid-{{log_entry.id}}'>
+    <tr data-log-entry-id="{{log_entry.id}}">
         <td>{{log_entry.date}}</td>
         <td>{{log_entry.pretty_start_time}}</td>
         <td>
@@ -74,7 +74,7 @@
     {% endfor %}
     </tbody>
 </table>
-
+</div>
 
 
 

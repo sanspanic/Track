@@ -16,8 +16,8 @@ startBtn.addEventListener("click", function (evt) {
 //stop tracking time
 stopBtn.addEventListener("click", function (evt) {
   enableTableBtns();
-  //log_entry_id is needed to identify which le is being updated
-  let log_entry_id = getLogEntryId();
+  //log_entry_id is needed to identify which le is being updated. in this case will be last row by default
+  const log_entry_id = getLogEntryIdLastRow();
   sendRequestToAddStopTime(log_entry_id);
   stopBtn.setAttribute("disabled", "disabled");
   startBtn.removeAttribute("disabled");
@@ -25,46 +25,42 @@ stopBtn.addEventListener("click", function (evt) {
 });
 
 table.addEventListener("click", function (evt) {
+  //handle requesting to edit existing log entry
   if (evt.target.id === "edit") {
     disableAllBtns();
     emptySpans();
+    //capture data needed to make inputs
+    const targetRow = evt.target.parentElement.parentElement
     //change cell to include accept changes button
     evt.target.parentElement.innerHTML =
       "<i id='accept-changes' class='ph-check-circle ph-lg'></i>";
-    makeDateInput(evt);
-    makeTimeInputs(evt);
-    makeDescriptionInput(evt);
-  }
-});
-
-table.addEventListener("click", function (evt) {
-  if (evt.target.id === "accept-changes") {
+    makeDateInput(targetRow);
+    makeTimeInputs(targetRow);
+    makeDescriptionInput(targetRow);
+  } //handle accepting edited changes
+  else if (evt.target.id ==='accept-changes') {
     enableTableBtns();
     startBtn.removeAttribute("disabled");
+    const logEntryId = getLogEntryId(evt)
     //add back edit and delete buttons
     makeEditAndDeleteBtns(evt.target.parentElement);
-    let log_entry_id = getLogEntryId();
     //grab user input intended to be sent to backend for updating
-    let date = document.querySelector("input[type='date']").value;
-    let startTime = document.querySelector("input[name='start_time']").value;
-    let stopTime = document.querySelector("input[name='stop_time']").value;
-    let description = document.querySelector("input[name='description']").value;
+    const date = document.querySelector("input[type='date']").value;
+    const startTime = document.querySelector("input[name='start_time']").value;
+    const stopTime = document.querySelector("input[name='stop_time']").value;
+    const description = document.querySelector("input[name='description']").value;
     sendRequestToEditTimeAndDate(
-      evt,
-      log_entry_id,
+      logEntryId,
       date,
       startTime,
       stopTime,
       description
     );
-  }
-});
-
-table.addEventListener("click", function (evt) {
-  if (evt.target.id === "delete") {
-    let log_entry_id = getLogEntryIdForDel(evt);
-    sendRequestToDeleteLogEntry(evt, log_entry_id);
-  }
+  } // handle deleting log entry 
+    else if (evt.target.id === "delete") {
+      const logEntryId = getLogEntryId(evt)
+      sendRequestToDeleteLogEntry(evt, logEntryId);
+    }
 });
 
 async function sendCreateLogEntryRequest() {
@@ -74,7 +70,7 @@ async function sendCreateLogEntryRequest() {
       // handle success
       addNewRow(response);
       updateSpans(response);
-      makeAlert(response);
+      makeAlert(response, 'success');
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -108,7 +104,8 @@ async function sendRequestToAddStopTime(log_entry_id) {
       // handle success
       addStopInfoToRow(response);
       updateSpans(response);
-      makeAlert(response);
+      updateSubtotals(response);
+      makeAlert(response, 'success');
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -134,7 +131,6 @@ async function sendRequestToAddStopTime(log_entry_id) {
 }
 
 async function sendRequestToEditTimeAndDate(
-  evt,
   log_entry_id,
   date,
   start_time,
@@ -154,9 +150,9 @@ async function sendRequestToEditTimeAndDate(
     .then(function (response) {
       // handle success
       emptySpans();
-      updateUI(evt, response);
+      updateUI(response);
       updateSubtotals(response);
-      makeAlert(response);
+      makeAlert(response, 'success');
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -188,10 +184,9 @@ async function sendRequestToDeleteLogEntry(evt, log_entry_id) {
     )
     .then(function (response) {
       // handle success
-      console.log(response);
       deleteRow(evt);
       updateSubtotals(response);
-      makeAlert(response);
+      makeAlert(response, 'danger');
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -216,52 +211,51 @@ async function sendRequestToDeleteLogEntry(evt, log_entry_id) {
     });
 }
 
-function makeDateInput(evt) {
+//grabs input from targeted row and transforms it into inputs
+function makeDateInput(targetRow) {
   let input = document.createElement("input");
   input.setAttribute("type", "date");
   input.setAttribute("name", "date");
-  let inputValue = evt.path[2].firstElementChild.innerText;
+  let inputValue = targetRow.firstElementChild.innerText;
   //handle case where day is single number - must have 0 in front in order to display correctly in input
   if (inputValue.split("-")[2].length < 2) {
     let inputValueArr = inputValue.split("-");
     inputValue = `${inputValueArr[0]}-${inputValueArr[1]}-0${inputValueArr[2]}`;
   }
   input.setAttribute("value", inputValue);
-  evt.path[2].firstElementChild.innerText = "";
-  evt.path[2].firstElementChild.append(input);
+  targetRow.firstElementChild.innerText = "";
+  targetRow.firstElementChild.append(input);
 }
 
-function makeTimeInputs(evt) {
-  let startTime = evt.path[2].firstElementChild.nextElementSibling.innerText;
-  let stopTime =
-    evt.path[2].firstElementChild.nextElementSibling.nextElementSibling
-      .innerText;
-  evt.path[2].firstElementChild.nextElementSibling.innerText = "";
-  evt.path[2].firstElementChild.nextElementSibling.nextElementSibling.innerText =
+function makeTimeInputs(targetRow) {
+  const startTime = targetRow.firstElementChild.nextElementSibling.innerText;
+  const stopTime = targetRow.firstElementChild.nextElementSibling.nextElementSibling.innerText
+  targetRow.firstElementChild.nextElementSibling.innerText = "";
+  targetRow.firstElementChild.nextElementSibling.nextElementSibling.innerText =
     "";
-  let startTimeInput = document.createElement("input");
-  let stopTimeInput = document.createElement("input");
+  const startTimeInput = document.createElement("input");
+  const stopTimeInput = document.createElement("input");
   startTimeInput.setAttribute("type", "time");
   stopTimeInput.setAttribute("type", "time");
   startTimeInput.setAttribute("name", "start_time");
   stopTimeInput.setAttribute("name", "stop_time");
   startTimeInput.setAttribute("value", startTime);
   stopTimeInput.setAttribute("value", stopTime);
-  evt.path[2].firstElementChild.nextElementSibling.append(startTimeInput);
-  evt.path[2].firstElementChild.nextElementSibling.nextElementSibling.append(
+  targetRow.firstElementChild.nextElementSibling.append(startTimeInput);
+  targetRow.firstElementChild.nextElementSibling.nextElementSibling.append(
     stopTimeInput
   );
 }
 
-function makeDescriptionInput(evt) {
-  let currentDescriptionCell =
-    evt.path[2].firstElementChild.nextElementSibling.nextElementSibling
+function makeDescriptionInput(targetRow) {
+  const currentDescriptionCell =
+    targetRow.firstElementChild.nextElementSibling.nextElementSibling
       .nextElementSibling;
-  let currentDescription = currentDescriptionCell.innerText;
+  const currentDescription = currentDescriptionCell.innerText;
   currentDescriptionCell.innerHTML = `<input type='text' name='description' value='${currentDescription}'></input>`;
 }
 
-function updateUI(evt, response) {
+function updateUI(response) {
   let startTimeInputCell = document.querySelector("input[name='start_time']")
     .parentElement;
   let stopTimeInputCell = document.querySelector("input[name='stop_time']")
@@ -274,20 +268,19 @@ function updateUI(evt, response) {
   stopTimeInputCell.innerText = response.data.pretty_stop_time;
   dateInputCell.innerText = response.data.pretty_date;
   descriptionInputCell.innerText = response.data.description;
-  let valueCell = evt.path[1].previousElementSibling;
-  let timeDeltaCell = evt.path[1].previousElementSibling.previousElementSibling;
+  let valueCell = stopTimeInputCell.nextElementSibling.nextElementSibling.nextElementSibling;
+  let timeDeltaCell = stopTimeInputCell.nextElementSibling.nextElementSibling;
   valueCell.innerText = response.data.value_in_curr_of_rate;
   timeDeltaCell.innerText = `${response.data.time_delta} min`;
 }
 
-function makeAlert(response) {
+function makeAlert(response, category) {
   let alert = document.createElement("div");
-  let container = document.querySelector(".project-track").firstElementChild;
-  let h1 = document.querySelector("h1");
-  alert.classList.add("alert", "alert-danger");
+  let alertCont = document.querySelector(".alert-container")
+  alert.classList.add("alert", `alert-${category}`);
   alert.innerText = response.data.message;
   alert.setAttribute("id", "alert");
-  container.insertBefore(alert, h1);
+  alertCont.insertBefore(alert, table);
 }
 
 function hideAlert() {
@@ -312,16 +305,14 @@ function enableTableBtns() {
   }
 }
 
-function getLogEntryId() {
-  return table.lastElementChild.lastElementChild
-    .getAttribute("id")
-    .split("-")[1];
+//grabs log entry if target is button in row
+function getLogEntryId(evt) {
+  return evt.target.parentElement.parentElement.dataset.logEntryId
 }
 
-function getLogEntryIdForDel(evt) {
-  return evt.target.parentElement.parentElement
-    .getAttribute("id")
-    .split("-")[1];
+//grabs log entry ID of last row, which is by default the one being updated when stop time added
+function getLogEntryIdLastRow() {
+  return table.lastElementChild.lastElementChild.dataset.logEntryId
 }
 
 function addNewRow(response) {
@@ -335,7 +326,7 @@ function addNewRow(response) {
   let td_value = document.createElement("td");
   let td_actions = document.createElement("td");
   tr.appendChild(td_date).innerText = response.data.pretty_date;
-  tr.setAttribute("id", `logentryid-${response.data.id}`);
+  tr.setAttribute("data-log-entry-id", response.data.id);
   tr.appendChild(td_start).innerText = response.data.pretty_start_time;
   tr.appendChild(td_stop).innerHTML = "<i>tracking...</i>";
   tr.appendChild(td_description).classList.add('description')
@@ -374,10 +365,12 @@ function updateSpans(response) {
 }
 
 function updateSubtotals(response) {
-  let subtotalSpan = document.querySelector("#subtotal-rate");
-  subtotalSpan.innerText = `${response.data.subtotal} ${response.data.curr_of_rate}`;
-  let convSubtotalSpan = document.querySelector("#subtotal-inv");
-  convSubtotalSpan.innerText = `${response.data.converted_subtotal} ${response.data.curr_of_inv}`;
+  const subtotalSpan = document.querySelector("#subtotal-rate");
+  const subtotal = Number.parseFloat(response.data.subtotal).toFixed(2)
+  subtotalSpan.innerText = `${subtotal} ${response.data.curr_of_rate}`;
+  const convSubtotalSpan = document.querySelector("#subtotal-inv");
+  const convSubtotal = Number.parseFloat(response.data.converted_subtotal).toFixed(2)
+  convSubtotalSpan.innerText = `${convSubtotal} ${response.data.curr_of_inv}`;
 }
 
 function emptySpans() {
@@ -386,7 +379,7 @@ function emptySpans() {
 }
 
 function deleteRow(evt) {
-  evt.path[2].remove();
+  evt.target.parentElement.parentElement.remove();
 }
 
 //make spans stand out

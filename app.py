@@ -509,7 +509,7 @@ def add_log_entry(username, project_id):
         db.session.commit()
 
         response = log_entry.serialize()
-        response['message'] = 'New Log Entry was successfully created.'
+        response['message'] = 'New log entry was successfully created.'
 
         return make_response(response, 201)
 
