@@ -12,12 +12,8 @@ createInvBtn.addEventListener("click", function (evt) {
 //deletes invoice
 invTable.addEventListener("click", function (evt) {
   if (evt.target.classList.contains("delete")) {
-    debugger;
-    const targetRow =
-      evt.target.tagName === "BUTTON"
-        ? evt.target.parentElement.parentElement
-        : evt.target.parentElement.parentElement.parentElement;
-    let invId = targetRow.dataset.invoiceId;
+    const targetRow = getTargetRow(evt)
+    const invId = targetRow.dataset.invoiceId;
     sendDeleteInvRequest(targetRow, invId);
   }
 });
@@ -100,19 +96,6 @@ function addNewInvoiceRow(evt, response) {
   </td>`;
   invTable.lastElementChild.append(newRow);
   console.log(response);
-}
-
-function makeAlert(response, category) {
-  let alert = document.createElement("div");
-  let container = document.querySelector("#invoices-container");
-  alert.classList.add("alert", `alert-${category}`);
-  alert.innerText = response.data.message;
-  alert.setAttribute("id", "alert");
-  container.insertBefore(alert, invTable);
-}
-
-function hideAlert() {
-  document.getElementById("alert").remove();
 }
 
 function removeRow(targetRow) {

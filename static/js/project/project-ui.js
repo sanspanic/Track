@@ -1,17 +1,17 @@
-const table = document.querySelector("table");
+const projectTable = document.querySelector("table");
 
 //add event listeners to edit, delete and accept-changes icons. differentiate between button and icon click
-table.addEventListener("click", function (evt) {
+projectTable.addEventListener("click", function (evt) {
   //handle edit project
   if (evt.target.classList.contains("edit")) {
     disableAllBtns();
-    const targetRow = getTargetRow(evt)
+    const targetRow = getTargetRow(evt);
     //retrieves names of clients that are associated with user
     sendRequestForClientNames(targetRow);
   } //handle delete project
   else if (evt.target.classList.contains("delete")) {
     let projectId = getProjectID(evt);
-    const targetRow = getTargetRow(evt)
+    const targetRow = getTargetRow(evt);
     sendDeleteRequest(projectId, targetRow);
     //remove row
     targetRow.remove();
@@ -21,7 +21,7 @@ table.addEventListener("click", function (evt) {
     const clientName = document.querySelector("#client-name").value;
     const projectName = document.querySelector("#project-name").value;
     const projectId = getProjectID(evt);
-    const targetRow = getTargetRow(evt)
+    const targetRow = getTargetRow(evt);
     //send axios request to endpoint that handles edit
     sendRequestToEdit(targetRow, clientName, projectName, projectId);
     enableAllBtns();
@@ -60,7 +60,12 @@ async function sendRequestForClientNames(targetRow) {
     });
 }
 
-async function sendRequestToEdit(targetRow, clientName, projectName, projectId) {
+async function sendRequestToEdit(
+  targetRow,
+  clientName,
+  projectName,
+  projectId
+) {
   await axios
     .put(`${BASE}/user/${username}/projects/edit`, {
       clientName,
@@ -70,7 +75,7 @@ async function sendRequestToEdit(targetRow, clientName, projectName, projectId) 
     .then(function (response) {
       showUpdatedValues(targetRow, clientName, projectName);
       makeActionBtns(targetRow, projectId);
-      makeAlert(response, 'success');
+      makeAlert(response, "success");
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -100,7 +105,7 @@ async function sendDeleteRequest(project_id) {
     .delete(`${BASE}/user/${username}/projects/${project_id}/delete`)
     .then(function (response) {
       // handle success
-      makeAlert(response, 'danger');
+      makeAlert(response, "danger");
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -125,23 +130,10 @@ async function sendDeleteRequest(project_id) {
     });
 }
 
-function makeAlert(response, category) {
-  let alert = document.createElement("div");
-  let alertCont = document.querySelector(".alert-container")
-  alert.classList.add("alert", `alert-${category}`);
-  alert.innerText = response.data.message;
-  alert.setAttribute("id", "alert");
-  alertCont.insertBefore(alert, table);
-}
-
-function hideAlert() {
-  document.getElementById("alert").remove();
-}
-
 //makes dropdown using response from axios with names of clients
 function makeClientDropdown(targetRow, names) {
   //identifies correct td
-  let clientNameCell = targetRow.firstElementChild.nextElementSibling
+  let clientNameCell = targetRow.firstElementChild.nextElementSibling;
   let clientNameInput = document.createElement("div");
   let dropdownHTMLStart = `<select id='client-name' class='browser-default custom-select'><option selected>Client</option>`;
   let dropdownHTMLEnd = `</select>`;
@@ -160,7 +152,7 @@ function makeClientDropdown(targetRow, names) {
 
 //makes input cell displaying current value of project name
 function makeProjectNameInput(targetRow) {
-  let projectNameCell = targetRow.firstElementChild
+  let projectNameCell = targetRow.firstElementChild;
   let projectName = projectNameCell.innerText;
   let projectNameInput = document.createElement("input");
   projectNameInput.setAttribute("id", "project-name");
@@ -183,14 +175,14 @@ function showUpdatedValues(targetRow, clientName, projectName) {
 
 function disableAllBtns() {
   let allBtns = document.querySelectorAll(".btn");
-  allBtns.forEach((btn) => btn.classList.add('disabled'));
-  allBtns.forEach((btn) => btn.setAttribute('disabled', 'disabled'));
+  allBtns.forEach((btn) => btn.classList.add("disabled"));
+  allBtns.forEach((btn) => btn.setAttribute("disabled", "disabled"));
 }
 
 function enableAllBtns() {
   let allBtns = document.querySelectorAll(".btn");
   allBtns.forEach((btn) => btn.classList.remove("disabled"));
-  allBtns.forEach((btn) => btn.removeAttribute('disabled'));
+  allBtns.forEach((btn) => btn.removeAttribute("disabled"));
 }
 
 //creates track, edit and delete buttons
@@ -202,12 +194,11 @@ function makeActionBtns(targetRow, projectId) {
 
 //differentiate between icon and button click and return projectId
 function getProjectID(evt) {
-  projectId = (evt.target.tagName === 'BUTTON') ? evt.target.parentElement.parentElement.dataset.projectId : evt.target.parentElement.parentElement.parentElement.dataset.projectId
-  return projectId
+  projectId =
+    evt.target.tagName === "BUTTON"
+      ? evt.target.parentElement.parentElement.dataset.projectId
+      : evt.target.parentElement.parentElement.parentElement.dataset.projectId;
+  return projectId;
 }
 
-//determines targeted row based on evt.tagname (icon vs button)
-function getTargetRow(evt) {
-  const row = (evt.target.tagName === 'BUTTON') ? evt.target.parentElement.parentElement : evt.target.parentElement.parentElement.parentElement
-  return row
-}
+

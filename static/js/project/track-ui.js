@@ -1,6 +1,6 @@
 const startBtn = document.querySelector("#start");
 const stopBtn = document.querySelector("#stop");
-const table = document.querySelector("table");
+const trackTable = document.querySelector("table");
 const project_id = document.querySelector("h1").getAttribute("id");
 
 stopBtn.setAttribute("disabled", "disabled");
@@ -25,7 +25,7 @@ stopBtn.addEventListener("click", function () {
 });
 
 //adds 3 event listeners to table, enablind: edit, accepting-changes & delete
-table.addEventListener("click", function (evt) {
+trackTable.addEventListener("click", function (evt) {
   //handle requesting to edit existing log entry
   if (evt.target.classList.contains("edit")) {
     disableAllBtns();
