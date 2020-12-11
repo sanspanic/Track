@@ -1,30 +1,35 @@
 const invTable = document.querySelector("table");
-const createInvBtn = document.querySelector('.create')
+const createInvBtn = document.querySelector(".create");
 
 //creates new invoice from existing project
-createInvBtn.addEventListener('click', function(evt) {
-    if (evt.target.dataset.projectId) {
-      const projectID = evt.target.dataset.projectId
-      createInv(evt, projectID)
-    }
-})
+createInvBtn.addEventListener("click", function (evt) {
+  if (evt.target.dataset.projectId) {
+    const projectID = evt.target.dataset.projectId;
+    createInv(evt, projectID);
+  }
+});
 
 //deletes invoice
 invTable.addEventListener("click", function (evt) {
   if (evt.target.classList.contains("delete")) {
-    let id = evt.target.parentElement.id;
-    sendDeleteInvRequest(evt, id);
+    debugger;
+    const targetRow =
+      evt.target.tagName === "BUTTON"
+        ? evt.target.parentElement.parentElement
+        : evt.target.parentElement.parentElement.parentElement;
+    let invId = targetRow.dataset.invoiceId;
+    sendDeleteInvRequest(targetRow, invId);
   }
 });
 
 //request to delete invoice from db. handles ui post-request
-async function sendDeleteInvRequest(evt, id) {
+async function sendDeleteInvRequest(targetRow, id) {
   await axios
     .delete(`${BASE}/${username}/invoice/${id}/delete`)
     .then(function (response) {
       // handle success
-      removeRow(evt)
-      makeAlert(response, "danger")
+      removeRow(targetRow);
+      makeAlert(response, "danger");
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -55,8 +60,8 @@ async function createInv(evt, projectID) {
     .post(`${BASE}/${username}/project/${projectID}/create-invoice`)
     .then(function (response) {
       // handle success
-      addNewInvoiceRow(evt, response)
-      makeAlert(response, "success")
+      addNewInvoiceRow(evt, response);
+      makeAlert(response, "success");
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }
@@ -83,7 +88,7 @@ async function createInv(evt, projectID) {
 
 //makes new row and populates it with response data
 function addNewInvoiceRow(evt, response) {
-  const newRow = document.createElement('tr')
+  const newRow = document.createElement("tr");
   newRow.innerHTML = `<th scope="row">${response.data.pretty_date}</th>
   <td>${response.data.client_name}</td>
   <td>${evt.target.innerText}</td>
@@ -92,12 +97,10 @@ function addNewInvoiceRow(evt, response) {
   <td id="${response.data.id}">
   <a href='/${username}/invoice/${response.data.id}'><i class="ph-printer ph-lg"></i></a>
   <i class="ph-trash-simple delete ph-lg"></i>
-  </td>`
-  invTable.lastElementChild.append(newRow)
-  console.log(response)
-
+  </td>`;
+  invTable.lastElementChild.append(newRow);
+  console.log(response);
 }
-
 
 function makeAlert(response, category) {
   let alert = document.createElement("div");
@@ -112,8 +115,6 @@ function hideAlert() {
   document.getElementById("alert").remove();
 }
 
-function removeRow(evt) {
-  evt.target.parentElement.parentElement.remove();
+function removeRow(targetRow) {
+  targetRow.remove();
 }
-
-

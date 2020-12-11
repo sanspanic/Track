@@ -43,7 +43,7 @@
 
         {% for invoice in user.invoices %}
 
-          <tr>
+          <tr data-invoice-id="{{invoice.id}}">
             <th scope="row">{{invoice.date}}</th>
 
             {% if invoice.project.client.name %}
@@ -63,9 +63,9 @@
             <td>No conversion specified</td>
             {% endif %}
 
-            <td id="{{invoice.id}}">
+            <td>
                 <a href='/{{user.username}}/invoice/{{invoice.id}}'><i class="ph-printer ph-lg"></i></a>
-                <i class="ph-trash-simple delete ph-lg"></i>
+                <button class='icon delete'><i class="ph-trash-simple delete ph-lg"></i></button>
             </td>
           </tr>
 
