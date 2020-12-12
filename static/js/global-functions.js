@@ -1,5 +1,12 @@
 const table = document.querySelector('table')
 
+//enable tooltips
+window.onload = function() {
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+  }
+
 function makeAlert(response, category) {
     let alert = document.createElement("div");
     let container = document.querySelector(".alert-container");

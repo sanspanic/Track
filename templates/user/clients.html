@@ -16,7 +16,7 @@
       <div class="alert-container">
 
 
-    <table class="table table-sm bg-white table-hover table-bordered">
+    <table class="table bg-white table-hover">
         <thead>
           <tr>
             <th scope="col">Client Name</th>
@@ -46,8 +46,8 @@
             {% endif %}
     
             <td>
-                <a href='/{{user.username}}/client/{{client.id}}/edit'><i class="ph-pencil-simple ph-lg"></i></a>
-                <button class='delete icon'><i class="ph-trash-simple delete ph-lg"></i></button>
+                <a data-toggle="tooltip" data-placement='top' title="Edit client details" href='/{{user.username}}/client/{{client.id}}/edit'><i class="ph-pencil-simple ph-lg"></i></a>
+                <button data-toggle="tooltip" data-placement='top' title="Delete client record" data-delay=0 class='delete icon'><i class="ph-trash-simple delete ph-lg"></i></button>
             </td>
           </tr>
     

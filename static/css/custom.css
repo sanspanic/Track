@@ -72,3 +72,13 @@ button.icon {
     outline: none;
 }
 
+.tooltip-inner {
+    background-color: #482883;
+}
+
+.bs-tooltip-top .arrow::before, .bs-tooltip-auto[x-placement^="top"] .arrow::before {
+    border-top-color: #482883;
+    border-width: 0.4rem 0.4rem 0;
+}
+
+
