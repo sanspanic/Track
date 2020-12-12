@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
 
-{% block body_class %}container login{% endblock %}
+{% block body_class %}container-flex login registration py-5 my-5{% endblock %}
 
 {% block navbar %}
 {% include 'navbar.html' %}
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="/static/css/signup.css">
 {% endblock %}
 
 {% block content %}
@@ -11,10 +15,10 @@
 
 
   <div class="row justify-content-center">
-  <div class="col-md-7 col-lg-5">
+  <div class="form-div col-md-7 col-lg-5">
     <div class="row align-items-center">
       <div class="col">
-        <h2>Start Tracking.</h2>
+        <h2 class='text-white'>Start Tracking.</h2>
       </div>
       <div class="col">
         <img src="/static/css/imgs/GrowYourMoney/grow-you-money-1.png" alt="" width='200'>

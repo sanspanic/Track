@@ -1,0 +1,14 @@
+
+.registration { 
+    background: url("/static/css/imgs/LandingPage/overlayed.png") no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-color: black;
+  }
+
+.form-div {
+    background: rgba(150, 150, 150, 0.3)
+}
+
