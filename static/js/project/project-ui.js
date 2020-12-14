@@ -203,16 +203,3 @@ function getProjectID(evt) {
   return projectId;
 }
 
-//if new element is created tooltips won't show up unless manually initialised as below
-function handleTooltips() {
-  $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-  })
-
-  //somehow tooltips stay after buttons are clicked and sometimes oddly float to top of page. this hides them on button click
-  $('button').on('click', function () {
-      $(this).tooltip('hide')
-    })
-}
-
-

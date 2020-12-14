@@ -35,11 +35,13 @@ trackTable.addEventListener("click", function (evt) {
     if (evt.target.tagName === "BUTTON") {
       targetRow = evt.target.parentElement.parentElement;
       evt.target.parentElement.innerHTML =
-        "<button class='accept-changes icon'><i class='ph-check-circle ph-lg accept-changes'></i></button>";
+        "<button data-trigger='hover' data-toggle='tooltip' data-placement='top' title='Accept changes' class='accept-changes icon'><i class='ph-check-circle ph-lg accept-changes'></i></button>";
+        handleTooltips()
     } else {
       targetRow = evt.target.parentElement.parentElement.parentElement;
       evt.target.parentElement.parentElement.innerHTML =
-        "<button class='accept-changes icon'><i class='ph-check-circle ph-lg accept-changes'></i></button>";
+        "<button data-trigger='hover' data-toggle='tooltip' data-placement='top' title='Accept changes' class='accept-changes icon'><i class='ph-check-circle ph-lg accept-changes'></i></button>";
+        handleTooltips()
     }
     makeDateInput(targetRow);
     makeTimeInputs(targetRow);
@@ -355,8 +357,9 @@ function addStopInfoToRow(response) {
 }
 
 function makeEditAndDeleteBtns(target) {
-  target.innerHTML = `<button class='icon edit'><i class="ph-pencil-simple ph-lg edit"></i></button>
-    <button class='icon delete'><i class="ph-trash-simple ph-lg delete"></i></button> `;
+  target.innerHTML = `<button data-trigger='hover' data-toggle='tooltip' data-placement='top' title='Edit log entry' class='icon edit'><i class="ph-pencil-simple ph-lg edit"></i></button>
+    <button data-trigger='hover' data-toggle='tooltip' data-placement='top' title='Delete log entry' class='icon delete'><i class="ph-trash-simple ph-lg delete"></i></button> `;
+    handleTooltips()
 }
 
 function updateSpans(response) {
