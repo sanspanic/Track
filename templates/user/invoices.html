@@ -13,7 +13,7 @@
 <h1 class='display-2 bg-white text-center'>Invoices</h1>
 
   <div class="btn-group btn-block mt-3 mb-4 create">
-    <button type="button" class="btn btn-success text-right"><i class="ph-file-plus ph-lg"></i> Create New Invoice</button>
+    <button data-toggle="tooltip" data-placement='top' title="Generate new invoice by selecting project from dropdown" type="button" class="btn btn-success text-right"><i class="ph-file-plus ph-lg"></i> Create New Invoice</button>
     <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <span class="sr-only">Toggle Dropdown</span>
     </button>
@@ -64,8 +64,8 @@
             {% endif %}
 
             <td>
-                <a href='/{{user.username}}/invoice/{{invoice.id}}'><i class="ph-printer ph-lg"></i></a>
-                <button class='icon delete'><i class="ph-trash-simple delete ph-lg"></i></button>
+                <a data-toggle="tooltip" data-placement='top' title="Edit invoice details" href='/{{user.username}}/invoice/{{invoice.id}}'><i class="ph-printer ph-lg"></i></a>
+                <button data-toggle="tooltip" data-placement='top' title="Delete invoice record" class='icon delete'><i class="ph-trash-simple delete ph-lg"></i></button>
             </td>
           </tr>
 

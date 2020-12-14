@@ -35,6 +35,7 @@ async function sendRequestForClientNames(targetRow) {
       // handle success
       //change cell to only display accept changes button
       makeAcceptChangesBtn(targetRow);
+      handleTooltips()
       let names = response.data.names;
       //call functions that render HTML for inputs displaying current project name and clients associated with user
       makeClientDropdown(targetRow, names);
@@ -164,7 +165,7 @@ function makeProjectNameInput(targetRow) {
 //changes cell to only display accept changes button
 function makeAcceptChangesBtn(targetRow) {
   targetRow.lastElementChild.innerHTML =
-    "<button class='icon accept-changes'><i class='ph-check-circle accept-changes ph-lg'></i></button>";
+    `<button data-trigger='hover' data-container='button' data-toggle='tooltip' data-placement='top' title='Edit project details' class='icon accept-changes'><i class='ph-check-circle accept-changes ph-lg'></i></button>`;
 }
 
 //updates UI to display newly edited values for clientName and projectName
@@ -188,8 +189,9 @@ function enableAllBtns() {
 //creates track, edit and delete buttons
 function makeActionBtns(targetRow, projectId) {
   targetRow.lastElementChild.innerHTML = `<a href='/{{user.username}}/project/${projectId}/track' class='btn btn-primary track'><i class="ph-timer ph-lg"></i> Track</a>
-  <button class='btn icon edit'><i class="ph-pencil-simple ph-lg edit"></i></button>
-  <button class='btn icon delete'><i class="ph-trash-simple delete ph-lg"></i></button>`;
+  <button data-trigger='hover' data-container='button' data-toggle="tooltip" data-placement='top' title="Edit project details" class='btn icon edit'><i class="ph-pencil-simple ph-lg edit"></i></button>
+  <button data-trigger='hover' data-container='button' data-toggle="tooltip" data-placement='top' title="Delete" class='btn icon delete'><i class="ph-trash-simple delete ph-lg"></i></button>`;
+  handleTooltips()
 }
 
 //differentiate between icon and button click and return projectId
@@ -199,6 +201,18 @@ function getProjectID(evt) {
       ? evt.target.parentElement.parentElement.dataset.projectId
       : evt.target.parentElement.parentElement.parentElement.dataset.projectId;
   return projectId;
+}
+
+//if new element is created tooltips won't show up unless manually initialised as below
+function handleTooltips() {
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+
+  //somehow tooltips stay after buttons are clicked and sometimes oddly float to top of page. this hides them on button click
+  $('button').on('click', function () {
+      $(this).tooltip('hide')
+    })
 }
 
 

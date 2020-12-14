@@ -5,6 +5,12 @@ window.onload = function() {
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
     })
+
+    //somehow tooltips stay after buttons are clicked and sometimes oddly float to top of page. this hides them on button click
+    $('button').on('click', function () {
+        $(this).tooltip('hide')
+      })
+
   }
 
 function makeAlert(response, category) {
