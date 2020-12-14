@@ -35,11 +35,9 @@
                             </tbody>
                         </table>
                         </div>
-                        <div class="d-flex align-self-end">
-                            <div class='d-flex justify-content-left mt-3'>
-                                <a href="/user/{{user.username}}/edit" class='btn btn-success mr-2'><i class="text-white ph-pencil-simple ph-xl"></i> Edit Details</a>
-                                <button class='btn btn-danger' id='delete'><i class="ph-trash-simple ph-xl text-white"></i> Delete User</button>
-                            </div>
+                        <div class='d-flex justify-content-left mt-3'>
+                            <a href="/user/{{user.username}}/edit" class='btn btn-success mr-2'><i class="text-white ph-pencil-simple ph-xl"></i> Edit Details</a>
+                            <button class='btn btn-danger' id='delete'><i class="ph-trash-simple ph-xl text-white"></i> Delete User</button>
                         </div>
                     </div>
                     <div class="col col-6">
@@ -61,53 +59,55 @@
                 <div class="row justify-content-left">
                     {% for bi in user.billing_info %}
                     <div class="col col-6">
-                        <table class=''>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>{{bi.name}}</th>
-                            </tr>
-                        </thead>
-                        <tbody class='text-left'>
-                            <tr>
-                                <th scope='row'>Name: </th>
-                                <td>{{bi.name}}</td>
-                            </tr>
-                            <tr>
-                                <th scope='row'>Street: </th>
-                                <td>{{bi.street}}</td>
-                            </tr>
-                            <tr>
-                                <th scope='row'>City: </th>
-                                <td>{{bi.city}}</td>
-                            </tr>
-                            <tr>
-                                <th scope='row'>Postcode: </th>
-                                <td>{{bi.postcode}}</td>
-                            </tr>
-                            <tr>
-                                <th scope='row'>Country: </th>
-                                <td>{{bi.country}}</td>
-                            </tr>
-                            <tr>
-                                <th scope='row'>Email: </th>
-                                <td>{{bi.email}}</td>
-                            </tr>
-                            <tr>
-                                <th scope='row'>Phone: </th>
-                                <td>{{bi.phone}}</td>
-                            </tr>
-                        </tbody>
-                        </table>
-                        <div class="d-flex justify-content-left mt-3 mb-3">
-                            <button class='btn btn-danger'><i class="ph-trash-simple ph-xl text-white"></i> Delete</button>
+                        <div class="table-wrapper rounded border-primary mb-3 px-3 py-3">
+                            <table class=''>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>{{bi.name}}</th>
+                                </tr>
+                            </thead>
+                            <tbody class='text-left'>
+                                <tr>
+                                    <th scope='row'>Name: </th>
+                                    <td>{{bi.name}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope='row'>Street: </th>
+                                    <td>{{bi.street}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope='row'>City: </th>
+                                    <td>{{bi.city}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope='row'>Postcode: </th>
+                                    <td>{{bi.postcode}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope='row'>Country: </th>
+                                    <td>{{bi.country}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope='row'>Email: </th>
+                                    <td>{{bi.email}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope='row'>Phone: </th>
+                                    <td>{{bi.phone}}</td>
+                                </tr>
+                            </tbody>
+                            </table>
+                            <div class="d-flex justify-content-left mt-3 ">
+                                <button class='btn btn-danger'><i class="ph-trash-simple ph-xl text-white"></i> Delete</button>
+                            </div>
                         </div>
                       
                     </div>
                     {% endfor %}
                 </div>
                 {% else %}
-                User has no predefiined billing inof.s
+                You don't currently have any pre-defined billing details. 
                 {% endif %}
                 <button class='btn btn-primary btn-block'><i class="ph-plus-circle ph-xl"></i> Add New Billing Details</button>
             </div>

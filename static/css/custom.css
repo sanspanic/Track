@@ -103,6 +103,14 @@ button.icon {
     border-radius: 12px;
 }
 
+.table-wrapper {
+    background-color: #d2cefa
+}
+
+.table-hover tbody tr:hover {
+    background-color: #e4f1d3;
+  }
+
 /* keeps footer sticky */
 .page-container {
     display: flex;
@@ -113,3 +121,4 @@ button.icon {
 .site-content {
     flex: 1;
   }
+
