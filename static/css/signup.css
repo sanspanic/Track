@@ -12,3 +12,7 @@
     background: rgba(150, 150, 150, 0.3)
 }
 
+.overlay  {
+    background-color: white; 
+    border-top: 1px solid #492883;
+}

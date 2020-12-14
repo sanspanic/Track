@@ -40,7 +40,7 @@
           </tr>
         </thead>
         <tbody>
-
+        {% if user.invoices %}
         {% for invoice in user.invoices %}
 
           <tr data-invoice-id="{{invoice.id}}">
@@ -69,15 +69,22 @@
             </td>
           </tr>
 
-        {% endfor %}
+        {% endfor %} 
+        {% else %}
+        No invoices yet
+        {% endif %}
 
         </tbody>
       </table>
     </div>
 
-{% block script%}
-<script src='/static/js/global-functions.js'></script>
-<script src='/static/js/user/invoices_list.js'></script>
 {% endblock %}
 
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock %}
+
+{% block script %}
+<script src='/static/js/global-functions.js'></script>
+<script src='/static/js/user/invoices_list.js'></script>
 {% endblock %}

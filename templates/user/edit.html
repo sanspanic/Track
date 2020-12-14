@@ -10,7 +10,12 @@
 
     <h1 class='display-3 text-center mb-4 bg-white'>Edit User Details</h1>
 
-    <form method="POST" id="user_form">
+
+    <div class='form-info py-3 mb-3 align-items-center'>
+    <div class='col'><i class="ph-question ph-xl"></i> Change the information associated with your account. </div>
+    </div>
+
+    <form class='form-style px-3 py-3 mb-5' method="POST" id="user_form">
       {{ form.hidden_tag() }}
 
       {% for field in form if field.widget.input_type != 'hidden' %}
@@ -18,11 +23,15 @@
           <span class="text-danger">{{ error }}</span>
         {% endfor %}
         {{ field.label }}
-        {{ field(placeholder=field.label.text, class="form-control mb-2 text-primary") }}
+        {{ field(placeholder=field.label.text, class="form-control mb-2 text-primary rounded") }}
       {% endfor %}
 
       <button class="btn btn-lg btn-block bg-primary text-white"> Edit Details! </button>
     </form>
+{% endblock %}
+
+{% block footer %}
+{% include 'footer.html' %}
 {% endblock %}
 
 {% block script %}

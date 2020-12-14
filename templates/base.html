@@ -17,7 +17,7 @@
   <body>
     {% block navbar %}{% endblock %}
     <div class="page-container">
-
+      <div class="site-content">
       <div class="content-wrap {% block body_class %}{% endblock %}">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -30,37 +30,8 @@
         {% block content %}{% endblock %}
 
       </div>
-      <div class="container">
-      <footer class="pt-4 my-md-5 pt-md-5 border-top footer">
-        <div class="row">
-          <div class="col-12 col-md">
-            <img class="mb-2" src="/static/css/imgs/TimeIsMoney/time-is-money-2.png" alt="" width="50">
-            <small class="d-block mb-3 text-muted">&copy; 2020 made by sansPanic</small>
-          </div>
-          <div class="col-6 col-md">
-            <h5>Features</h5>
-            <ul class="list-unstyled text-small">
-              <li><a class="text-muted" href="#">Time Tracking</a></li>
-              <li><a class="text-muted" href="#">Currency Conversion</a></li>
-              <li><a class="text-muted" href="#">Invoice Generation</a></li>
-            </ul>
-          </div>
-          <div class="col-6 col-md">
-            <h5>Exchange Rates</h5>
-            <ul class="list-unstyled text-small">
-              <li><a class="text-muted" href="#">Exchange Rates Source</a></li>
-              <li><a class="text-muted" href="#">Supported Currencies</a></li>
-            </ul>
-          </div>
-          <div class="col-6 col-md">
-            <h5>About</h5>
-            <ul class="list-unstyled text-small">
-              <li><a class="text-muted" href="#">Why Track?</a></li>
-            </ul>
-          </div>
-        </div>
-      </footer>
-    </div>
+      </div>
+      {% block footer %} {% endblock %}
     </div>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

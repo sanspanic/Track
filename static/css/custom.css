@@ -1,7 +1,3 @@
-/* body {
-    background-image: url("patterns/clock.svg")
-}
- */
 
 .signup {
     background-color: #f44336;
@@ -81,4 +77,39 @@ button.icon {
     border-width: 0.4rem 0.4rem 0;
 }
 
+.alert-success {
+    background-color: rgba(215, 245, 176, 0.5);
+    border: none;
+}
 
+.form-info {
+    background-color: rgba(215, 245, 176, 0.5);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    border-radius: 12px;
+
+}
+
+.form-style {
+    background: #bc93cc30;
+    border-radius: 12px;
+}
+
+.overlay {
+    background: white;
+    border-top: 1px solid #482883;
+}
+
+.btn {
+    border-radius: 12px;
+}
+
+/* keeps footer sticky */
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+.site-content {
+    flex: 1;
+  }

@@ -223,9 +223,13 @@
     </div>
 </div>
 <div class="container">
-    <button id='save' class='btn btn-primary btn-block mb-4 mt-4'><i class="ph-download-simple"></i> Save Invoice as PDF</button>
+    <button id='save' class='btn btn-primary btn-block mb-5 mt-4'><i class="ph-download-simple"></i> Save Invoice as PDF</button>
 </div>
 
+{% endblock %}
+
+{% block footer %}
+{% include 'footer.html' %}
 {% endblock %}
 
 {% block script %}

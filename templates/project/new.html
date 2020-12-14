@@ -8,11 +8,13 @@
 
 {% block content %}
 
-    <h1 class='display-3 text-center mb-4 bg-white'>Add New Project</h1>
+    <h1 class='display-3 text-center mb-4 bg-none'>Add New Project</h1>
 
-    <p>New client? Add new client <a href="/{{user.username}}/client/new">here.</a></p>
+    <div class='form-info py-3 mb-3 align-items-center'>
+    <div class='col'><i class="ph-question ph-xl"></i> New client? Add new client <a href="/{{user.username}}/client/new">HERE.</a></div>
+    </div>
 
-    <form method="POST" id="user_form">
+    <form class='form-style py-3 px-3 mb-5' method="POST" id="user_form">
       {{ form.hidden_tag() }}
 
       {% for field in form if field.widget.input_type != 'hidden'%}
@@ -20,10 +22,14 @@
           <span class="text-danger">{{ error }}</span>
         {% endfor %}
         {{ field.label }}
-        {{ field(placeholder=field.label.text, class="form-control mb-2 text-primary") }}
+        {{ field(placeholder=field.label.text, class="form-control rounded mb-2 text-primary") }}
         
       {% endfor %}
 
       <button class="btn btn-lg btn-block bg-primary text-white"> Add Project! </button>
     </form>
+{% endblock %}
+
+{% block footer %}
+{% include 'footer.html' %}
 {% endblock %}

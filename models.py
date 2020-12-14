@@ -495,10 +495,6 @@ class BillingInfo(db.Model):
 
     phone = db.Column(db.String)
 
-    date_of_issue = db.Column(db.Date)
-    
-    due_date = db.Column(db.Date)
-
     user = db.relationship('User', backref='billing_info')
 
     def serialize(self):
@@ -512,9 +508,7 @@ class BillingInfo(db.Model):
             "city": self.city, 
             "country": self.country, 
             "email": self.email, 
-            "phone": self.phone, 
-            "date_of_issue": self.date_of_issue, 
-            "due_date": self.due_date, 
+            "phone": self.phone
         }
 
                     

@@ -10,28 +10,118 @@
 
     <h1 class='display-3 text-center mb-4 bg-white'>User Information</h1>
 
-    <div class="row text-center justify-content-center">
-        <div class="col col-5">
-            <div class='row py-4 text-center'>
-                <div class="col">
-                    <p>Username: <span id='username'>{{user.username}}</span></p> 
-                </div>
-                <div class="col">
-                    <p>Full Name: <span>{{user.full_name}}</span></p> 
-                </div>
-                <div class="col">
-                    <p>Email: <span>{{user.email}}</span></p> 
+        <div class="row form-style justify-content-center py-3 mt-3 mb-5">
+            <div class="col col-8 text-center mb-2">
+                <h5>Account Information</h5>
+            </div>
+            <div class="col col-8 text-center">
+                <div class="row">
+                    <div class="col col-6">
+                        <div class="row">
+                            <table class=''>
+                            <tbody class='text-left'>
+                                <tr>
+                                    <th scope='row'>Username: </th>
+                                    <td>{{user.username}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope='row'>Full name: </th>
+                                    <td>{{user.full_name}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope='row'>Email: </th>
+                                    <td>{{user.email}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                        <div class="d-flex align-self-end">
+                            <div class='d-flex justify-content-left mt-3'>
+                                <a href="/user/{{user.username}}/edit" class='btn btn-success mr-2'><i class="text-white ph-pencil-simple ph-xl"></i> Edit Details</a>
+                                <button class='btn btn-danger' id='delete'><i class="ph-trash-simple ph-xl text-white"></i> Delete User</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-6">
+                        <img class='img-fluid rounded-circle' src="/static/css/imgs/GrowYourMoney/grow-you-money-2.png" alt="">
+                    </div>
                 </div>
             </div>
-            <div class='d-flex justify-content-between'>
-                <a href="/user/{{user.username}}/edit" class='btn btn-success'>Edit Details</a>
-                <button class='btn btn-danger' id='delete'>Delete User</button>
+        </div>
+
+        <div class="row form-style justify-content-center py-3 mt-3 mb-5">
+            <div class="col col-8 text-center mb-2">
+                <h5>Billing Information</h5>
             </div>
-        </div>      
-    </div>
+            <div class='form-info py-3 mb-3 align-items-center'>
+                <div class='col'><i class="ph-question ph-xl"></i> During invoice generation, the information below will be presented to choose from.</div>
+            </div>
+            <div class="col col-8 text-center">
+                {% if user.billing_info %}
+                <div class="row justify-content-left">
+                    {% for bi in user.billing_info %}
+                    <div class="col col-6">
+                        <table class=''>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>{{bi.name}}</th>
+                            </tr>
+                        </thead>
+                        <tbody class='text-left'>
+                            <tr>
+                                <th scope='row'>Name: </th>
+                                <td>{{bi.name}}</td>
+                            </tr>
+                            <tr>
+                                <th scope='row'>Street: </th>
+                                <td>{{bi.street}}</td>
+                            </tr>
+                            <tr>
+                                <th scope='row'>City: </th>
+                                <td>{{bi.city}}</td>
+                            </tr>
+                            <tr>
+                                <th scope='row'>Postcode: </th>
+                                <td>{{bi.postcode}}</td>
+                            </tr>
+                            <tr>
+                                <th scope='row'>Country: </th>
+                                <td>{{bi.country}}</td>
+                            </tr>
+                            <tr>
+                                <th scope='row'>Email: </th>
+                                <td>{{bi.email}}</td>
+                            </tr>
+                            <tr>
+                                <th scope='row'>Phone: </th>
+                                <td>{{bi.phone}}</td>
+                            </tr>
+                        </tbody>
+                        </table>
+                        <div class="d-flex justify-content-left mt-3 mb-3">
+                            <button class='btn btn-danger'><i class="ph-trash-simple ph-xl text-white"></i> Delete</button>
+                        </div>
+                      
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                User has no predefiined billing inof.s
+                {% endif %}
+                <button class='btn btn-primary btn-block'><i class="ph-plus-circle ph-xl"></i> Add New Billing Details</button>
+            </div>
+        </div>
+
+
+    {% endblock %}
+
+    {% block footer %}
+    {% include 'footer.html' %}
+    {% endblock %}
+
 
 {% block script %}
 <script src='/static/js/delete_user.js'></script>
 {% endblock %}
 
-{% endblock %}
