@@ -28,8 +28,8 @@
                             <strong class='ml-3'> {{invoice.invoice_nr}}</strong>
                             {% else %}
                             <span class='align-text-bottom'>
-                                <button  class='icon make-input'><i class="ph-plus make-input ml-2 ph-lg"></i></button>
-                                <button  class='icon delete'><i class="ph-trash-simple delete ph-lg"></i></button>
+                                <button  data-toggle="tooltip" data-placement='top' title="Edit" class='icon make-input'><i class="ph-plus make-input ml-2 ph-lg"></i></button>
+                                <button  data-toggle="tooltip" data-placement='top' title="Delete section" class='icon delete'><i class="ph-trash-simple delete ph-lg"></i></button>
                             </span>
                             {% endif %}
                         </div>
@@ -116,8 +116,8 @@
                                 <input required name='due-date' class='form-control' type="date">
                             </div>
                             <div class="col-6">
-                                <button class='add-dates icon'><i class="ph-check-circle ph-xl add-dates"></i></button>
-                                <button class='delete-dates icon'><i class="ph-trash-simple ph-xl delete-dates"></i></button>
+                                <button data-toggle='tooltip' data-placement='top' title='Add dates' class='add-dates icon'><i class="ph-check-circle ph-xl add-dates"></i></button>
+                                <button data-toggle='tooltip' data-placement='top' title='Remove section' class='delete-dates icon'><i class="ph-trash-simple ph-xl delete-dates"></i></button>
                             </div>
                         </div>
                     </form>
@@ -171,8 +171,8 @@
                                         {% if invoice.extra %}
                                         {{invoice.extra}}
                                         {% else %}
-                                        <button data-extra-type='extra' class='icon add extra-input'><i data-extra-type='extra' class="ph-plus ph-lg add extra-input"></i></button>
-                                        <button class='delete icon'><i id='delete-extra-charge' class="ph-trash-simple ph-lg delete"></i></button>
+                                        <button data-toggle='tooltip' data-placement='top' title='Add'  data-extra-type='extra' class='icon add extra-input'><i data-extra-type='extra' class="ph-plus ph-lg add extra-input"></i></button>
+                                        <button data-toggle='tooltip' data-placement='top' title='Remove section' class='delete icon'><i id='delete-extra-charge' class="ph-trash-simple ph-lg delete"></i></button>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -182,8 +182,8 @@
                                         {% if invoice.discount %}
                                         {{invoice.discount}}
                                         {% else %}
-                                        <button data-extra-type='discount' class='icon add extra-input'><i data-extra-type='discount' class="ph-plus ph-lg add extra-input"></i></button>
-                                        <button class='icon delete'><i id='delete-discount' class="ph-trash-simple ph-lg delete"></i></button>
+                                        <button data-toggle='tooltip' data-placement='top' title='Add'  data-extra-type='discount' class='icon add extra-input'><i data-extra-type='discount' class="ph-plus ph-lg add extra-input"></i></button>
+                                        <button data-toggle='tooltip' data-placement='top' title='Remove section' class='icon delete'><i id='delete-discount' class="ph-trash-simple ph-lg delete"></i></button>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -193,8 +193,8 @@
                                         {% if invoice.VAT %}
                                         {{invoice.VAT}}
                                         {% else %}
-                                       <button data-extra-type='VAT' class='icon add extra-input'> <i data-extra-type='VAT' id='VAT' class="ph-plus ph-lg add extra-input"></i></button>
-                                        <button class='icon delete'><i id='delete-VAT' class="ph-trash-simple ph-lg delete"></i></button>
+                                       <button data-toggle='tooltip' data-placement='top' title='Add' data-extra-type='VAT' class='icon add extra-input'> <i data-extra-type='VAT' id='VAT' class="ph-plus ph-lg add extra-input"></i></button>
+                                        <button data-toggle='tooltip' data-placement='top' title='Remove section' class='icon delete'><i id='delete-VAT' class="ph-trash-simple ph-lg delete"></i></button>
                                         {% endif %}
                                     </td>
                                 </tr>

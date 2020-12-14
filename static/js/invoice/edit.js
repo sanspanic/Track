@@ -72,7 +72,6 @@ extrasTable.addEventListener('click', function(evt){
     //handle accepting changes
     else if (evt.target.classList.contains('accept-changes')) {
         const userInput = retrieveUserInput()
-        console.log(userInput)
         sendRequestToUpdateExtras(evt, ...userInput)
     } // handle remove inputs 
     else if (evt.target.classList.contains('delete-input')) {
@@ -202,7 +201,8 @@ async function sendRequestToAddInvoiceNr(invoiceNr) {
   }
 
 function makeInputForInvoiceNr(targetSpan) {
-    targetSpan.innerHTML = `<div class='ml-1 row align-items-center'> <div class='col'><input id='invoice-nr'class='form-control' type='text'></input></div> <div class='col'><button class='add icon'><i class="ph-check-circle ph-xl add float-left"></i></button><button class='delete icon'><i class="ph-trash-simple ph-xl delete float-left"></i></button></div></div>`
+    targetSpan.innerHTML = `<div class='ml-1 row align-items-center'> <div class='col'><input id='invoice-nr'class='form-control' type='text'></input></div> <div class='col'><button data-toggle="tooltip" data-placement='top' title="Add" class='add icon'><i class="ph-check-circle ph-xl add float-left"></i></button><button data-toggle="tooltip" data-placement='top' title="Delete section" class='delete icon'><i class="ph-trash-simple ph-xl delete float-left"></i></button></div></div>`
+    handleTooltips()
 }
 
 function getID(id) {
@@ -222,7 +222,8 @@ function populateDetails(response) {
 }
 
 function makeAcceptBillingDetailsBtn(evt) {
-    document.querySelector('#accept-div').innerHTML = `<button class='icon accept-bi'><i class='ph-check-circle ph-xl accept-bi'></i></button>`
+    document.querySelector('#accept-div').innerHTML = `<button data-toggle='tooltip' data-placement='top' title='Add billing details' class='icon accept-bi'><i class='ph-check-circle ph-xl accept-bi'></i></button>`
+    handleTooltips()
   }
 
 function renderDates(evt, response) {
@@ -253,11 +254,12 @@ function makeExtraInput(extraType) {
     makeAcceptChangesBtn()
     if (extraType === 'VAT' || extraType === 'discount') {
         const targetRow = document.querySelector(`.${extraType}`);
-        targetRow.innerHTML = `<div class='row align-items-center'><div class='col-10'><input id=${extraType} type="text" class="form-control" placeholder='enter %, e.g. 10' id="formControlRange"></div><div class='col-2'><button class='icon delete-input'><i class="ph-trash-simple ph-lg delete-input extra-input"></i></button></div></div>`
+        targetRow.innerHTML = `<div class='row align-items-center'><div class='col-10'><input id=${extraType} type="text" class="form-control" placeholder='enter %, e.g. 10' id="formControlRange"></div><div class='col-2'><button data-toggle='tooltip' data-placement='top' title='Remove section' class='icon delete-input'><i class="ph-trash-simple ph-lg delete-input extra-input"></i></button></div></div>`
     } else if (extraType === 'extra') {
         const targetRow = document.querySelector('.extra')
-        targetRow.innerHTML = `<div class='row align-items-center'> <div class='col-10'><input id='${extraType}' type="text" class='form-control' placeholder='enter number, e.g. 120.50'></div><div class='col-2'><button class='icon delete-input'><i class="ph-trash-simple ph-lg delete-input extra-input"></i></button></div></div>` 
+        targetRow.innerHTML = `<div class='row align-items-center'> <div class='col-10'><input id='${extraType}' type="text" class='form-control' placeholder='enter number, e.g. 120.50'></div><div class='col-2'><button data-toggle='tooltip' data-placement='top' title='Remove section'  class='icon delete-input'><i class="ph-trash-simple ph-lg delete-input extra-input"></i></button></div></div>` 
     }
+    handleTooltips()
 }
 
 function makeAcceptChangesBtn() {
