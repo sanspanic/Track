@@ -8,11 +8,11 @@
 
 {% block content %}
 
-<h1 id='{{project.id}}' class='display-3 text-center mb-4 bg-white'>{{project.project_name}}</h1>
+<h1 id='{{project.id}}' class='display-3 text-center mb-4'>{{project.project_name}}</h1>
 
 <div id='stop-start-dashboard' class="row justify-content-around">
     <div class="col text-center">
-        <button id='start' class='btn btn-success btn-lg mb-3'>Start Tracking Your Time</button>
+        <button id='start' class='btn btn-success btn-lg mb-3 text-primary'>Start Tracking Your Time</button>
         <p><i class="ph-timer ph-xl"></i> Time Started: <span class='time-span' id='time-started'></span></p> 
     </div>
     <div class="col text-center">
@@ -34,7 +34,7 @@
     </div>
 </div>
 <div class="alert-container">
-<table class="table mb-5">
+<table class="table mb-5 table-style table-hover">
     <thead>
       <tr>
         <th scope="col">Log Entry Date</th>

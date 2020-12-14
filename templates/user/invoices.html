@@ -10,25 +10,21 @@
 
 {% block content %}
 
-<h1 class='display-2 bg-white text-center'>Invoices</h1>
+<h1 class='display-2 text-center'>Invoices</h1>
 
-  <div class="btn-group btn-block mt-3 mb-4 create">
-    <button data-toggle="tooltip" data-placement='top' title="Generate new invoice by selecting project from dropdown" type="button" class="btn btn-success text-right"><i class="ph-file-plus ph-lg"></i> Create New Invoice</button>
-    <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <span class="sr-only">Toggle Dropdown</span>
-    </button>
-    <div class="dropdown-menu">
-      {% for project in user.projects %}
-      <a data-project-id='{{project.id}}' class="dropdown-item" href="#">{{project.project_name}}</a>
-      {% endfor %}
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="/user/{{user.username}}">View all projects</a>
-    </div>
+<div class="dropdown create">
+  <button class="btn btn-success dropdown-toggle btn-block text-primary mb-3 shadow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="ph-file-plus ph-lg"></i> Create new invoice
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    {% for project in user.projects %}
+    <a data-project-id='{{project.id}}' class="dropdown-item" href="#">{{project.project_name}}</a>
+    {% endfor %}
   </div>
-
+</div>
 
 <div class="alert-container">
-    <table class="table table-hover">
+    <table class="table table-hover table-style">
         <thead>
           <tr>
             <th scope="col">Date</th>

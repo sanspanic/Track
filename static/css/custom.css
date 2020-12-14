@@ -95,7 +95,6 @@ button.icon {
 }
 
 .overlay {
-    background: white;
     border-top: 1px solid #482883;
 }
 
@@ -104,11 +103,13 @@ button.icon {
 }
 
 .table-wrapper {
-    background-color: #d2cefa
-}
+    background-color: #EEEDFD;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-radius: 12px;
+    }
 
 .table-hover tbody tr:hover {
-    background-color: #e4f1d3;
+    background-color: #d2cefa
   }
 
 /* keeps footer sticky */
@@ -121,4 +122,33 @@ button.icon {
 .site-content {
     flex: 1;
   }
+/* 
+body {
+    background: #A1FFCE;  
+    background: -webkit-linear-gradient(to right, #FAFFD1, #A1FFCE); 
+    background: linear-gradient(to right, #FAFFD1, #A1FFCE); 
+    
+} */
 
+.table-style {
+    border-radius: 12px; 
+    background-color: #EDFBDB;
+}
+
+h1 {
+    color:#482883;
+}
+
+body {
+background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' width='1440' height='560' preserveAspectRatio='none' viewBox='0 0 1440 560'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1431%26quot%3b)' fill='none'%3e%3crect width='1440' height='560' x='0' y='0' fill='rgba(222%2c 252%2c 182%2c 0.63)'%3e%3c/rect%3e%3cpath d='M50.44 396.81a5.6 5.6 0 1 0 10.48-3.95 5.6 5.6 0 1 0-10.48 3.95zM65.41 391.16a5.6 5.6 0 1 0 10.47-3.96 5.6 5.6 0 1 0-10.47 3.96zM80.37 385.5a5.6 5.6 0 1 0 10.48-3.96 5.6 5.6 0 1 0-10.48 3.96zM95.34 379.85a5.6 5.6 0 1 0 10.48-3.96 5.6 5.6 0 1 0-10.48 3.96z' fill='rgba(210%2c 206%2c 250%2c 1)'%3e%3c/path%3e%3crect width='96' height='96' clip-path='url(%26quot%3b%23SvgjsClipPath1432%26quot%3b)' x='291.29' y='-33.23' fill='url(%23SvgjsPattern1433)' transform='rotate(55.83%2c 339.29%2c 14.77)'%3e%3c/rect%3e%3crect width='348' height='348' clip-path='url(%26quot%3b%23SvgjsClipPath1434%26quot%3b)' x='-81.77' y='255.67' fill='url(%23SvgjsPattern1435)' transform='rotate(54.14%2c 92.23%2c 429.67)'%3e%3c/rect%3e%3crect width='274.04' height='274.04' clip-path='url(%26quot%3b%23SvgjsClipPath1436%26quot%3b)' x='1283.46' y='313.43' fill='url(%23SvgjsPattern1437)' transform='rotate(68.16%2c 1420.48%2c 450.45)'%3e%3c/rect%3e%3crect width='303.16' height='303.16' clip-path='url(%26quot%3b%23SvgjsClipPath1438%26quot%3b)' x='-142.42' y='366.99' fill='url(%23SvgjsPattern1439)' transform='rotate(142.92%2c 9.16%2c 518.57)'%3e%3c/rect%3e%3crect width='180' height='180' clip-path='url(%26quot%3b%23SvgjsClipPath1440%26quot%3b)' x='1135.83' y='73.63' fill='url(%23SvgjsPattern1441)' transform='rotate(214.23%2c 1225.83%2c 163.63)'%3e%3c/rect%3e%3cpath d='M134.56 511.32 L250.96999999999997 388.68L296.2894115019167 553.5244115019167z' stroke='rgba(242%2c 234%2c 246%2c 1)' stroke-width='1'%3e%3c/path%3e%3crect width='200.64' height='200.64' clip-path='url(%26quot%3b%23SvgjsClipPath1442%26quot%3b)' x='262.53' y='85.67' fill='url(%23SvgjsPattern1443)' transform='rotate(24.16%2c 362.85%2c 185.99)'%3e%3c/rect%3e%3cpath d='M1398.6200000000001 177.92000000000002 L1437.77 173.25L1392.4305484561921 149.8205484561919z' fill='rgba(72%2c 40%2c 131%2c 1)'%3e%3c/path%3e%3cpath d='M799.57 321.8L791.24 312.07 798.91 301.81 790.58 292.08 798.25 281.82 789.92 272.09 797.59 261.83' stroke='rgba(210%2c 206%2c 250%2c 1)' stroke-width='2.29'%3e%3c/path%3e%3cpath d='M1216.25 362.35L1228.99 363.63 1230.54 376.34 1243.28 377.62 1244.83 390.33 1257.57 391.61 1259.12 404.32M1210.65 368.07L1223.39 369.35 1224.94 382.06 1237.69 383.34 1239.24 396.05 1251.98 397.33 1253.53 410.04M1205.06 373.78L1217.8 375.06 1219.35 387.78 1232.09 389.05 1233.64 401.77 1246.38 403.05 1247.93 415.76' stroke='rgba(210%2c 206%2c 250%2c 1)' stroke-width='1' stroke-dasharray='4%2c 4'%3e%3c/path%3e%3ccircle r='46.666666666666664' cx='1007.91' cy='409.64' stroke='rgba(242%2c 234%2c 246%2c 1)' stroke-width='2.07' stroke-dasharray='3%2c 3'%3e%3c/circle%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1431'%3e%3crect width='1440' height='560' fill='white'%3e%3c/rect%3e%3c/mask%3e%3cpattern x='0' y='0' width='6' height='6' patternUnits='userSpaceOnUse' id='SvgjsPattern1433'%3e%3cpath d='M0 6L3 0L6 6' stroke='rgba(210%2c 206%2c 250%2c 1)' fill='none'%3e%3c/path%3e%3c/pattern%3e%3cclipPath id='SvgjsClipPath1432'%3e%3ccircle r='24' cx='339.29' cy='14.77'%3e%3c/circle%3e%3c/clipPath%3e%3cpattern x='0' y='0' width='6' height='6' patternUnits='userSpaceOnUse' id='SvgjsPattern1435'%3e%3cpath d='M0 6L3 0L6 6' stroke='rgba(242%2c 234%2c 246%2c 1)' fill='none'%3e%3c/path%3e%3c/pattern%3e%3cclipPath id='SvgjsClipPath1434'%3e%3ccircle r='87' cx='92.23' cy='429.67'%3e%3c/circle%3e%3c/clipPath%3e%3cpattern x='0' y='0' width='274.04' height='10.54' patternUnits='userSpaceOnUse' id='SvgjsPattern1437'%3e%3crect width='274.04' height='5.27' x='0' y='0' fill='rgba(72%2c 40%2c 131%2c 1)'%3e%3c/rect%3e%3crect width='274.04' height='5.27' x='0' y='5.27' fill='rgba(0%2c 0%2c 0%2c 0)'%3e%3c/rect%3e%3c/pattern%3e%3cclipPath id='SvgjsClipPath1436'%3e%3ccircle r='68.51' cx='1420.48' cy='450.45'%3e%3c/circle%3e%3c/clipPath%3e%3cpattern x='0' y='0' width='303.16' height='11.66' patternUnits='userSpaceOnUse' id='SvgjsPattern1439'%3e%3crect width='303.16' height='5.83' x='0' y='0' fill='rgba(210%2c 206%2c 250%2c 1)'%3e%3c/rect%3e%3crect width='303.16' height='5.83' x='0' y='5.83' fill='rgba(0%2c 0%2c 0%2c 0)'%3e%3c/rect%3e%3c/pattern%3e%3cclipPath id='SvgjsClipPath1438'%3e%3ccircle r='75.79' cx='9.16' cy='518.57'%3e%3c/circle%3e%3c/clipPath%3e%3cpattern x='0' y='0' width='180' height='6' patternUnits='userSpaceOnUse' id='SvgjsPattern1441'%3e%3crect width='180' height='3' x='0' y='0' fill='rgba(72%2c 40%2c 131%2c 1)'%3e%3c/rect%3e%3crect width='180' height='3' x='0' y='3' fill='rgba(0%2c 0%2c 0%2c 0)'%3e%3c/rect%3e%3c/pattern%3e%3cclipPath id='SvgjsClipPath1440'%3e%3ccircle r='45' cx='1225.83' cy='163.63'%3e%3c/circle%3e%3c/clipPath%3e%3cpattern x='0' y='0' width='200.64' height='9.12' patternUnits='userSpaceOnUse' id='SvgjsPattern1443'%3e%3crect width='200.64' height='4.56' x='0' y='0' fill='rgba(242%2c 234%2c 246%2c 1)'%3e%3c/rect%3e%3crect width='200.64' height='4.56' x='0' y='4.56' fill='rgba(0%2c 0%2c 0%2c 0)'%3e%3c/rect%3e%3c/pattern%3e%3cclipPath id='SvgjsClipPath1442'%3e%3ccircle r='50.16' cx='362.85' cy='185.99'%3e%3c/circle%3e%3c/clipPath%3e%3c/defs%3e%3c/svg%3e");
+}
+
+/* shadows for buttons either via class or inside link */
+
+btn.shadow {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+a.btn {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
