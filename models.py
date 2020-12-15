@@ -495,6 +495,8 @@ class BillingInfo(db.Model):
 
     phone = db.Column(db.String)
 
+    IBAN = db.Column(db.String)
+
     user = db.relationship('User', backref='billing_info')
 
     def serialize(self):
@@ -508,7 +510,8 @@ class BillingInfo(db.Model):
             "city": self.city, 
             "country": self.country, 
             "email": self.email, 
-            "phone": self.phone
+            "phone": self.phone, 
+            "IBAN": self.IBAN
         }
 
                     

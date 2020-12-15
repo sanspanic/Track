@@ -37,7 +37,7 @@
                         </div>
                         <div class='d-flex justify-content-left mt-3'>
                             <a href="/user/{{user.username}}/edit" class='btn btn-success mr-2 shadow'><i class="text-white ph-pencil-simple ph-xl"></i> Edit Details</a>
-                            <button class='btn btn-danger shadow' id='delete'><i class="ph-trash-simple ph-xl text-white"></i> Delete User</button>
+                            <button class='btn btn-danger shadow' id='delete-user'><i class="ph-trash-simple ph-xl text-white"></i> Delete User</button>
                         </div>
                     </div>
                     <div class="col col-6">
@@ -47,7 +47,8 @@
             </div>
         </div>
 
-        <div class="row form-style justify-content-center py-3 mt-3 mb-5">
+        <div class="alert-container">
+        <div id='billing-info-div' class="row form-style justify-content-center py-3 mt-3 mb-5">
             <div class="col col-8 text-center mb-2">
                 <h5>Billing Information</h5>
             </div>
@@ -99,7 +100,7 @@
                             </tbody>
                             </table>
                             <div class="d-flex justify-content-left mt-3 ">
-                                <button class='btn btn-danger shadow'><i class="ph-trash-simple ph-xl text-white"></i> Delete</button>
+                                <button data-billing-info-id='{{bi.id}}' class='btn btn-danger shadow delete'><i data-billing-info-id='{{bi.id}}' class="ph-trash-simple ph-xl text-white delete"></i> Delete</button>
                             </div>
                         </div>
                       
@@ -107,11 +108,15 @@
                     {% endfor %}
                 </div>
                 {% else %}
-                You don't currently have any pre-defined billing details. 
+                <div class='mb-3'>
+                    You don't currently have any pre-defined billing details. 
+                </div>
+                
                 {% endif %}
-                <button class='btn btn-primary btn-block'><i class="ph-plus-circle ph-xl"></i> Add New Billing Details</button>
+                <a href='/{{user.username}}/billing-info/new' class='btn btn-primary btn-block'><i class="ph-plus-circle ph-xl"></i> Add New Billing Details</a>
             </div>
         </div>
+    </div>
 
 
     {% endblock %}
@@ -122,6 +127,8 @@
 
 
 {% block script %}
-<script src='/static/js/delete_user.js'></script>
+
+<script src='/static/js/user/user-ui.js'></script>
+
 {% endblock %}
 

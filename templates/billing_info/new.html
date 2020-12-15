@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block body_class %}container billing_info-add{% endblock %}
+
+{% block navbar %}
+{% include 'navbar.html' %}
+{% endblock %}
+
+{% block content %}
+
+    <h1 class='display-3 text-center mb-4 bg-none'>Add New Billing Information</h1>
+
+    <div class='form-info py-3 mb-3 align-items-center'>
+    <div class='col'><i class="ph-question ph-xl"></i> Please enter the card details and billing information to be displayed on your invoice below. </div>
+    </div>
+
+    <form class='form-style py-3 px-3 mb-5' method="POST" id="user_form">
+      {{ form.hidden_tag() }}
+
+      {% for field in form if field.widget.input_type != 'hidden'%}
+        {% for error in field.errors %}
+          <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+        {{ field.label }}
+        {{ field(placeholder=field.label.text, class="form-control rounded mb-2 text-primary") }}
+        
+      {% endfor %}
+
+      <button class="btn btn-lg btn-block bg-primary text-white"> Add New Billing Details! </button>
+    </form>
+{% endblock %}
+
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock %}

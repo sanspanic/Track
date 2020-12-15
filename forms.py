@@ -34,9 +34,6 @@ choices = []
 for code in list_of_curr_codes: 
     choices.append((code,code))
 
-#choices_inv = choices.insert(0,("", "---"))
-
-
 class ProjectForm(FlaskForm): 
     """form for adding a new project"""
 
@@ -46,6 +43,16 @@ class ProjectForm(FlaskForm):
     curr_of_rate = SelectField("Select currency of wage", choices=choices)
     curr_of_inv = SelectField("Select currency you will invoice in", choices=choices)
 
-    
 
+class BillingInfoForm(FlaskForm): 
+    """form for adding new billing details"""
+
+    IBAN = StringField("IBAN")
+    name = StringField("Name")
+    street = StringField("Street")
+    postcode = StringField("Postcode")
+    city = StringField("City")
+    country = StringField("Country")
+    email = StringField("Email")
+    phone = StringField("Phone")
 

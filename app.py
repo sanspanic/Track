@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, db, User, Project, LogEntry, Client, Invoice, BillingInfo
 from secrets import secret_key
 import datetime
-from forms import UserForm, LoginForm, ClientForm, ProjectForm
+from forms import UserForm, LoginForm, ClientForm, ProjectForm, BillingInfoForm
 from sqlalchemy.exc import IntegrityError
 #from werkzeug.exceptions import Unauthorized
 
@@ -577,29 +577,36 @@ def delete_log_entry(username, project_id, log_entry_id):
         
 #BILLING INFO ROUTES 
 
-@app.route('/<username>/invoice/<int:invoice_id>/billing-info/add', methods=['POST'])
-def add_billing_details(username, invoice_id): 
-    """adds billing details for invoice"""
+@app.route('/<username>/billing-info/new', methods=['GET', 'POST'])
+def new_billing_details(username): 
+    """adds new billing details"""
 
     if fail_auth_check(username):
         return perform_auth_measures(username)
     else:
-        invoice = Invoice.query.get_or_404(invoice_id)
+        form = BillingInfoForm()
 
-        bi = BillingInfo(
-            invoice_id=invoice.id,
-            name=request.form.get('name'), 
-            street=request.form.get('street'), 
-            city=request.form.get('city'), 
-            postcode=request.form.get('postcode'), 
-            country=request.form.get('country'), 
-            phone=request.form.get('phone'), 
-            email=request.form.get('email')
-        )
-        db.session.add(bi)
-        db.session.commit()
+        if form.validate_on_submit(): 
 
-        return render_template('invoice/show.html', invoice=invoice, user=g.user)
+            bi = BillingInfo(
+                IBAN=form.IBAN.data,
+                name=form.name.data, 
+                street=form.street.data, 
+                city=form.city.data,
+                postcode=form.postcode.data,
+                country=form.country.data,
+                phone=form.phone.data,
+                email=form.email.data,
+                user_id = g.user.id
+                  )
+            db.session.add(bi)
+            db.session.commit()
+
+
+            flash(f'New billing details were saved', 'success')
+            return redirect(f'/user/{username}/show')
+
+        return render_template('billing_info/new.html', form=form, user=g.user)
 
 @app.route('/<username>/billing_info/<int:billing_info_id>', methods=['GET'])
 def get_billing_details(username, billing_info_id): 
@@ -611,4 +618,20 @@ def get_billing_details(username, billing_info_id):
         billing_info = BillingInfo.query.get_or_404(billing_info_id)
 
         response = billing_info.serialize()
+        return make_response(response, 200)
+
+
+@app.route('/<username>/billing-info/<int:billing_info_id>/delete', methods=['DELETE'])
+def delete_billing_details(username, billing_info_id): 
+    """deletes billing info entry"""    
+    
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
+        bi = BillingInfo.query.get_or_404(billing_info_id)
+
+        db.session.delete(bi)
+        db.session.commit()
+
+        response = {'message': 'Billing details successfully deleted'}
         return make_response(response, 200)

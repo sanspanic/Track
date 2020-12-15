@@ -17,8 +17,8 @@
 
 
 <div id='invoice'>
-    <div class="container mt-3">
-        <div class="card">
+    <div class="container mt-3 bg-white">
+        <div class="card bg-white">
             <div id="invoice-info-id-{{invoice.id}}"class="card-header">
                 <div class="row">
                     <div class="col">
@@ -44,39 +44,7 @@
                 <div id='from' class="col-sm-6">
                     <h6 class="mb-3">From:</h6>
                     {% if not user.billing_info %}
-                    <form id='billing-info'  method='POST' action="/{{user.username}}/invoice/{{invoice.id}}/billing-info/add">
-                        <div class="form-row">
-                            <div class="col">
-                                <div>* Name: <input name='name' required type="text" class='form-control' placeholder='Name'></div>
-                            </div>
-                        </div>
-                        <div class='form-row'>
-                            <div class="col">
-                                <div>Street: <input name='street' type="text"class='form-control' placeholder='Street'></div>
-                            </div>
-                            <div class="col">
-                                <div>City: <input name='city' type="text"class='form-control' placeholder='City'></div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="col">
-                                <div>Postcode: <input name='postcode' type="text" class='form-control' placeholder='Postcode'></div>
-                            </div>
-                            <div class="col">
-                                <div>Country: <input name='country' type="text" class='form-control' placeholder='Country'></div>
-                            </div>
-                        </div>
-                        <div class='form-row'>
-                            <div class="col">
-                                <div>Phone: <input name='phone' type="text"class='form-control' placeholder='Phone'></div>
-                            </div>
-                            <div class="col">
-                                <div>* Email: <input required name='email' type="text"class='form-control' placeholder='Email'></div>
-                            </div>
-                        </div>
-                        <div>* Required details. </div>
-                        <button class='btn btn-success mt-3 add-info-btn'>Add Billing Info</button>
-                    </form>
+                        You have no saved billing details. You can add billing details <a href="/{{user.username}}/billing-info/new">HERE</a>.
                     {% else %}
                     <div id='billing-details-div' class=""></div>
                     <div class="row align-items-center billing-details-btns">
@@ -87,6 +55,7 @@
                                     {% for bi in user.billing_info %}
                                   <a id='billing-info-id-{{bi.id}}' class="dropdown-item billing-info-dropdown" href="#">{{bi.name}}</a>
                                   {% endfor %}
+                                  <a href='/{{user.username}}/billing-info/new' class="dropdown-item" href="#">Add New</a>
                                 </div>
                             </div>
                             {% endif %}
@@ -128,7 +97,7 @@
                 </div>
 
             </div>
-            <div class="mt-3 table-responsive-sm">
+            <div class="mt-3 table-responsive-sm bg-white">
                 <table class="table table-striped">
                     <thead>
                         <tr>
