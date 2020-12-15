@@ -1,4 +1,4 @@
-const BASE = "http://127.0.0.1:5000";
+const BASE = "https://track-work-logger.herokuapp.com";
 let username; 
 
 //prevents var from initialising on logged out pages
