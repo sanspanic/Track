@@ -8,7 +8,7 @@
 
 {% block content %}
 
-    <h1 class='display-2 text-center mb-4'>User Information</h1>
+    <h1 class='display-2 text-center mb-4 mt-4'>User Information</h1>
 
         <div class="row form-style justify-content-center py-3 mt-3 mb-5">
             <div class="col col-8 text-center mb-2">
@@ -36,7 +36,7 @@
                         </table>
                         </div>
                         <div class='d-flex justify-content-left mt-3'>
-                            <a href="/user/{{user.username}}/edit" class='btn btn-success mr-2 shadow'><i class="text-white ph-pencil-simple ph-xl"></i> Edit Details</a>
+                            <a href="/user/{{user.username}}/edit" class='btn btn-success mr-2 shadow text-primary'><i class="text-primary ph-pencil-simple ph-xl"></i> Edit Details</a>
                             <button class='btn btn-danger shadow' id='delete-user'><i class="ph-trash-simple ph-xl text-white"></i> Delete User</button>
                         </div>
                     </div>

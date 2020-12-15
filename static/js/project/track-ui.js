@@ -28,6 +28,7 @@ stopBtn.addEventListener("click", function () {
 trackTable.addEventListener("click", function (evt) {
   //handle requesting to edit existing log entry
   if (evt.target.classList.contains("edit")) {
+    deenhanceSpans();
     disableAllBtns();
     emptySpans();
     //capture data needed to make inputs, change cell to include accept changes button, differentiate between button and icon click
@@ -72,6 +73,7 @@ trackTable.addEventListener("click", function (evt) {
     );
   } // handle deleting log entry
   else if (evt.target.classList.contains("delete")) {
+    deenhanceSpans()
     const logEntryId = getLogEntryId(evt);
     sendRequestToDeleteLogEntry(evt, logEntryId);
   }

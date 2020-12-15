@@ -8,29 +8,31 @@
 
 {% block content %}
 
-<h1 id='{{project.id}}' class='display-3 text-center mb-4'>{{project.project_name}}</h1>
+<h1 id='{{project.id}}' class='display-3 text-center mb-4 mt-4'>{{project.project_name}}</h1>
 
-<div id='stop-start-dashboard' class="row justify-content-around">
-    <div class="col text-center">
-        <button id='start' class='btn btn-success btn-lg mb-3 text-primary'>Start Tracking Your Time</button>
-        <p><i class="ph-timer ph-xl"></i> Time Started: <span class='time-span' id='time-started'></span></p> 
+<div id='stop-start-dashboard' class="row justify-content-around align-items-center">
+    <div class="col-4 text-center">
+        <button id='start' class='btn btn-success btn-lg mb-3 text-primary shadow start-stop'>Start Tracking Your Time</button>
+        <div class="row justify-content-center"><div class='col-7'><p><i class="ph-timer ph-xl"></i> Time Started: <span class='time-span' id='time-started'></span></p></div></div>
     </div>
-    <div class="col text-center">
-        <button id='stop' class='btn btn-danger btn-lg mb-3'>Stop Tracking Your Time</button>
-        <p><i class="ph-timer ph-xl"></i> Time Stopped: <span class='time-span' id='time-stopped'></span></p>
+    <div class="col-4 text-center">
+        <img class='img-fluid' src="/static/css/imgs/TimeIsMoney/time-is-money-3.png" alt="">
+    </div>
+    <div class="col-4 text-center">
+        <button id='stop' class='btn btn-danger btn-lg mb-3 shadow start-stop'>Stop Tracking Your Time</button>
+        <div class="row justify-content-center"><div class='col-7'><p><i class="ph-timer ph-xl"></i> Time Stopped: <span class='time-span' id='time-stopped'></span></p></div></div>
     </div>
 
 </div>
 
-<div id='subtotals' class="row justify-content-around mt-4 ml-1">
-    <div class="col">
-        <h6>Hourly rate: {{project.show_subtotal_values()['subtotal_rate']['symbol']}}{{project.hourly_rate}}</h6>
-        <h6>Subtotal: <span id='subtotal-rate'>{{project.subtotal}} {{project.show_subtotal_values()['subtotal_rate']['symbol']}}</span>
+<div id='subtotals' class="row justify-content-center ml-1">
+    <div class="col-3 subtotals-col px-3 py-3 mb-3">
+        <h6>Hourly rate: {{project.show_subtotal_values()['subtotal_rate']['symbol']}} {{project.hourly_rate}}</h6>
+        <h6>Subtotal: <span id='subtotal-rate'>{{project.show_subtotal_values()['subtotal_rate']['symbol']}} {{project.subtotal}}</span>
             {% if project.curr_of_rate != project.curr_of_inv %}
-            / <span id='subtotal-inv'>{{project.converted_subtotal}} {{project.show_subtotal_values()['subtotal_inv']['symbol']}}</span>
+            / <span id='subtotal-inv'>{{project.show_subtotal_values()['subtotal_inv']['symbol']}} {{project.converted_subtotal}} </span>
             {% endif %}
         </h6>
-
     </div>
 </div>
 <div class="alert-container">
@@ -56,7 +58,13 @@
             {{log_entry.pretty_stop_time}}
             {% endif %}
         </td>
-        <td>{{log_entry.description}}</td>
+        <td>
+            {% if log_entry.description %}
+            {{log_entry.description}}
+            {% else %}
+            Edit log entry to add
+            {% endif %}
+        </td>
         <td class='time-delta'>
             {% if log_entry.time_delta %}
             {{log_entry.time_delta}} min</td>
