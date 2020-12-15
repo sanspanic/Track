@@ -8,14 +8,12 @@
 
 {% block content %}
 
-<h1 id='' class='display-4 text-center mb-4'>Invoice for {{invoice.project.project_name}}</h1>
-<div class="container">
-    <p>
-        Please configure your invoice settings below prior to saving.
-    </p>
+<h1 id='' class='display-3 text-center mb-4 mt-4'>Invoice for {{invoice.project.project_name}}</h1>
+
+<div class="form-style px-3 py-3">
+<div class='form-info py-3 mb-3 align-items-center'>
+    <div class='col'><i class="ph-question ph-xl"></i> Please configure invoice details prior to printing. </div>
 </div>
-
-
 <div id='invoice'>
     <div class="container mt-3 bg-white">
         <div class="card bg-white">
@@ -192,8 +190,10 @@
         </div>
     </div>
 </div>
+
 <div class="container">
     <button id='save' class='btn btn-primary btn-block mb-5 mt-4'><i class="ph-download-simple"></i> Save Invoice as PDF</button>
+</div>
 </div>
 
 {% endblock %}

@@ -354,6 +354,9 @@ function addStopInfoToRow(response) {
   let stopCell = timeDeltaCell.previousElementSibling.previousElementSibling;
   stopCell.innerText = response.data.pretty_stop_time;
   let actionsCell = valueCell.nextElementSibling;
+  //update description cell
+  const decriptionCell = stopCell.nextElementSibling
+  decriptionCell.innerText = 'Edit log entry to add'
   //add back edit and delete buttons
   makeEditAndDeleteBtns(actionsCell);
 }

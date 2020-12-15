@@ -36,7 +36,9 @@
             <td id='{{project.id}}'>{{project.subtotal}}  {{project.show_subtotal_values()['subtotal_rate']['symbol']}}</td>
             <td>
               {% if project.curr_of_rate != project.curr_of_inv %}
+              {% if project.converted_subtotal %}
               {{project.converted_subtotal}}  {{project.show_subtotal_values()['subtotal_inv']['symbol']}}
+              {% endif %}
               {% endif %}
             </td>
             <td class='align-middle text-center'>
