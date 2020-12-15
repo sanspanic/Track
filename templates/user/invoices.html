@@ -12,6 +12,7 @@
 
 <h1 class='display-2 text-center mt-4 mb-4'>Invoices</h1>
 
+<div class="form-style px-3 py-3">
 <div class="dropdown create">
   <button class="btn btn-success dropdown-toggle btn-block text-primary mb-3 shadow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <i class="ph-file-plus ph-lg"></i> Create new invoice
@@ -24,7 +25,7 @@
 </div>
 
 <div class="alert-container">
-    <table class="table table-hover form-style">
+    <table class="table table-hover table-wrapper">
         <thead>
           <tr>
             <th scope="col">Date</th>
@@ -73,7 +74,7 @@
         </tbody>
       </table>
     </div>
-
+  </div>
 {% endblock %}
 
 {% block footer %}
