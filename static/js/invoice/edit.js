@@ -30,7 +30,7 @@ cardHeader.addEventListener('click', function(evt){
     }
 })
 
-//fromSection event listener for billing address change
+//fromSection event listener for billing information
 fromSection.addEventListener('click', function(evt) {
     if (evt.target.classList.contains('billing-info-dropdown')) {
         const billingInfoID = getID(evt.target.id)
@@ -86,6 +86,7 @@ async function sendRequestToRetrieveBillingInfo(evt, billingInfoID) {
         console.log(response)
         // handle success
         populateDetails(response)
+        populateCardDetails(response)
         makeAcceptBillingDetailsBtn(evt)
       })
       .catch(function (error) {
@@ -209,6 +210,7 @@ function getID(id) {
     return id.split('-')[3]
 }
 
+//populates invoice with retrieved billing details
 function populateDetails(response) {
     document.querySelector('#billing-details-div').innerText = ''
     const formDiv = document.createElement('div')
@@ -219,6 +221,12 @@ function populateDetails(response) {
     <div>${response.data.email}</div>
     <div class='mb-2'>${response.data.phone}</div>`
     document.querySelector('#billing-details-div').append(formDiv)
+}
+
+//populates invoice with retrieved card details
+function populateCardDetails(response) {
+  document.querySelector('#card-div').innerText = ''; 
+  document.querySelector('#card-div').innerHTML = `<strong>Card Details</strong>: <p>IBAN: ${response.data.IBAN}</p>`;
 }
 
 function makeAcceptBillingDetailsBtn(evt) {
