@@ -83,7 +83,6 @@ async function sendRequestToRetrieveBillingInfo(evt, billingInfoID) {
     await axios
       .get(`${BASE}/${username}/billing_info/${billingInfoID}`)
       .then(function (response) {
-        console.log(response)
         // handle success
         populateDetails(response)
         populateCardDetails(response)
@@ -148,7 +147,6 @@ async function sendRequestToUpdateExtras(evt, extra, discount, VAT) {
       })
       .then(function (response) {
         // handle success
-        console.log(response)
         updateUIWithExtras(response)
         removeRow(evt)
       })

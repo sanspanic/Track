@@ -520,7 +520,7 @@ def update_log_entry(username, project_id, log_entry_id):
     else:
         log_entry = LogEntry.query.get_or_404(log_entry_id)
 
-        #if request is to update stop_time only
+        #if request is to update stop_time only by clicking stop btn
 
         if not request.json:
 

@@ -448,7 +448,11 @@ class Invoice(db.Model):
         if extra: 
             extra = float(extra)
             self.extra = extra
-            self.amount_after_extras_in_curr_of_inv = self.amount_in_curr_of_inv + self.extra
+            #distinguish between extra being added first, and extra being added after VAT or disc
+            if self.amount_after_extras_in_curr_of_inv: 
+                self.amount_after_extras_in_curr_of_inv += self.extra
+            else: 
+                self.amount_after_extras_in_curr_of_inv = self.amount_in_curr_of_inv + self.extra
         else: 
             #must initialize amount after extras otherwise if dicount or VAT, error
             if not self.amount_after_extras_in_curr_of_inv:
