@@ -9,7 +9,7 @@ Track is my first project, submitted as part of the [Springboard Software Engine
 The tool is meant for self-employed contractors who work on an hourly basis. Its features include: 
  
 * Time-keeping across multiple projects and clients
-* Conversion of time spent working into money earned
+* Automatic conversion of work hours into money earned
 * If invoicing in foreign currency: __fair__ conversion of money earned into foreign currency _on the day work was done_, rather than bulk conversion at the end of invoice period susceptible to exchange rate fluctuations
 * Automatic PDF invoice generation including optional extra charge, discount and VAT
 
