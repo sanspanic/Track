@@ -1,6 +1,5 @@
-#TRACK
-
-####Timekeeping & invoice generation for international contractors
+# TRACK
+#### Timekeeping & invoice generation for international contractors
 
 
 Link to deployed app: [TRACK](https://track-work-logger.herokuapp.com/).
@@ -16,7 +15,7 @@ The tool is meant for self-employed contractors who work on an hourly basis. Its
 
 
 
-#Technologies 
+# Technologies 
 
 ### Python Backend
 
@@ -32,14 +31,14 @@ The tool is meant for self-employed contractors who work on an hourly basis. Its
 6. Bootstrap
 7. html2pdf.js
 
-#Credits
+# Credits
 
 1. Icons by [phosphor](https://phosphoricons.com/)
 2. SVG background by [BGjar](https://bgjar.com/)
 3. Illustrations by [pixeltrue](https://www.pixeltrue.com/)
 
 
-#Screenshots
+# Screenshots
 
 ### Landing Page. 
 ![Landing Page](./README_imgs/landing.png)
