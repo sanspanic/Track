@@ -17,7 +17,7 @@ The tool is meant for self-employed contractors who work on an hourly basis. Its
 
 # Technologies 
 
-### Python Backend
+### :snake: Python Backend
 
 1. Flask
 2. PostgreSQL
@@ -26,7 +26,7 @@ The tool is meant for self-employed contractors who work on an hourly basis. Its
 5. Forex-python
 6. Flask-Bcrypt
 
-### JavaScript Frontend
+### :bee: JavaScript Frontend
 5. Almost exclusively vanilla JS for DOM Manipulation, minimal jQuery
 6. Bootstrap
 7. html2pdf.js
