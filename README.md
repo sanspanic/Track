@@ -1,5 +1,5 @@
 # TRACK
-#### :hourglass: Timekeeping & invoice generation for international contractors
+### :hourglass: Timekeeping & invoice generation for international contractors
 
 
 Link to deployed app: [TRACK](https://track-work-logger.herokuapp.com/).
