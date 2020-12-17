@@ -21,15 +21,15 @@ The tool is meant for self-employed contractors who work on an hourly basis. Its
 
 1. Flask
 2. PostgreSQL
-3. SQLAlchemy
-4. WTForms
-5. Forex-python
-6. Flask-Bcrypt
+3. Flask-SQLAlchemy
+4. [WTForms](https://wtforms.readthedocs.io/en/2.3.x/fields/)
+5. [Forex-python](https://forex-python.readthedocs.io/en/latest/index.html)
+6. [Flask-Bcrypt](https://flask-bcrypt.readthedocs.io/en/latest/)
 
 ### :bee: JavaScript Frontend
 5. Almost exclusively vanilla JS for DOM Manipulation, minimal jQuery
 6. Bootstrap
-7. html2pdf.js
+7. [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/)
 
 # Credits
 
