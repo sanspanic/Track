@@ -27,9 +27,10 @@ The tool is meant for self-employed contractors who work on an hourly basis. Its
 6. [Flask-Bcrypt](https://flask-bcrypt.readthedocs.io/en/latest/)
 
 ### :bee: JavaScript Frontend
-5. Almost exclusively vanilla JS for DOM Manipulation, minimal jQuery
-6. Bootstrap
-7. [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/)
+1. Almost exclusively vanilla JS for DOM Manipulation, minimal jQuery
+2. Bootstrap
+3. [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/)
+4. Axios
 
 # Credits
 
