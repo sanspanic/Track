@@ -3,8 +3,11 @@
 {% block css %}
 <link rel="stylesheet" href="/static/css/landing-page.css">
 {% endblock %}
-{% include 'navbar.html' %}
+
 {% block body_class %}home-anon{% endblock %}
+
+{% block navbar %} {% include 'navbar.html' %} {% endblock %}
+
 {% block content %}
 
   <header class="masthead text-white text-center">
