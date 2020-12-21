@@ -52,7 +52,7 @@ The tool is meant for self-employed contractors who work on an hourly basis. Its
 ### Invoice View.
 ![Invoice Page](./README_imgs/invoice.png)
 ### Track View.
-![Track Page](./README_imgs/track.png)
+![Track Page](./README_imgs/track.png) 
 
 
 
