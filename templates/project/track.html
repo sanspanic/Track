@@ -30,11 +30,11 @@
 
 </div>
 
-<div id='subtotals' class="row justify-content-between ml-1">
-    <div class="col-3 display-col px-3 py-3 mb-3">
+<div id='subtotals' class="row justify-content-between ml-1 align-items-center">
+    <div class="col-3 display-col px-3 py-3 mb-3 text-center">
         <h6 id='display'>Current session: </h6>
     </div>
-    <div class="col-3 subtotals-col px-3 py-3 mb-3 mr-3">
+    <div class="col-3 subtotals-col text-center px-3 py-3 mb-3 mr-3">
         <h6>Hourly rate: {{project.show_subtotal_values()['subtotal_rate']['symbol']}} {{project.hourly_rate}}</h6>
         <h6>Subtotal: <span id='subtotal-rate'>{{project.show_subtotal_values()['subtotal_rate']['symbol']}} {{project.subtotal}}</span>
             {% if project.curr_of_rate != project.curr_of_inv %}
