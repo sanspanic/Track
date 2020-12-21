@@ -99,6 +99,13 @@ button.icon {
   background-color: rgba(210, 206, 250, 0.5);
 }
 
+#display {
+  font-size: 1.4rem;
+  color: white;
+  background-color: #9ee23f;
+  border-radius: 12px;
+  padding: 3px;
+}
 /* tooltip config */
 
 .tooltip-inner {

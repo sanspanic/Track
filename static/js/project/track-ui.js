@@ -441,12 +441,13 @@ const display = document.getElementById("display");
 // Create function to modify innerHTML
 
 function print(txt) {
-  display.innerHTML = `Current session: ${txt}`;
+  display.innerHTML = txt;
 }
 
 // Create "start" and "pause" functions
 
 function start() {
+  elapsedTime = 0;
   startTime = Date.now() - elapsedTime;
   timerInterval = setInterval(function printTime() {
     elapsedTime = Date.now() - startTime;
