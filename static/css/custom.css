@@ -93,7 +93,8 @@ button.icon {
   height: 100px;
 }
 
-.subtotals-col {
+.subtotals-col,
+.display-col {
   border-radius: 12px;
   background-color: rgba(210, 206, 250, 0.5);
 }

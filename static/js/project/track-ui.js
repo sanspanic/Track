@@ -379,10 +379,13 @@ function updateSubtotals(response) {
   const subtotal = Number.parseFloat(response.data.subtotal).toFixed(2);
   subtotalSpan.innerText = `${subtotal} ${response.data.curr_of_rate}`;
   const convSubtotalSpan = document.querySelector("#subtotal-inv");
-  const convSubtotal = Number.parseFloat(
-    response.data.converted_subtotal
-  ).toFixed(2);
-  convSubtotalSpan.innerText = `${convSubtotal} ${response.data.curr_of_inv}`;
+  //will try to update span with converted only if span is present
+  if (convSubtotalSpan) {
+    const convSubtotal = Number.parseFloat(
+      response.data.converted_subtotal
+    ).toFixed(2);
+    convSubtotalSpan.innerText = `${convSubtotal} ${response.data.curr_of_inv}`;
+  }
 }
 
 function emptySpans() {
@@ -403,3 +406,59 @@ function deenhanceSpans() {
     spans.forEach((span) => span.parentElement.classList.remove("enhanced"));
   }
 }
+
+//stopwatch
+
+// Convert time to a format of hours, minutes, seconds, and milliseconds
+
+function timeToString(time) {
+  let diffInHrs = time / 3600000;
+  let hh = Math.floor(diffInHrs);
+
+  let diffInMin = (diffInHrs - hh) * 60;
+  let mm = Math.floor(diffInMin);
+
+  let diffInSec = (diffInMin - mm) * 60;
+  let ss = Math.floor(diffInSec);
+
+  let diffInMs = (diffInSec - ss) * 100;
+  let ms = Math.floor(diffInMs);
+
+  let formattedMM = mm.toString().padStart(2, "0");
+  let formattedSS = ss.toString().padStart(2, "0");
+  let formattedMS = ms.toString().padStart(2, "0");
+
+  return `${formattedMM}:${formattedSS}:${formattedMS}`;
+}
+
+// Declare variables to use in functions below
+
+let startTime;
+let elapsedTime = 0;
+let timerInterval;
+const display = document.getElementById("display");
+
+// Create function to modify innerHTML
+
+function print(txt) {
+  display.innerHTML = `Current session: ${txt}`;
+}
+
+// Create "start" and "pause" functions
+
+function start() {
+  startTime = Date.now() - elapsedTime;
+  timerInterval = setInterval(function printTime() {
+    elapsedTime = Date.now() - startTime;
+    print(timeToString(elapsedTime));
+  }, 10);
+}
+
+function pause() {
+  clearInterval(timerInterval);
+}
+
+// Create event listeners
+
+startBtn.addEventListener("click", start);
+stopBtn.addEventListener("click", pause);
