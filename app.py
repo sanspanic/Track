@@ -108,7 +108,7 @@ def signup():
 
         do_login(user)
 
-        return redirect(f"/{user.username}")
+        return redirect(f"/{user.username}/projects")
 
     else:
         # if user gets here via landing page form
@@ -132,7 +132,7 @@ def login():
             do_login(user)
             flash(f"Hello, {user.username}!", "success")
 
-            return redirect(f"/user/{user.username}")
+            return redirect(f"/{user.username}/projects")
 
         flash("Invalid credentials.", 'danger')
 
@@ -630,8 +630,15 @@ def new_billing_details(username):
             db.session.add(bi)
             db.session.commit()
 
-            flash(f'New billing details were saved', 'success')
-            return redirect(f'/{username}/details')
+            # if user redirected via invoice, will be redirected to invoice instead of user details page
+            if request.args.get('from'):
+                invoice_id = request.args.get('id')
+                flash(f'New billing details were saved', 'success')
+                return redirect(f'/{username}/invoices/{invoice_id}')
+            # if user redirected via user details page, will be redirected back to user details page
+            else:
+                flash(f'New billing details were saved', 'success')
+                return redirect(f'/{username}/details')
 
         return render_template('billing_info/new.html', form=form, user=g.user)
 

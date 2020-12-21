@@ -44,7 +44,7 @@
                 <div id='from' class="col-sm-6">
                     <h6 class="mb-3">From:</h6>
                     {% if not user.billing_info %}
-                        You have no saved billing details. You can add billing details <a href="/{{user.username}}/billing-infos/form">HERE</a>.
+                        You have no saved billing details. You can add billing details <a href="/{{user.username}}/billing-infos/form?from=invoice&id={{invoice.id}}">HERE</a>.
                     {% else %}
                     <div id='billing-details-div' class=""></div>
                     <div id='card-div'></div>
