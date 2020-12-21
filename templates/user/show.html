@@ -37,7 +37,7 @@
                         </table>
                         </div>
                         <div class='d-flex justify-content-left mt-3'>
-                            <a href="/user/{{user.username}}/edit" class='btn btn-success mr-2 shadow text-primary'><i class="text-primary ph-pencil-simple ph-xl"></i> Edit Details</a>
+                            <a href="/{{user.username}}" class='btn btn-success mr-2 shadow text-primary'><i class="text-primary ph-pencil-simple ph-xl"></i> Edit Details</a>
                             <button class='btn btn-danger shadow' id='delete-user'><i class="ph-trash-simple ph-xl text-white"></i> Delete User</button>
                         </div>
                     </div>
@@ -114,7 +114,7 @@
                 </div>
                 
                 {% endif %}
-                <a href='/{{user.username}}/billing-info/new' class='btn btn-primary btn-block'><i class="ph-plus-circle ph-xl"></i> Add New Billing Details</a>
+                <a href='/{{user.username}}/billing-infos/form' class='btn btn-primary btn-block'><i class="ph-plus-circle ph-xl"></i> Add New Billing Details</a>
             </div>
         </div>
     </div>

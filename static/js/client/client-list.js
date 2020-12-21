@@ -2,22 +2,20 @@ const clientTable = document.querySelector("table");
 
 //event listener to handle deleting client
 clientTable.addEventListener("click", function (evt) {
-  if (
-    evt.target.classList.contains("delete")
-  ) { 
-    const targetRow = getTargetRow(evt)
-    const clientId = targetRow.dataset.clientId
+  if (evt.target.classList.contains("delete")) {
+    const targetRow = getTargetRow(evt);
+    const clientId = targetRow.dataset.clientId;
     sendRequestToDeleteClient(clientId, targetRow);
   }
 });
 
 async function sendRequestToDeleteClient(clientId, targetRow) {
   await axios
-    .delete(`${BASE}/${username}/client/${clientId}/delete`)
+    .delete(`${BASE}/${username}/clients/${clientId}`)
     .then(function (response) {
       // handle success
-      makeAlert(response, 'danger')
-      targetRow.remove()
+      makeAlert(response, "danger");
+      targetRow.remove();
       if (document.getElementById("alert")) {
         setTimeout("hideAlert()", 5000);
       }

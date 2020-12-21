@@ -82,7 +82,7 @@ extrasTable.addEventListener("click", function (evt) {
 
 async function sendRequestToRetrieveBillingInfo(evt, billingInfoID) {
   await axios
-    .get(`${BASE}/${username}/billing_info/${billingInfoID}`)
+    .get(`${BASE}/${username}/billing_infos/${billingInfoID}`)
     .then(function (response) {
       // handle success
       populateDetails(response);
@@ -111,7 +111,7 @@ async function sendRequestToRetrieveBillingInfo(evt, billingInfoID) {
 
 async function sendRequestToUpdateDates(evt, dateOfIssue, dueDate) {
   await axios
-    .patch(`${BASE}/${username}/invoice/${invoiceID}/edit`, {
+    .patch(`${BASE}/${username}/invoices/${invoiceID}`, {
       dateOfIssue,
       dueDate,
     })
@@ -142,7 +142,7 @@ async function sendRequestToUpdateDates(evt, dateOfIssue, dueDate) {
 
 async function sendRequestToUpdateExtras(evt, extra, discount, VAT) {
   await axios
-    .patch(`${BASE}/${username}/invoice/${invoiceID}/edit`, {
+    .patch(`${BASE}/${username}/invoices/${invoiceID}`, {
       extra,
       discount,
       VAT,
@@ -174,7 +174,7 @@ async function sendRequestToUpdateExtras(evt, extra, discount, VAT) {
 
 async function sendRequestToAddInvoiceNr(invoiceNr) {
   await axios
-    .patch(`${BASE}/${username}/invoice/${invoiceID}/edit`, {
+    .patch(`${BASE}/${username}/invoices/${invoiceID}`, {
       invoiceNr,
     })
     .then(function (response) {

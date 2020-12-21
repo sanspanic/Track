@@ -12,7 +12,7 @@ createInvBtn.addEventListener("click", function (evt) {
 //deletes invoice
 invTable.addEventListener("click", function (evt) {
   if (evt.target.classList.contains("delete")) {
-    const targetRow = getTargetRow(evt)
+    const targetRow = getTargetRow(evt);
     const invId = targetRow.dataset.invoiceId;
     sendDeleteInvRequest(targetRow, invId);
   }
@@ -21,7 +21,7 @@ invTable.addEventListener("click", function (evt) {
 //request to delete invoice from db. handles ui post-request
 async function sendDeleteInvRequest(targetRow, id) {
   await axios
-    .delete(`${BASE}/${username}/invoice/${id}/delete`)
+    .delete(`${BASE}/${username}/invoices/${id}`)
     .then(function (response) {
       // handle success
       removeRow(targetRow);
@@ -53,7 +53,7 @@ async function sendDeleteInvRequest(targetRow, id) {
 //request to create invoice from project
 async function createInv(evt, projectID) {
   await axios
-    .post(`${BASE}/${username}/project/${projectID}/create-invoice`)
+    .post(`${BASE}/${username}/project/${projectID}/invoice`)
     .then(function (response) {
       // handle success
       addNewInvoiceRow(evt, response);
@@ -85,14 +85,14 @@ async function createInv(evt, projectID) {
 //makes new row and populates it with response data
 function addNewInvoiceRow(evt, response) {
   const newRow = document.createElement("tr");
-  newRow.setAttribute('data-invoice-id', response.data.id)
+  newRow.setAttribute("data-invoice-id", response.data.id);
   newRow.innerHTML = `<th scope="row">${response.data.pretty_date}</th>
   <td>${response.data.client_name}</td>
   <td>${evt.target.innerText}</td>
   <td>${response.data.amount_in_curr_of_rate}</td>
   <td>${response.data.amount_in_curr_of_inv}</td>
   <td>
-  <a href='/${username}/invoice/${response.data.id}'><i class="ph-printer ph-lg"></i></a>
+  <a href='/${username}/invoices/${response.data.id}'><i class="ph-printer ph-lg"></i></a>
   <button class='delete icon'><i class="ph-trash-simple delete ph-lg"></i></button>
   </td>`;
   invTable.lastElementChild.append(newRow);

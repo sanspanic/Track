@@ -13,7 +13,8 @@ CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = (os.environ.get('DATABASE_URL', "postgres:///work_logger"))
+app.config["SQLALCHEMY_DATABASE_URI"] = (
+    os.environ.get('DATABASE_URL', "postgres:///work_logger"))
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', '123aojegnweg')
@@ -27,7 +28,7 @@ toolbar = DebugToolbarExtension(app)
 @app.route('/')
 def home():
     if g.user:
-        return redirect(f'/user/{g.user.username}')
+        return redirect(f'/{g.user.username}/projects')
     else:
         return render_template('home-anon.html')
 
@@ -54,22 +55,24 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
+
 def fail_auth_check(username):
     """function to run before most requests to perform security checks"""
 
-    #not logged in or unauthorized: 
+    # not logged in or unauthorized:
     if not g.user or username != g.user.username:
         return True
 
-def perform_auth_measures(username): 
-    #not logged in
+
+def perform_auth_measures(username):
+    # not logged in
     if not g.user:
         flash("Authentication required. Please login first.", "danger")
         return redirect("/login")
-    #unauthorized
+    # unauthorized
     elif username != g.user.username:
         flash("Unauthorized. You cannot perform this action with someone else's account.", "danger")
-        return redirect(f'/user/{g.user.username}')
+        return redirect(f'/{g.user.username}')
 
 ##############################################################################
 # AUTHENTICATION ROUTES
@@ -105,13 +108,13 @@ def signup():
 
         do_login(user)
 
-        return redirect(f"/user/{user.username}")
+        return redirect(f"/{user.username}")
 
     else:
-        #is user gets here from landing page form
-        if request.args['email']: 
+        # if user gets here via landing page form
+        if request.args.get('email'):
             form.email.data = request.args['email']
-            
+
         return render_template('user/signup.html', form=form)
 
 
@@ -149,16 +152,17 @@ def logout():
 # USER ROUTES
 
 
-@app.route('/user/<username>')
+@app.route('/<username>/projects')
 def homepage(username):
-    """show homepage for logged in user"""
+    """show homepage with projects for logged in user"""
 
     if fail_auth_check(username):
         return perform_auth_measures(username)
     else:
         return render_template('user/homepage.html', user=g.user)
-    
-@app.route('/user/<username>/show')
+
+
+@app.route('/<username>/details')
 def show_user(username):
     """show details for logged in user"""
 
@@ -168,7 +172,7 @@ def show_user(username):
         return render_template('user/show.html', user=g.user)
 
 
-@app.route('/user/<username>/edit', methods=['GET', 'POST'])
+@app.route('/<username>', methods=['GET', 'POST'])
 def edit_user(username):
     """edit details for logged in user"""
 
@@ -188,11 +192,12 @@ def edit_user(username):
 
             db.session.commit()
 
-            return redirect(f'/user/{user.username}/show')
+            return redirect(f'/{user.username}/details')
 
         return render_template('user/edit.html', user=g.user, form=form)
 
-@app.route('/user/<username>/delete', methods=['DELETE'])
+
+@app.route('/<username>', methods=['DELETE'])
 def delete_user(username):
     """delete user"""
 
@@ -207,14 +212,15 @@ def delete_user(username):
 
         return jsonify(message=f'Deleted user {username}')
 
-@app.route('/user/user-deleted', methods=['GET'])
+
+@app.route('/delete-success', methods=['GET'])
 def show_deletion():
     """show success of deletion and signup page"""
 
     return render_template('user/user-deleted.html')
 
 
-@app.route('/user/<username>/clients', methods=['GET'])
+@app.route('/<username>/clients', methods=['GET'])
 def show_clients(username):
     """shows all user's clients"""
 
@@ -223,7 +229,8 @@ def show_clients(username):
     else:
         return render_template('user/clients.html', user=g.user)
 
-@app.route('/user/<username>/invoices', methods=['GET'])
+
+@app.route('/<username>/invoices', methods=['GET'])
 def show_invoices(username):
     """shows all user's invoices"""
 
@@ -235,22 +242,24 @@ def show_invoices(username):
 ##############################################################################
 # INVOICES ROUTES
 
-@app.route('/<username>/invoice/<int:id>/delete', methods=['DELETE'])
-def delete_invoice(username, id): 
+
+@app.route('/<username>/invoices/<int:invoice_id>', methods=['DELETE'])
+def delete_invoice(username, invoice_id):
     """deletes individual invoice based on id"""
 
     if fail_auth_check(username):
         return perform_auth_measures(username)
     else:
-        invoice = Invoice.query.get_or_404(id)
+        invoice = Invoice.query.get_or_404(invoice_id)
         project_name = invoice.project.project_name
         db.session.delete(invoice)
         db.session.commit()
 
         return jsonify(message=f'Deleted invoice for {project_name}')
 
-@app.route('/<username>/invoice/<int:invoice_id>', methods=['GET'])
-def show_invoice(username, invoice_id): 
+
+@app.route('/<username>/invoices/<int:invoice_id>', methods=['GET'])
+def show_invoice(username, invoice_id):
     """shows details of individual invoice"""
 
     if fail_auth_check(username):
@@ -259,8 +268,9 @@ def show_invoice(username, invoice_id):
         invoice = Invoice.query.get_or_404(invoice_id)
         return render_template('/invoice/show.html', invoice=invoice, user=g.user)
 
-@app.route('/<username>/invoice/<int:invoice_id>/edit', methods=['PATCH'])
-def edit_dates(username, invoice_id): 
+
+@app.route('/<username>/invoices/<int:invoice_id>', methods=['PATCH'])
+def edit_dates(username, invoice_id):
     """updates date of issue and due date of invoice"""
 
     if fail_auth_check(username):
@@ -268,20 +278,20 @@ def edit_dates(username, invoice_id):
     else:
         invoice = Invoice.query.get_or_404(invoice_id)
 
-        #handle edit of dates
-        if request.json.get('dateOfIssue'): 
+        # handle edit of dates
+        if request.json.get('dateOfIssue'):
 
-            date = request.json.get('dateOfIssue') #2020-12-08
-            due_date = request.json.get('dueDate') #2020-12-15
+            date = request.json.get('dateOfIssue')  # 2020-12-08
+            due_date = request.json.get('dueDate')  # 2020-12-15
 
-            invoice.date = invoice.convert_date(date) 
+            invoice.date = invoice.convert_date(date)
             invoice.due_date = invoice.convert_date(due_date)
 
             db.session.commit()
 
             return make_response(invoice.serialize(), 200)
-        #handle edit of extras
-        elif not request.json.get('invoiceNr'): 
+        # handle edit of extras
+        elif not request.json.get('invoiceNr'):
 
             extra = request.json.get('extra')
             discount = request.json.get('discount')
@@ -292,8 +302,8 @@ def edit_dates(username, invoice_id):
             db.session.commit()
 
             return make_response(invoice.serialize(), 200)
-        #handle edit of invoice number
-        else: 
+        # handle edit of invoice number
+        else:
             invoice.invoice_nr = request.json.get('invoiceNr')
             db.session.commit()
 
@@ -303,8 +313,8 @@ def edit_dates(username, invoice_id):
 ##############################################################################
 # CLIENTS ROUTES
 
-@app.route('/<username>/client/<int:id>/delete', methods=['DELETE'])
-def delete_client(username, id): 
+@app.route('/<username>/clients/<int:id>', methods=['DELETE'])
+def delete_client(username, id):
     """deletes individual client based on id"""
 
     if fail_auth_check(username):
@@ -317,37 +327,9 @@ def delete_client(username, id):
 
         return jsonify(message=f'Deleted client {client_name}')
 
-@app.route('/<username>/client/new', methods=['GET', 'POST'])
-def add_client(username):
-    """adds new client"""
 
-    if fail_auth_check(username):
-        return perform_auth_measures(username)
-    else:
-
-        form = ClientForm()
-        
-        if form.validate_on_submit():
-
-            client = Client(
-                user_id=g.user.id, 
-                name= form.name.data, 
-                street= form.street.data, 
-                postcode=form.postcode.data, 
-                country=form.country.data,
-                city=form.city.data
-            )
-
-            db.session.add(client)
-            db.session.commit()
-
-            flash(f'New client {client.name} was added', 'success')
-            return redirect(f'/user/{g.user.username}/clients')
-
-        return render_template('client/add.html', user=g.user, form=form)
-
-@app.route('/<username>/client/<int:id>/edit', methods=['GET'])
-def edit_client_form(username, id): 
+@app.route('/<username>/clients/<int:id>', methods=['GET'])
+def edit_client_form(username, id):
     """show form to edit client of user based on id"""
 
     if fail_auth_check(username):
@@ -357,8 +339,9 @@ def edit_client_form(username, id):
         client = Client.query.get_or_404(id)
         return render_template('client/edit.html', form=form, user=g.user, client=client)
 
-@app.route('/<username>/client/<int:id>/edit', methods=['PUT'])
-def edit_client(username, id): 
+
+@app.route('/<username>/client/<int:id>', methods=['PUT'])
+def edit_client(username, id):
     """edit client of user based on id"""
 
     if fail_auth_check(username):
@@ -375,26 +358,58 @@ def edit_client(username, id):
 
         db.session.commit()
 
-        return jsonify({"client": client.serialize()}, {"message":'Client was successfully updated'})
+        return jsonify({"client": client.serialize()}, {"message": 'Client was successfully updated'})
+
+
+@app.route('/<username>/clients/form', methods=['GET', 'POST'])
+def add_client(username):
+    """shows form to add new client"""
+
+    if fail_auth_check(username):
+        return perform_auth_measures(username)
+    else:
+
+        form = ClientForm()
+
+        if form.validate_on_submit():
+
+            client = Client(
+                user_id=g.user.id,
+                name=form.name.data,
+                street=form.street.data,
+                postcode=form.postcode.data,
+                country=form.country.data,
+                city=form.city.data
+            )
+
+            db.session.add(client)
+            db.session.commit()
+
+            flash(f'New client {client.name} was added', 'success')
+            return redirect(f'/{g.user.username}/clients')
+
+        return render_template('client/add.html', user=g.user, form=form)
 
  ##############################################################################
 #  PROJECTS ROUTES
 
-@app.route('/user/<username>/projects/edit', methods=['GET'])
-def send_client_names(username): 
+
+@app.route('/<username>/projects/clients', methods=['GET'])
+def send_client_names(username):
     """sends information about clients back to frontend to allow for editing"""
 
     if fail_auth_check(username):
         return perform_auth_measures(username)
     else:
         client_names = []
-        for c in g.user.clients: 
+        for c in g.user.clients:
             client_names.append(c.name)
 
         return jsonify({"names": client_names})
 
-@app.route('/user/<username>/projects/edit', methods=['PUT'])
-def edit_project_info(username): 
+
+@app.route('/<username>/projects', methods=['PUT'])
+def edit_project_info(username):
     """edits project information"""
 
     if fail_auth_check(username):
@@ -409,19 +424,20 @@ def edit_project_info(username):
         project = Project.query.get_or_404(project_id)
 
         def find_client_id():
-            for client in g.user.clients: 
-                if client.name == client_name: 
-                    return client.id 
+            for client in g.user.clients:
+                if client.name == client_name:
+                    return client.id
 
         project.project_name = name
         project.client_id = find_client_id()
 
         db.session.commit()
- 
+
         return make_response({"message": f'{project.project_name} was successfully edited'}, 200)
 
-@app.route('/user/<username>/projects/<int:id>/delete', methods=['DELETE'])
-def delete_project(username, id): 
+
+@app.route('/<username>/projects/<int:id>', methods=['DELETE'])
+def delete_project(username, id):
     """deletes project"""
 
     if fail_auth_check(username):
@@ -432,27 +448,29 @@ def delete_project(username, id):
         db.session.delete(project)
         db.session.commit()
 
-        return jsonify({"message":f"Deleted project {project_name}"})
+        return jsonify({"message": f"Deleted project {project_name}"})
 
-@app.route('/<username>/project/new', methods=['GET', 'POST'])
+
+@app.route('/<username>/projects/form', methods=['GET', 'POST'])
 def add_project(username):
-    """adds new project to db"""
+    """shows form to add new project to db"""
 
     if fail_auth_check(username):
         return perform_auth_measures(username)
     else:
         form = ProjectForm()
 
-        client_choices = [(client.id, client.name) for client in g.user.clients]
+        client_choices = [(client.id, client.name)
+                          for client in g.user.clients]
         form.client_id.choices = client_choices
 
-        if form.validate_on_submit(): 
+        if form.validate_on_submit():
 
             project = Project(
-                user_id=g.user.id, 
-                client_id= form.client_id.data, 
-                project_name= form.project_name.data, 
-                hourly_rate=form.hourly_rate.data, 
+                user_id=g.user.id,
+                client_id=form.client_id.data,
+                project_name=form.project_name.data,
+                hourly_rate=form.hourly_rate.data,
                 curr_of_rate=form.curr_of_rate.data,
                 curr_of_inv=form.curr_of_inv.data
             )
@@ -461,22 +479,24 @@ def add_project(username):
             db.session.commit()
 
             flash(f'New project {project.project_name} was added', 'success')
-            return redirect(f'/user/{username}')
+            return redirect(f'/{username}/projects')
 
         return render_template('/project/new.html', user=g.user, form=form)
 
+
 @app.route('/<username>/project/<int:project_id>/track', methods=['GET'])
-def track_project(username, project_id): 
+def track_project(username, project_id):
     """interface to track time for project and add log entry"""
-    
+
     if fail_auth_check(username):
         return perform_auth_measures(username)
     else:
         project = Project.query.get_or_404(project_id)
         return render_template('project/track.html', user=g.user, project=project)
 
-@app.route('/<username>/project/<int:project_id>/create-invoice', methods=['POST'])
-def create_invoice(username, project_id): 
+
+@app.route('/<username>/project/<int:project_id>/invoice', methods=['POST'])
+def create_invoice(username, project_id):
 
     if fail_auth_check(username):
         return perform_auth_measures(username)
@@ -485,7 +505,7 @@ def create_invoice(username, project_id):
         invoice = project.create_invoice()
 
         response = invoice.serialize()
-        #get client name for rendering new row on front-end
+        # get client name for rendering new row on front-end
         project = Project.query.get_or_404(invoice.project_id)
         client = Client.query.get_or_404(project.client_id)
 
@@ -496,15 +516,16 @@ def create_invoice(username, project_id):
  ##############################################################################
 #  LOG_ENTRY ROUTES
 
-@app.route('/<username>/project/<project_id>/logentry/new', methods=['POST'])
-def add_log_entry(username, project_id): 
+
+@app.route('/<username>/projects/<project_id>/logentry', methods=['POST'])
+def add_log_entry(username, project_id):
     """adds new log entry with only start time which defaults to now via models"""
 
     if fail_auth_check(username):
         return perform_auth_measures(username)
     else:
         log_entry = LogEntry(
-            project_id=project_id, 
+            project_id=project_id,
             start_time=datetime.datetime.now()
         )
         db.session.add(log_entry)
@@ -515,8 +536,9 @@ def add_log_entry(username, project_id):
 
         return make_response(response, 201)
 
-@app.route('/<username>/project/<int:project_id>/logentry/<int:log_entry_id>/update', methods=['PATCH'])
-def update_log_entry(username, project_id, log_entry_id): 
+
+@app.route('/<username>/projects/<int:project_id>/logentry/<int:log_entry_id>', methods=['PATCH'])
+def update_log_entry(username, project_id, log_entry_id):
     """updates new log entry with end time, and handles post-hoc edit of date & times"""
 
     if fail_auth_check(username):
@@ -524,16 +546,18 @@ def update_log_entry(username, project_id, log_entry_id):
     else:
         log_entry = LogEntry.query.get_or_404(log_entry_id)
 
-        #if request is to update stop_time only by clicking stop btn
+        # if request is to update stop_time only by clicking stop btn
 
         if not request.json:
 
             log_entry.stop_time = datetime.datetime.now()
             log_entry.calc_value()
 
-            #also update project totals
-            log_entry.project.increment_subtotal(log_entry.value_in_curr_of_rate)
-            log_entry.project.increment_converted_subtotal(log_entry.value_in_curr_of_inv)
+            # also update project totals
+            log_entry.project.increment_subtotal(
+                log_entry.value_in_curr_of_rate)
+            log_entry.project.increment_converted_subtotal(
+                log_entry.value_in_curr_of_inv)
             db.session.commit()
 
             response = log_entry.serialize()
@@ -541,9 +565,9 @@ def update_log_entry(username, project_id, log_entry_id):
 
             return make_response(response, 200)
 
-        #if request is to edit date & time post-hoc
+        # if request is to edit date & time post-hoc
 
-        else: 
+        else:
             data = request.json
 
             log_entry.handle_edit(data)
@@ -554,8 +578,9 @@ def update_log_entry(username, project_id, log_entry_id):
 
             return make_response(response, 201)
 
-@app.route('/<username>/project/<int:project_id>/logentry/<int:log_entry_id>/delete', methods=['DELETE'])
-def delete_log_entry(username, project_id, log_entry_id): 
+
+@app.route('/<username>/projects/<int:project_id>/logentry/<int:log_entry_id>', methods=['DELETE'])
+def delete_log_entry(username, project_id, log_entry_id):
     """deletes log entry record"""
 
     if fail_auth_check(username):
@@ -563,9 +588,9 @@ def delete_log_entry(username, project_id, log_entry_id):
     else:
         log_entry = LogEntry.query.get_or_404(log_entry_id)
 
-        #update subtotals of project by subtracting value of log entry
+        # update subtotals of project by subtracting value of log entry
         log_entry.project.subtotal -= log_entry.value_in_curr_of_rate
-        if log_entry.project.converted_subtotal: 
+        if log_entry.project.converted_subtotal:
             log_entry.project.converted_subtotal -= log_entry.value_in_curr_of_inv
 
         response = log_entry.serialize()
@@ -576,44 +601,45 @@ def delete_log_entry(username, project_id, log_entry_id):
         response['message'] = 'Log entry was successfully deleted.'
 
         return make_response(response, 200)
-        
-#BILLING INFO ROUTES 
 
-@app.route('/<username>/billing-info/new', methods=['GET', 'POST'])
-def new_billing_details(username): 
-    """adds new billing details"""
+# BILLING INFO ROUTES
+
+
+@app.route('/<username>/billing-infos/form', methods=['GET', 'POST'])
+def new_billing_details(username):
+    """shows form to add new billing details"""
 
     if fail_auth_check(username):
         return perform_auth_measures(username)
     else:
         form = BillingInfoForm()
 
-        if form.validate_on_submit(): 
+        if form.validate_on_submit():
 
             bi = BillingInfo(
                 IBAN=form.IBAN.data,
-                name=form.name.data, 
-                street=form.street.data, 
+                name=form.name.data,
+                street=form.street.data,
                 city=form.city.data,
                 postcode=form.postcode.data,
                 country=form.country.data,
                 phone=form.phone.data,
                 email=form.email.data,
-                user_id = g.user.id
-                  )
+                user_id=g.user.id
+            )
             db.session.add(bi)
             db.session.commit()
 
-
             flash(f'New billing details were saved', 'success')
-            return redirect(f'/user/{username}/show')
+            return redirect(f'/{username}/details')
 
         return render_template('billing_info/new.html', form=form, user=g.user)
 
-@app.route('/<username>/billing_info/<int:billing_info_id>', methods=['GET'])
-def get_billing_details(username, billing_info_id): 
-    """retrieves details about billing info based on id to populate form with"""    
-    
+
+@app.route('/<username>/billing_infos/<int:billing_info_id>', methods=['GET'])
+def get_billing_details(username, billing_info_id):
+    """retrieves details about billing info based on id to populate form with"""
+
     if fail_auth_check(username):
         return perform_auth_measures(username)
     else:
@@ -623,10 +649,10 @@ def get_billing_details(username, billing_info_id):
         return make_response(response, 200)
 
 
-@app.route('/<username>/billing-info/<int:billing_info_id>/delete', methods=['DELETE'])
-def delete_billing_details(username, billing_info_id): 
-    """deletes billing info entry"""    
-    
+@app.route('/<username>/billing-infos/<int:billing_info_id>', methods=['DELETE'])
+def delete_billing_details(username, billing_info_id):
+    """deletes billing info entry"""
+
     if fail_auth_check(username):
         return perform_auth_measures(username)
     else:

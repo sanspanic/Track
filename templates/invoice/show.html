@@ -44,7 +44,7 @@
                 <div id='from' class="col-sm-6">
                     <h6 class="mb-3">From:</h6>
                     {% if not user.billing_info %}
-                        You have no saved billing details. You can add billing details <a href="/{{user.username}}/billing-info/new">HERE</a>.
+                        You have no saved billing details. You can add billing details <a href="/{{user.username}}/billing-infos/form">HERE</a>.
                     {% else %}
                     <div id='billing-details-div' class=""></div>
                     <div id='card-div'></div>
@@ -56,7 +56,7 @@
                                     {% for bi in user.billing_info %}
                                   <a id='billing-info-id-{{bi.id}}' class="dropdown-item billing-info-dropdown" href="#">{{bi.name}}</a>
                                   {% endfor %}
-                                  <a href='/{{user.username}}/billing-info/new' class="dropdown-item" href="#">Add New</a>
+                                  <a href='/{{user.username}}/billing-infos/form' class="dropdown-item" href="#">Add New</a>
                                 </div>
                             </div>
                             {% endif %}

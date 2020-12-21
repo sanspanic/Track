@@ -3,7 +3,7 @@ const client_id = document.querySelector(".client-name").getAttribute("id");
 
 async function sendRequest(id) {
   await axios
-    .put(`${BASE}/${username}/client/${id}/edit`, {
+    .put(`${BASE}/${username}/client/${id}`, {
       name: document.querySelector("#name").value,
       street: document.querySelector("#street").value,
       postcode: document.querySelector("#postcode").value,
@@ -27,7 +27,7 @@ async function sendRequest(id) {
         "btn-lg",
         "mt-3"
       );
-      backBtn.setAttribute("href", `/user/${username}/clients`);
+      backBtn.setAttribute("href", `/${username}/clients`);
       container.append(backBtn);
 
       if (document.getElementById("alert")) {

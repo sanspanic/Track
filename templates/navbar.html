@@ -10,13 +10,13 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav" id='user-nav'>
           <li class="nav-item">
-            <a class="nav-link" href="/user/{{user.username}}"><i class="ph-folders"></i> Projects</a>
+            <a class="nav-link" href="/{{user.username}}/projects"><i class="ph-folders"></i> Projects</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/user/{{user.username}}/invoices"><i class="ph-receipt"></i> Invoices</a>
+            <a class="nav-link" href="/{{user.username}}/invoices"><i class="ph-receipt"></i> Invoices</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/user/{{user.username}}/clients"><i class="ph-users"></i> Clients</a>
+            <a class="nav-link" href="/{{user.username}}/clients"><i class="ph-users"></i> Clients</a>
           </li>
         </ul>
         {% endif %}
@@ -25,8 +25,8 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" data-username='{{user.username}}' role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="ph-user-circle"> </i> {{user.username}}</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="/user/{{user.username}}/show">View User Details</a>
-              <a class="dropdown-item" href="/user/{{user.username}}/edit">Edit User Details</a>
+              <a class="dropdown-item" href="/{{user.username}}/details">View User Details</a>
+              <a class="dropdown-item" href="/{{user.username}}">Edit User Details</a>
             </div>
           </li>
           <li class="nav-item">

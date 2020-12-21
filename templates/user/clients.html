@@ -12,7 +12,7 @@
     <h1 class='display-2 text-center mb-4 mt-4'>Clients</h1>
 
     <div id='clients-container' class="container form-style py-3 px-3">
-    <a href='/{{user.username}}/client/new' class='btn btn-success btn-block mb-3 text-primary'><i class="ph-user-circle-plus ph-lg"></i> Add New Client</a>
+    <a href='/{{user.username}}/clients/form' class='btn btn-success btn-block mb-3 text-primary'><i class="ph-user-circle-plus ph-lg"></i> Add New Client</a>
 
       <div class="alert-container">
 
@@ -47,7 +47,7 @@
             {% endif %}
     
             <td>
-                <a data-toggle="tooltip" data-placement='top' title="Edit client details" href='/{{user.username}}/client/{{client.id}}/edit'><i class="ph-pencil-simple ph-lg"></i></a>
+                <a data-toggle="tooltip" data-placement='top' title="Edit client details" href='/{{user.username}}/clients/{{client.id}}'><i class="ph-pencil-simple ph-lg"></i></a>
                 <button data-toggle="tooltip" data-placement='top' title="Delete client record" data-delay=0 class='delete icon'><i class="ph-trash-simple delete ph-lg"></i></button>
             </td>
           </tr>

@@ -16,7 +16,7 @@ delButton.addEventListener("click", async () => {
 
 async function sendRequestToDeleteBillingInfo(billingInfoId, evt) {
   await axios
-    .delete(`${BASE}/${username}/billing-info/${billingInfoId}/delete`)
+    .delete(`${BASE}/${username}/billing-infos/${billingInfoId}`)
     .then(function (response) {
       //handle success
       removeInfo(evt);

@@ -37,12 +37,12 @@ trackTable.addEventListener("click", function (evt) {
       targetRow = evt.target.parentElement.parentElement;
       evt.target.parentElement.innerHTML =
         "<button data-trigger='hover' data-toggle='tooltip' data-placement='top' title='Accept changes' class='accept-changes icon'><i class='ph-check-circle ph-lg accept-changes'></i></button>";
-        handleTooltips()
+      handleTooltips();
     } else {
       targetRow = evt.target.parentElement.parentElement.parentElement;
       evt.target.parentElement.parentElement.innerHTML =
         "<button data-trigger='hover' data-toggle='tooltip' data-placement='top' title='Accept changes' class='accept-changes icon'><i class='ph-check-circle ph-lg accept-changes'></i></button>";
-        handleTooltips()
+      handleTooltips();
     }
     makeDateInput(targetRow);
     makeTimeInputs(targetRow);
@@ -73,7 +73,7 @@ trackTable.addEventListener("click", function (evt) {
     );
   } // handle deleting log entry
   else if (evt.target.classList.contains("delete")) {
-    deenhanceSpans()
+    deenhanceSpans();
     const logEntryId = getLogEntryId(evt);
     sendRequestToDeleteLogEntry(evt, logEntryId);
   }
@@ -81,7 +81,7 @@ trackTable.addEventListener("click", function (evt) {
 
 async function sendCreateLogEntryRequest() {
   await axios
-    .post(`${BASE}/${username}/project/${project_id}/logentry/new`)
+    .post(`${BASE}/${username}/projects/${project_id}/logentry`)
     .then(function (response) {
       // handle success
       addNewRow(response);
@@ -114,7 +114,7 @@ async function sendCreateLogEntryRequest() {
 async function sendRequestToAddStopTime(log_entry_id) {
   await axios
     .patch(
-      `${BASE}/${username}/project/${project_id}/logentry/${log_entry_id}/update`
+      `${BASE}/${username}/projects/${project_id}/logentry/${log_entry_id}`
     )
     .then(function (response) {
       // handle success
@@ -155,7 +155,7 @@ async function sendRequestToEditTimeAndDate(
 ) {
   await axios
     .patch(
-      `${BASE}/${username}/project/${project_id}/logentry/${log_entry_id}/update`,
+      `${BASE}/${username}/projects/${project_id}/logentry/${log_entry_id}`,
       {
         date,
         start_time,
@@ -196,7 +196,7 @@ async function sendRequestToEditTimeAndDate(
 async function sendRequestToDeleteLogEntry(evt, log_entry_id) {
   await axios
     .delete(
-      `${BASE}/${username}/project/${project_id}/logentry/${log_entry_id}/delete`
+      `${BASE}/${username}/projects/${project_id}/logentry/${log_entry_id}`
     )
     .then(function (response) {
       // handle success
@@ -355,8 +355,8 @@ function addStopInfoToRow(response) {
   stopCell.innerText = response.data.pretty_stop_time;
   let actionsCell = valueCell.nextElementSibling;
   //update description cell
-  const decriptionCell = stopCell.nextElementSibling
-  decriptionCell.innerText = 'Edit log entry to add'
+  const decriptionCell = stopCell.nextElementSibling;
+  decriptionCell.innerText = "Edit log entry to add";
   //add back edit and delete buttons
   makeEditAndDeleteBtns(actionsCell);
 }
@@ -364,7 +364,7 @@ function addStopInfoToRow(response) {
 function makeEditAndDeleteBtns(target) {
   target.innerHTML = `<button data-trigger='hover' data-toggle='tooltip' data-placement='top' title='Edit log entry' class='icon edit'><i class="ph-pencil-simple ph-lg edit"></i></button>
     <button data-trigger='hover' data-toggle='tooltip' data-placement='top' title='Delete log entry' class='icon delete'><i class="ph-trash-simple ph-lg delete"></i></button> `;
-    handleTooltips()
+  handleTooltips();
 }
 
 function updateSpans(response) {

@@ -30,12 +30,12 @@ projectTable.addEventListener("click", function (evt) {
 
 async function sendRequestForClientNames(targetRow) {
   await axios
-    .get(`${BASE}/user/${username}/projects/edit`)
+    .get(`${BASE}/${username}/projects/clients`)
     .then(function (response) {
       // handle success
       //change cell to only display accept changes button
       makeAcceptChangesBtn(targetRow);
-      handleTooltips()
+      handleTooltips();
       let names = response.data.names;
       //call functions that render HTML for inputs displaying current project name and clients associated with user
       makeClientDropdown(targetRow, names);
@@ -68,7 +68,7 @@ async function sendRequestToEdit(
   projectId
 ) {
   await axios
-    .put(`${BASE}/user/${username}/projects/edit`, {
+    .put(`${BASE}/${username}/projects`, {
       clientName,
       projectName,
       projectId,
@@ -103,7 +103,7 @@ async function sendRequestToEdit(
 
 async function sendDeleteRequest(project_id) {
   await axios
-    .delete(`${BASE}/user/${username}/projects/${project_id}/delete`)
+    .delete(`${BASE}/${username}/projects/${project_id}`)
     .then(function (response) {
       // handle success
       makeAlert(response, "danger");
@@ -164,8 +164,7 @@ function makeProjectNameInput(targetRow) {
 
 //changes cell to only display accept changes button
 function makeAcceptChangesBtn(targetRow) {
-  targetRow.lastElementChild.innerHTML =
-    `<button data-trigger='hover' data-container='button' data-toggle='tooltip' data-placement='top' title='Edit project details' class='icon accept-changes'><i class='ph-check-circle accept-changes ph-lg'></i></button>`;
+  targetRow.lastElementChild.innerHTML = `<button data-trigger='hover' data-container='button' data-toggle='tooltip' data-placement='top' title='Edit project details' class='icon accept-changes'><i class='ph-check-circle accept-changes ph-lg'></i></button>`;
 }
 
 //updates UI to display newly edited values for clientName and projectName
@@ -191,7 +190,7 @@ function makeActionBtns(targetRow, projectId) {
   targetRow.lastElementChild.innerHTML = `<a href='/{{user.username}}/project/${projectId}/track' class='btn btn-primary track'><i class="ph-timer ph-lg"></i> Track</a>
   <button data-trigger='hover' data-container='button' data-toggle="tooltip" data-placement='top' title="Edit project details" class='btn icon edit'><i class="ph-pencil-simple ph-lg edit"></i></button>
   <button data-trigger='hover' data-container='button' data-toggle="tooltip" data-placement='top' title="Delete" class='btn icon delete'><i class="ph-trash-simple delete ph-lg"></i></button>`;
-  handleTooltips()
+  handleTooltips();
 }
 
 //differentiate between icon and button click and return projectId
@@ -202,4 +201,3 @@ function getProjectID(evt) {
       : evt.target.parentElement.parentElement.parentElement.dataset.projectId;
   return projectId;
 }
-
