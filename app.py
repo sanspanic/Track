@@ -670,3 +670,15 @@ def delete_billing_details(username, billing_info_id):
 
         response = {'message': 'Billing details successfully deleted'}
         return make_response(response, 200)
+
+################
+# HELP SECTION
+
+
+@app.route('/help', methods=['GET'])
+def show_help():
+    """routes to help page"""
+
+    if g.user:
+        return render_template('help.html', user=g.user)
+    return render_template('help.html')
